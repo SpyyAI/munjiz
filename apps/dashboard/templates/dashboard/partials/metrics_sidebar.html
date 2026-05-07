@@ -1,0 +1,35 @@
+<!-- Live KPIs sidebar (editorial style) -->
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1rem;">
+    <div class="flex items-center justify-between mb-4">
+        <span class="eyebrow">المؤشرات الحيّة</span>
+        <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;">5s POLL</span>
+    </div>
+
+    <div class="flex flex-col" style="gap:0.85rem;">
+        <template x-for="kpi in kpis" :key="kpi.key">
+            <div style="padding-bottom:0.85rem;border-bottom:1px solid var(--hairline);">
+                <div class="flex items-end justify-between gap-2">
+                    <div class="min-w-0">
+                        <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;direction:ltr;text-align:right;margin-bottom:0.3rem;" x-text="kpi.name_ar"></div>
+                        <div class="flex items-baseline gap-1">
+                            <span x-text="kpi.value" class="counter-value" style="font-family:var(--display);font-size:1.65rem;font-weight:700;color:var(--ink);letter-spacing:-0.02em;line-height:1;"></span>
+                            <span style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);" x-text="kpi.unit"></span>
+                        </div>
+                    </div>
+                    <template x-if="kpi.target">
+                        <div style="text-align:left;direction:ltr;">
+                            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;">TARGET</div>
+                            <div style="font-family:var(--mono);font-size:0.78rem;color:var(--gold);font-weight:600;" x-text="kpi.target + (kpi.unit || '')"></div>
+                        </div>
+                    </template>
+                </div>
+                <template x-if="kpi.target">
+                    <div style="margin-top:0.5rem;height:2px;background:var(--hairline);border-radius:2px;overflow:hidden;">
+                        <div style="height:100%;transition:width 0.5s;"
+                             :style="`width: ${Math.min(100, (kpi.value / kpi.target) * 100)}%; background: ${kpi.value >= kpi.target ? '#00C853' : kpi.value >= kpi.target * 0.8 ? '#C9A876' : '#FF1744'};`"></div>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</div>

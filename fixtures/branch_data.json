@@ -1,0 +1,49 @@
+{
+  "branch": {
+    "branch_id": "RYD-OLY-042",
+    "name_ar": "فرع حي العليا",
+    "city": "الرياض",
+    "address": "شارع العليا العام، حي العليا، الرياض",
+    "counters_total": 8,
+    "kiosks_total": 4,
+    "screens_total": 3,
+    "waiting_capacity": 40,
+    "opening_time": "08:00",
+    "closing_time": "21:00"
+  },
+  "counters": [
+    {"number": "1", "counter_type": "general"},
+    {"number": "2", "counter_type": "general"},
+    {"number": "3", "counter_type": "general"},
+    {"number": "4", "counter_type": "general"},
+    {"number": "5", "counter_type": "general"},
+    {"number": "6", "counter_type": "vip"},
+    {"number": "7", "counter_type": "consultation"},
+    {"number": "8", "counter_type": "consultation"}
+  ],
+  "kiosks": [
+    {"kiosk_id": "K1", "location_ar": "بجانب المدخل الرئيسي", "status": "available", "services_supported": ["إيداع", "سحب", "تحويل", "استعلام"], "usage_today": 24},
+    {"kiosk_id": "K2", "location_ar": "الزاوية الشمالية", "status": "available", "services_supported": ["إيداع", "تحويل", "استعلام"], "usage_today": 19},
+    {"kiosk_id": "K3", "location_ar": "بجانب صالة الانتظار", "status": "available", "services_supported": ["استعلام", "طباعة كشف"], "usage_today": 11},
+    {"kiosk_id": "K4", "location_ar": "بجانب قسم العملاء المميزين", "status": "maintenance", "services_supported": ["إيداع", "سحب"], "usage_today": 0}
+  ],
+  "screens": [
+    {"screen_id": "S1", "location_ar": "فوق المدخل", "current_content": "welcome_message", "content_options": ["welcome_message", "queue_status", "kiosk_promotion", "ramadan_hours"]},
+    {"screen_id": "S2", "location_ar": "في صالة الانتظار", "current_content": "queue_status", "content_options": ["queue_status", "service_directory", "kiosk_promotion"]},
+    {"screen_id": "S3", "location_ar": "بجانب الكيوسكات", "current_content": "kiosk_promotion", "content_options": ["kiosk_promotion", "service_tutorial"]}
+  ],
+  "sla_configs": [
+    {"segment": "standard", "max_wait_minutes": 15, "penalty_sar": "250.00", "satisfaction_target": 4.2},
+    {"segment": "premium", "max_wait_minutes": 10, "penalty_sar": "500.00", "satisfaction_target": 4.5},
+    {"segment": "vip", "max_wait_minutes": 5, "penalty_sar": "1000.00", "satisfaction_target": 4.8}
+  ],
+  "initial_snapshot": {
+    "total_waiting": 34,
+    "total_serving": 6,
+    "avg_wait_minutes": 18.5,
+    "max_wait_minutes": 27,
+    "sla_compliance_percent": 78,
+    "kiosk_usage_percent": 42,
+    "staff_utilization_percent": 88
+  }
+}

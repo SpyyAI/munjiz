@@ -1,0 +1,12 @@
+<div class="bg-munjiz-bg/40 rounded-lg p-4 flex items-center gap-3 animate-pulse"
+     :style="`border-right: 4px solid ${typingAgent.color};`">
+    <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white text-xs"
+         :style="`background: ${typingAgent.color};`"
+         x-text="typingAgent.name.charAt(0)"></div>
+    <span class="text-xs text-munjiz-muted" x-text="`${typingAgent.name} يكتب...`"></span>
+    <div class="flex gap-1 mr-auto">
+        <span class="w-2 h-2 rounded-full bouncing-dot" :style="`background: ${typingAgent.color};`"></span>
+        <span class="w-2 h-2 rounded-full bouncing-dot" :style="`background: ${typingAgent.color}; animation-delay: 0.15s;`"></span>
+        <span class="w-2 h-2 rounded-full bouncing-dot" :style="`background: ${typingAgent.color}; animation-delay: 0.3s;`"></span>
+    </div>
+</div>

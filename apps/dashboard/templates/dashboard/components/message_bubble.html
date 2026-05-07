@@ -1,0 +1,14 @@
+<div class="message-bubble bg-munjiz-bg/60 rounded-lg p-4 transition-all"
+     :style="`border-right: 4px solid ${msg.from_color};`">
+    <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white text-xs"
+             :style="`background: ${msg.from_color};`"
+             x-text="msg.from_name.charAt(0)"></div>
+        <span class="font-bold text-sm" x-text="msg.from_name"></span>
+        <span class="text-[10px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wide"
+              :style="`background: ${msg.from_color}33; color: ${msg.from_color};`"
+              x-text="msgTypeLabel(msg.message_type)"></span>
+        <span class="text-[10px] text-munjiz-muted mr-auto" x-text="formatTime(msg.timestamp)"></span>
+    </div>
+    <p class="text-sm leading-relaxed whitespace-pre-wrap" x-text="msg.content"></p>
+</div>

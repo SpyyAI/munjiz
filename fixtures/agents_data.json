@@ -1,0 +1,7 @@
+[
+  {"agent_type": "orchestrator", "name_ar": "المنسق", "name_en": "Orchestrator", "role_ar": "منسق القرارات والوكلاء", "color": "#00C853", "temperature": 0.3},
+  {"agent_type": "customer", "name_ar": "خالد", "name_en": "Khalid", "role_ar": "وكيل خدمة العملاء", "color": "#2979FF", "temperature": 0.6},
+  {"agent_type": "queue", "name_ar": "نورة", "name_en": "Nora", "role_ar": "وكيل ذكاء الطوابير", "color": "#AA00FF", "temperature": 0.5},
+  {"agent_type": "operations", "name_ar": "فهد", "name_en": "Fahad", "role_ar": "وكيل العمليات", "color": "#FF6D00", "temperature": 0.4},
+  {"agent_type": "analytics", "name_ar": "سارة", "name_en": "Sara", "role_ar": "وكيلة التحليلات", "color": "#FF1744", "temperature": 0.3}
+]

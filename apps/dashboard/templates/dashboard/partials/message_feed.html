@@ -1,0 +1,20 @@
+<!-- Live message feed (editorial) -->
+<div class="flex flex-col h-[calc(100vh-220px)]" style="background:var(--card);border:1px solid var(--border);border-radius:14px;">
+    <div class="flex items-center justify-between" style="padding:1rem 1.25rem;border-bottom:1px solid var(--hairline);">
+        <div class="flex items-center gap-3">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#00C853;"></span>
+            <span class="eyebrow">تدفق الوكلاء — مباشر</span>
+        </div>
+        <button @click="clearFeed()" style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;" class="hover:text-white transition-colors">CLEAR</button>
+    </div>
+
+    <div id="message-feed" class="flex-1 overflow-y-auto p-6 space-y-3">
+        <div id="feed-empty" class="text-center py-24" style="color:var(--muted);">
+            <div class="text-5xl mb-4 opacity-20">⊹</div>
+            <p style="font-family:var(--display);font-size:0.95rem;color:var(--body-color);">اختر سيناريو من القائمة لبدء الحوار</p>
+            <p style="font-family:var(--mono);font-size:0.7rem;margin-top:0.6rem;opacity:0.6;letter-spacing:0.05em;">الوكلاء يحللون البيانات الفعلية ويتفاوضون قبل القرار</p>
+        </div>
+        <div id="feed-messages" class="space-y-3"></div>
+        <div id="feed-typing" class="hidden"></div>
+    </div>
+</div>

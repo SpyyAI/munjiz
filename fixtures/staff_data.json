@@ -1,0 +1,9 @@
+[
+  {"employee_id": "E001", "name_ar": "يوسف الحربي", "role": "senior_teller", "counter": "1", "status": "active", "avg_service_time_min": 4.2, "performance_score": 4.8, "customers_served_today": 31, "experience_years": 8},
+  {"employee_id": "E002", "name_ar": "ريم الدوسري", "role": "teller", "counter": "2", "status": "active", "avg_service_time_min": 5.1, "performance_score": 4.5, "customers_served_today": 27, "experience_years": 4},
+  {"employee_id": "E003", "name_ar": "خالد الغامدي", "role": "teller", "counter": "3", "status": "on_break", "avg_service_time_min": 5.7, "performance_score": 4.1, "customers_served_today": 22, "experience_years": 3},
+  {"employee_id": "E004", "name_ar": "سارة العنزي", "role": "teller", "counter": "4", "status": "active", "avg_service_time_min": 4.8, "performance_score": 4.6, "customers_served_today": 29, "experience_years": 5},
+  {"employee_id": "E005", "name_ar": "بدر القحطاني", "role": "teller", "counter": "5", "status": "active", "avg_service_time_min": 5.5, "performance_score": 4.0, "customers_served_today": 24, "experience_years": 2},
+  {"employee_id": "E006", "name_ar": "لينا الشهري", "role": "relationship_manager", "counter": "6", "status": "active", "avg_service_time_min": 12.4, "performance_score": 4.9, "customers_served_today": 8, "experience_years": 7},
+  {"employee_id": "E007", "name_ar": "ماجد الزهراني", "role": "branch_manager", "counter": "", "status": "active", "avg_service_time_min": 0.0, "performance_score": 5.0, "customers_served_today": 0, "experience_years": 12}
+]

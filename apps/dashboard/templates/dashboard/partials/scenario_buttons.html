@@ -1,0 +1,41 @@
+<!-- Scenario triggers (editorial style) -->
+<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1rem;">
+    <div class="flex items-center justify-between mb-4">
+        <span class="eyebrow">السيناريوهات</span>
+        <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;">7 SCENARIOS</span>
+    </div>
+    <div class="flex flex-col" style="gap:0.5rem;">
+        {% for s in scenarios %}
+        <button @click="triggerScenario('{{ s.scenario_id }}')"
+                :disabled="isPlaying"
+                :class="activeScenario === '{{ s.scenario_id }}' ? 'scenario-active' : ''"
+                class="scenario-btn w-full text-right transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+                style="background:rgba(10,10,20,0.5);border:1px solid var(--hairline);border-radius:10px;padding:0.7rem 0.85rem;">
+            <div class="flex items-start justify-between gap-2">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-base">{{ s.icon }}</span>
+                        <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.05em;direction:ltr;">{{ s.scenario_id }}</span>
+                        {% if s.is_recommended %}
+                        <span style="font-family:var(--mono);font-size:0.6rem;background:#00C85322;color:#00C853;padding:1px 5px;border-radius:3px;font-weight:700;letter-spacing:0.05em;">REC</span>
+                        {% endif %}
+                        {% if s.tension_level == 'critical' %}
+                        <span style="font-family:var(--mono);font-size:0.6rem;background:#FF174422;color:#FF1744;padding:1px 5px;border-radius:3px;font-weight:700;letter-spacing:0.05em;">CRIT</span>
+                        {% elif s.tension_level == 'high' %}
+                        <span style="font-family:var(--mono);font-size:0.6rem;background:#FF6D0022;color:#FF6D00;padding:1px 5px;border-radius:3px;font-weight:700;letter-spacing:0.05em;">HIGH</span>
+                        {% endif %}
+                    </div>
+                    <div class="text-xs leading-snug" style="font-family:var(--display);color:var(--ink);font-weight:500;">{{ s.name_ar }}</div>
+                    <div style="font-family:var(--mono);font-size:0.65rem;color:var(--dim);margin-top:0.2rem;direction:ltr;text-align:right;">{{ s.time }}</div>
+                </div>
+                <span style="color:var(--muted);transition:transform 0.2s;" class="group-hover:translate-x-[-3px] shrink-0">←</span>
+            </div>
+        </button>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.scenario-btn:hover { border-color: var(--border) !important; background: var(--card-2) !important; }
+.scenario-btn.scenario-active { border-color: #00C853 !important; background: rgba(0,200,83,0.06) !important; }
+</style>

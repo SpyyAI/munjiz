@@ -1,0 +1,62 @@
+[
+  {
+    "customer_id": "C001", "name_ar": "محمد بن عبدالعزيز السديري", "alias": "أبو محمد",
+    "segment": "vip", "phone": "+966-50-1234567",
+    "annual_value_sar": "8500000.00", "avg_monthly_transactions": 18,
+    "preferred_services": ["تحويلات دولية", "استشارات استثمارية"],
+    "visits_last_6m": 22, "wait_tolerance_min": 5,
+    "satisfaction_score": 4.7, "nps_score": 9, "churn_risk": "very_low",
+    "preferred_channel": "WhatsApp", "customer_since": "2014-03-12",
+    "notes": "يفضل الاستقبال من المدير شخصياً. دائماً معه قهوة سعودية."
+  },
+  {
+    "customer_id": "C002", "name_ar": "نورة بنت سعد العتيبي", "alias": "أم ريان",
+    "segment": "standard", "phone": "+966-55-9876543",
+    "annual_value_sar": "120000.00", "avg_monthly_transactions": 6,
+    "preferred_services": ["إيداع راتب", "تحويلات محلية"],
+    "visits_last_6m": 8, "wait_tolerance_min": 15,
+    "satisfaction_score": 4.2, "nps_score": 7, "churn_risk": "low",
+    "preferred_channel": "SMS", "customer_since": "2019-08-04",
+    "notes": "تأتي يوم الراتب عادة. عملاء أصحاء."
+  },
+  {
+    "customer_id": "C003", "name_ar": "عبدالرحمن بن فهد العمري", "alias": "أبو فهد",
+    "segment": "premium", "phone": "+966-56-5551234",
+    "annual_value_sar": "640000.00", "avg_monthly_transactions": 11,
+    "preferred_services": ["قروض عقارية", "بطاقات ائتمان"],
+    "visits_last_6m": 4, "wait_tolerance_min": 10,
+    "satisfaction_score": 3.4, "nps_score": 4, "churn_risk": "high",
+    "preferred_channel": "Phone", "customer_since": "2017-11-21",
+    "notes": "⚠️ شكاوى متكررة آخر 3 أشهر. تأخر في الرد على رسائله. مرشح للتسرب."
+  },
+  {
+    "customer_id": "C004", "name_ar": "خالد بن عبدالله الراشد", "alias": "أبو خالد",
+    "segment": "vip", "phone": "+966-50-7778888",
+    "annual_value_sar": "12300000.00", "avg_monthly_transactions": 24,
+    "preferred_services": ["إدارة محافظ", "تحويلات دولية", "حسابات شركات"],
+    "visits_last_6m": 31, "wait_tolerance_min": 5,
+    "satisfaction_score": 4.9, "nps_score": 10, "churn_risk": "very_low",
+    "preferred_channel": "Direct manager", "customer_since": "2010-01-15",
+    "notes": "أهم عميل. صديق المدير ماجد. لا يقف بالطابور أبداً."
+  },
+  {
+    "customer_id": "C005", "name_ar": "فاطمة بنت محمد العسيري", "alias": "أم عبدالله",
+    "segment": "standard", "phone": "+966-53-2223333",
+    "annual_value_sar": "95000.00", "avg_monthly_transactions": 5,
+    "preferred_services": ["استعلام رصيد", "إيداع نقدي"],
+    "visits_last_6m": 11, "wait_tolerance_min": 20,
+    "satisfaction_score": 4.0, "nps_score": 6, "churn_risk": "low",
+    "preferred_channel": "Branch", "customer_since": "2021-05-30",
+    "notes": "تفضل الزيارة الشخصية. أغلب معاملاتها بسيطة، قابلة للكيوسك."
+  },
+  {
+    "customer_id": "C006", "name_ar": "سعود بن طلال الهذلي", "alias": "أبو يوسف",
+    "segment": "premium", "phone": "+966-54-4445555",
+    "annual_value_sar": "780000.00", "avg_monthly_transactions": 14,
+    "preferred_services": ["قروض شخصية", "تأمين"],
+    "visits_last_6m": 7, "wait_tolerance_min": 12,
+    "satisfaction_score": 4.4, "nps_score": 8, "churn_risk": "low",
+    "preferred_channel": "WhatsApp", "customer_since": "2018-09-17",
+    "notes": "عميل ولي. مهتم بمنتجات استثمارية جديدة."
+  }
+]

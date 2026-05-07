@@ -1,0 +1,71 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div x-data="munjizDashboard()" class="min-h-screen flex flex-col">
+
+    <!-- ============ HEADER ============ -->
+    <header class="munjiz-header sticky top-0 z-50">
+        <div class="max-w-[1800px] mx-auto px-6 py-2 flex items-center justify-between gap-4" style="min-height:140px;">
+            <a href="/static/landing.html" class="munjiz-logo flex items-center gap-3 group" aria-label="مُنجز Branch AI">
+                <img src="{% static 'munjiz-logo.webp' %}" data-logo alt="Munjiz" class="block transition-opacity group-hover:opacity-85" style="height:120px;width:auto;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--muted);letter-spacing:0.14em;font-weight:600;border-right:1px solid var(--border);padding-right:0.7rem;line-height:1;">BRANCH&nbsp;AI</span>
+            </a>
+
+            <div class="flex items-center gap-4 text-xs text-munjiz-muted">
+                <span class="hidden md:inline" style="color:var(--muted);font-family:'IBM Plex Sans Arabic',sans-serif;">فرع حي العليا — الرياض · يوم خميس · نهاية الشهر</span>
+                <span style="color:var(--border)">|</span>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full" :class="wsConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'"></span>
+                    <span x-text="wsConnected ? 'متصل' : 'منقطع'" style="font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;"></span>
+                </div>
+                <span style="color:var(--border)">|</span>
+                <span x-text="currentTime" style="font-family:'JetBrains Mono',monospace;color:var(--body-color);"></span>
+                <span style="color:var(--border)">|</span>
+                <a href="/static/landing.html" class="munjiz-back" title="العودة للموقع">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--gold);letter-spacing:0.06em;">← munjiz.ai</span>
+                </a>
+                <button id="themeToggle" class="theme-btn" aria-label="تبديل المظهر" title="تبديل المظهر">
+                    <span class="icon-dark" aria-hidden="true">☾</span>
+                    <span class="icon-light" aria-hidden="true">☀</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============ AGENT STATUS BAR ============ -->
+    {% include 'dashboard/partials/agent_cards.html' %}
+
+    <!-- ============ MAIN GRID ============ -->
+    <main class="flex-1 max-w-[1800px] mx-auto w-full px-6 py-6 grid grid-cols-12 gap-6">
+
+        <!-- LEFT: Scenario buttons + Agent network -->
+        <aside class="col-span-3 space-y-6">
+            {% include 'dashboard/partials/scenario_buttons.html' %}
+            {% include 'dashboard/partials/agent_network.html' %}
+        </aside>
+
+        <!-- CENTER: Live message feed -->
+        <section class="col-span-6">
+            {% include 'dashboard/partials/message_feed.html' %}
+        </section>
+
+        <!-- RIGHT: Metrics + Data Editor -->
+        <aside class="col-span-3 space-y-6">
+            {% include 'dashboard/partials/metrics_sidebar.html' %}
+            {% include 'dashboard/partials/data_editor.html' %}
+        </aside>
+
+    </main>
+
+    <!-- ============ FOOTER DISCLAIMER ============ -->
+    <footer style="border-top:1px solid var(--hairline);padding:1rem 1.5rem;background:rgba(5,5,9,0.5);">
+        <div class="max-w-[1800px] mx-auto flex items-center justify-between flex-wrap gap-3" style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.05em;">
+            <span>سيناريو توضيحي · البيانات محاكاة واقعية</span>
+            <span style="color:var(--gold);">⚠ في مرحلة التجربة التنظيمية · غير مرخّصة من ساما حالياً</span>
+            <span>Powered by 5 LLMs via OpenRouter · Made in Riyadh</span>
+        </div>
+    </footer>
+
+</div>
+{% endblock %}

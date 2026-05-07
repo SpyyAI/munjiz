@@ -1,0 +1,47 @@
+<!-- Agent status bar — editorial cards with hairline borders -->
+<div style="border-bottom:1px solid var(--hairline);background:var(--strip-bg);">
+    <div class="max-w-[1800px] mx-auto px-6 py-5">
+        <div class="flex items-center justify-between mb-3">
+            <span class="eyebrow">الوكلاء — الحالة الحيّة</span>
+            <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;">5 / 5 ACTIVE</span>
+        </div>
+        <div class="grid grid-cols-5 gap-3">
+            {% for agent in agents %}
+            <div class="agent-card relative overflow-hidden p-3 transition-all duration-300"
+                 data-agent-type="{{ agent.agent_type }}"
+                 style="background:var(--card);border:1px solid var(--border);border-radius:12px;"
+                 :style="agentStatuses['{{ agent.agent_type }}']?.status === 'thinking' ? 'background:var(--card);border:1px solid {{ agent.color }};box-shadow: 0 0 0 1px {{ agent.color }}33, 0 0 32px {{ agent.color }}30;' : 'background:var(--card);border:1px solid var(--border);'">
+
+                <!-- Color stripe -->
+                <div class="absolute top-0 right-0 w-[3px] h-full" style="background: {{ agent.color }};"></div>
+
+                <div class="flex items-center gap-3">
+                    <div class="relative shrink-0 agent-disc"
+                         style="--c: {{ agent.color }}; width:42px; height:42px; border-radius:50%; background: radial-gradient(circle at 30% 30%, {{ agent.color }}, {{ agent.color }}DD 60%, {{ agent.color }}99); box-shadow: 0 0 0 1px {{ agent.color }}55, inset 0 1px 0 rgba(255,255,255,0.15);"
+                         :style="agentStatuses['{{ agent.agent_type }}']?.status === 'thinking' ? '--c: {{ agent.color }}; width:42px; height:42px; border-radius:50%; background: radial-gradient(circle at 30% 30%, {{ agent.color }}, {{ agent.color }}DD 60%, {{ agent.color }}99); box-shadow: 0 0 0 2px {{ agent.color }}, inset 0 1px 0 rgba(255,255,255,0.15), 0 0 24px {{ agent.color }}66;' : ''">
+                        <span class="absolute bottom-0 left-0 w-[10px] h-[10px] rounded-full border-2"
+                              style="border-color:var(--card);"
+                              :class="agentStatuses['{{ agent.agent_type }}']?.status === 'thinking' ? 'animate-pulse bg-yellow-400' : 'bg-green-400'"></span>
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-baseline gap-2 mb-0.5">
+                            <span class="font-bold text-sm truncate" style="font-family:var(--display);color:var(--ink);">{{ agent.name_ar }}</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded-sm font-bold tracking-tight"
+                                  style="background:{{ agent.color }}1A;color:{{ agent.color }};font-family:var(--mono);direction:ltr;border:1px solid {{ agent.color }}33;"
+                                  title="{{ agent.model_name }} — T={{ agent.temperature }} — {{ agent.model_rationale }}">
+                                {{ agent.model_label }}
+                            </span>
+                        </div>
+                        <div class="text-[10px] truncate" style="color:var(--muted);font-family:var(--mono);letter-spacing:0.04em;">{{ agent.role_ar }}</div>
+                        <div class="text-[10px] mt-1 truncate transition-opacity"
+                             :class="agentStatuses['{{ agent.agent_type }}']?.current_task ? 'opacity-100' : 'opacity-60'"
+                             x-text="agentStatuses['{{ agent.agent_type }}']?.current_task || 'خامل · جاهز'"
+                             :style="agentStatuses['{{ agent.agent_type }}']?.status === 'thinking' ? 'color: {{ agent.color }};' : 'color:var(--body-color);'"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
