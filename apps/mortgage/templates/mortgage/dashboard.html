@@ -1,0 +1,1801 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar-SA" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منجِز · تقييم القرض العقاري الأوّلي (Demo)</title>
+
+<script>
+/* No-FOUC theme init */
+(function(){
+  try {
+    var t = localStorage.getItem('munjiz-theme');
+    if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+:root, [data-theme="dark"] {
+  --bg:#0C0E1B; --bg-deep:#06070F; --card:#14142A; --card-2:#1A1A33;
+  --border:#252545; --hairline:rgba(255,255,255,0.06);
+  --ink:#FFFFFF; --body:#A0A0B8; --muted:#6A6A85; --dim:#4A4A65;
+  --gold:#C9A876; --gold-bg:rgba(201,168,118,0.12);
+  --header-bg:#0C0E1B; --body-bg:#0C0E1B;
+  --analytics:#FF1744; --operations:#FF6D00; --customer:#2979FF;
+  --queue:#AA00FF; --orchestrator:#00C853;
+  --display:'IBM Plex Sans Arabic','Tajawal',sans-serif;
+  --body-font:'Tajawal','IBM Plex Sans Arabic',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+[data-theme="light"] {
+  --bg:#F5F1EA; --bg-deep:#EEE8DC; --card:#FFFFFF; --card-2:#F5EFDD;
+  --border:#D0C7B0; --hairline:rgba(26,26,31,0.08);
+  --ink:#1A1A1F; --body:#5C5950; --muted:#928D7E; --dim:#A89E83;
+  --gold:#B8945E; --gold-bg:rgba(184,148,94,0.12);
+  --header-bg:#F5F1EA; --body-bg:#F5F1EA;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body{
+  background: var(--body-bg); color: var(--body);
+  font-family: var(--body-font); font-size: 15px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+a { color: var(--gold); text-decoration: none; }
+button { font: inherit; cursor: pointer; border: 0; background: 0; color: inherit; }
+input, select, textarea { font: inherit; color: var(--ink); }
+
+h1,h2,h3,h4 { font-family: var(--display); color: var(--ink); font-weight: 600; line-height: 1.2; }
+h1 { font-size: clamp(1.5rem, 2.4vw, 2rem); font-weight: 700; }
+h2 { font-size: clamp(1.25rem, 2vw, 1.625rem); }
+h3 { font-size: 1.0625rem; font-weight: 600; }
+
+.eyebrow {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--muted); direction: ltr; text-align: right; display: inline-block;
+}
+.mono { font-family: var(--mono); }
+.num  { font-family: var(--mono); font-feature-settings: "lnum"; }
+
+/* ── Header ── */
+.muz-header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--header-bg); border-bottom: 1px solid var(--hairline);
+  transition: background 0.3s, border-color 0.3s;
+}
+.muz-header-inner {
+  max-width: 1500px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1.5rem; gap: 1rem;
+}
+.muz-logo { display: flex; align-items: center; gap: 0.6rem; }
+.muz-logo img { height: 64px; width: auto; }
+.muz-logo .tag {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.14em; color: var(--muted);
+  border-right: 1px solid var(--border); padding-right: 0.65rem;
+}
+.muz-header-meta {
+  display: flex; align-items: center; gap: 1rem;
+  font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+}
+.theme-btn {
+  width: 34px; height: 34px; border-radius: 999px;
+  border: 1px solid var(--border); background: transparent; color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, transform 0.4s;
+}
+.theme-btn:hover { border-color: var(--gold); transform: rotate(20deg); }
+.back-link {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+  padding: 0.4rem 0.85rem; border-radius: 999px;
+  border: 1px solid var(--border); transition: border-color 0.2s, color 0.2s;
+}
+.back-link:hover { border-color: var(--gold); color: var(--ink); }
+[data-theme="dark"]  .theme-btn .icon-light { display: none; }
+[data-theme="light"] .theme-btn .icon-dark  { display: none; }
+
+/* ── Main shell ── */
+.shell { max-width: 1500px; margin: 0 auto; padding: 1.25rem 1.5rem 4rem; }
+
+/* ── Stepper ── */
+.stepper {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 1.5rem; padding: 0.85rem 1rem;
+  background: var(--card); border: 1px solid var(--hairline); border-radius: 12px;
+}
+.stepper .step-pill {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.85rem; border-radius: 999px;
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 600;
+  color: var(--muted); background: var(--bg-deep);
+  border: 1px solid var(--hairline);
+}
+.stepper .step-pill .num { color: var(--gold); font-weight: 700; }
+.stepper .step-pill.active { color: var(--ink); border-color: var(--gold); }
+.stepper .step-pill.done   { color: var(--orchestrator); border-color: var(--orchestrator); }
+.stepper .arr { color: var(--dim); font-family: var(--mono); }
+
+/* ── Two-column layout for intake ── */
+.intake-grid {
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1.25rem;
+}
+@media (max-width: 1024px) { .intake-grid { grid-template-columns: 1fr; } }
+
+/* ── Cards ── */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1.4rem;
+  position: relative;
+}
+.card-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap; }
+.card h2 { color: var(--ink); }
+
+/* ── Form fields ── */
+.field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.85rem; }
+.field label {
+  font-family: var(--mono); font-size: 0.65rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.1em; direction: ltr; text-align: right;
+}
+.field input, .field select, .field textarea {
+  background: var(--bg-deep); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 0.85rem; color: var(--ink);
+  font-size: 0.9rem; transition: border-color 0.2s, background 0.2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--orchestrator); background: var(--card-2);
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+@media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+
+/* ── Checkbox row (Khalid screening) ── */
+.check-row {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.6rem 0.85rem; background: var(--bg-deep);
+  border: 1px solid var(--hairline); border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.check-row:hover { border-color: var(--gold); }
+.check-row input[type="checkbox"] {
+  width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--orchestrator);
+  margin-top: 2px;
+}
+.check-row .check-text { font-size: 0.85rem; color: var(--ink); line-height: 1.5; }
+.check-row .check-text small { display: block; color: var(--muted); font-size: 0.72rem; margin-top: 0.2rem; }
+
+/* ── Document upload ── */
+.upload-grid { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem; }
+.upload-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  padding: 0.75rem 1rem; background: var(--bg-deep);
+  border: 1px dashed var(--border); border-radius: 8px;
+  transition: border-color 0.2s;
+}
+.upload-row:hover { border-color: var(--gold); }
+.upload-row.uploaded { border-style: solid; border-color: var(--orchestrator); }
+.upload-row .label-block .name { font-size: 0.9rem; color: var(--ink); font-weight: 500; }
+.upload-row .label-block .hint { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+.upload-row .file-trigger {
+  font-family: var(--mono); font-size: 0.7rem;
+  background: var(--card-2); padding: 0.45rem 0.85rem; border-radius: 6px;
+  color: var(--gold); border: 1px solid var(--gold);
+  cursor: pointer; transition: background 0.2s;
+}
+.upload-row .file-trigger:hover { background: var(--gold); color: var(--bg); }
+.upload-row .uploaded-tag { font-family: var(--mono); font-size: 0.7rem; color: var(--orchestrator); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 1.5rem; border-radius: 999px;
+  font-weight: 600; font-size: 0.95rem;
+  transition: transform 0.2s, background 0.2s, opacity 0.2s;
+}
+.btn-primary {
+  background: var(--orchestrator); color: var(--bg);
+}
+.btn-primary:hover { background: white; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-ghost {
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--gold); }
+
+/* ── Demo applicants pre-fill ── */
+.preset-row {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;
+}
+.preset {
+  padding: 0.5rem 0.85rem; background: var(--bg-deep);
+  border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  font-size: 0.82rem;
+}
+.preset:hover { border-color: var(--gold); }
+.preset.selected { border-color: var(--orchestrator); background: var(--card-2); }
+.preset .pre-name { color: var(--ink); font-weight: 600; }
+.preset .pre-meta { color: var(--muted); font-family: var(--mono); font-size: 0.7rem; margin-top: 0.15rem; }
+
+/* ── Review timeline ── */
+.review-stack { display: flex; flex-direction: column; gap: 1rem; }
+.review-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1.4rem;
+  border-right: 4px solid var(--col, var(--border));
+  transition: border-color 0.3s, transform 0.4s;
+}
+.review-card.active { box-shadow: 0 0 0 1px var(--col), 0 0 32px rgba(0,0,0,0.3); }
+.review-card .head { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.85rem; }
+.review-card .avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--col); flex-shrink: 0;
+  background: radial-gradient(circle at 30% 30%, var(--col), var(--col) 60%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+  position: relative;
+}
+.review-card .avatar::after {
+  content: ""; position: absolute; bottom: 0; left: 0;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--muted);
+  border: 2px solid var(--card);
+}
+.review-card.active .avatar::after { background: #FFC107; animation: pulse 1.4s infinite; }
+.review-card.done .avatar::after   { background: var(--orchestrator); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.review-card .titles { flex: 1; }
+.review-card .titles h3 { color: var(--ink); font-size: 1.0625rem; }
+.review-card .titles .role { color: var(--muted); font-size: 0.78rem; font-family: var(--mono); }
+.review-card .badge {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 700;
+  padding: 0.2rem 0.55rem; border-radius: 4px;
+  background: rgba(0,200,83,0.12); color: var(--orchestrator);
+  letter-spacing: 0.06em;
+}
+.review-card .narrative {
+  background: var(--bg-deep); border: 1px solid var(--hairline);
+  border-radius: 8px; padding: 0.85rem 1rem;
+  font-size: 0.9rem; line-height: 1.7; color: var(--body);
+  white-space: pre-wrap; max-height: 320px; overflow-y: auto;
+}
+.review-card .narrative.collapsed { max-height: 110px; }
+.review-card .narrative strong { color: var(--ink); }
+.review-card .findings {
+  margin-top: 0.85rem; padding-top: 0.85rem;
+  border-top: 1px dashed var(--hairline);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+.finding-pill {
+  background: var(--bg-deep); border: 1px solid var(--hairline);
+  border-radius: 8px; padding: 0.55rem 0.75rem;
+}
+.finding-pill .l {
+  font-family: var(--mono); font-size: 0.6rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.1em; direction: ltr; text-align: right;
+}
+.finding-pill .v { font-size: 0.85rem; color: var(--ink); font-weight: 500; margin-top: 0.25rem; }
+.review-card .compliance {
+  margin-top: 0.85rem; padding-top: 0.85rem;
+  border-top: 1px dashed var(--hairline);
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+  background: rgba(201,168,118,0.04); border: 1px solid rgba(201,168,118,0.2);
+  border-radius: 8px; padding: 0.6rem 0.85rem;
+}
+.review-card .compliance .label { color: var(--gold); font-weight: 700; letter-spacing: 0.1em; }
+
+/* ── Final report ── */
+.final-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem 1.75rem;
+  margin-top: 1.5rem;
+}
+.final-card .rec-pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.25rem; border-radius: 999px;
+  font-weight: 700; font-size: 1.0625rem;
+  font-family: var(--display);
+  margin-bottom: 1.25rem;
+}
+.rec-pill.recommend_initial_approval        { background: rgba(0,200,83,0.16); color: var(--orchestrator); border: 1px solid var(--orchestrator); }
+.rec-pill.recommend_approval_with_conditions { background: rgba(255,193,7,0.16);  color: #FFC107; border: 1px solid #FFC107; }
+.rec-pill.needs_human_review                 { background: rgba(255,193,7,0.16);  color: #FFC107; border: 1px solid #FFC107; }
+.rec-pill.not_recommended                    { background: rgba(255,23,68,0.16);  color: var(--analytics); border: 1px solid var(--analytics); }
+
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; }
+.summary-card {
+  background: var(--bg-deep); border: 1px solid var(--hairline);
+  border-radius: 10px; padding: 0.85rem 1rem;
+  border-right: 3px solid var(--col);
+}
+.summary-card .name {
+  font-family: var(--mono); font-size: 0.7rem; color: var(--col);
+  font-weight: 700; letter-spacing: 0.08em; direction: ltr; text-align: right;
+}
+.summary-card .text { font-size: 0.85rem; color: var(--ink); margin-top: 0.4rem; line-height: 1.55; }
+
+.condition-list { list-style: none; padding: 0; margin: 0; }
+.condition-list li {
+  position: relative; padding: 0.5rem 1.5rem 0.5rem 0;
+  border-bottom: 1px dashed var(--hairline);
+  color: var(--ink); font-size: 0.9rem;
+}
+.condition-list li::before {
+  content: "▸"; position: absolute; right: 0;
+  color: var(--gold); font-family: var(--mono);
+}
+
+/* ── Empty state ── */
+.empty {
+  text-align: center; padding: 4rem 2rem; color: var(--muted);
+}
+.empty .glyph { font-size: 2.5rem; opacity: 0.3; margin-bottom: 0.75rem; }
+
+::selection { background: var(--gold); color: var(--bg); }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ── Command Center (static, real-time risk dashboard) ─────────────────── */
+:root {
+  --safe:    #00C853;
+  --warn:    #FFC107;
+  --risk:    #FF1744;
+  --info:    #2979FF;
+  --pending: #6A6A85;
+}
+
+.cmd-center {
+  position: relative;
+  background: linear-gradient(135deg, var(--card) 0%, var(--card-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem 1.5rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.cmd-center::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 95% -10%, rgba(0,200,83,0.07), transparent 55%),
+    radial-gradient(ellipse at -10% 110%, rgba(201,168,118,0.06), transparent 55%);
+  border-radius: 16px;
+}
+.cmd-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 1.25rem; position: relative; gap: 1rem; flex-wrap: wrap;
+}
+.cmd-head h3 {
+  font-size: 0.95rem; font-weight: 600; color: var(--ink);
+  display: flex; align-items: center; gap: 0.55rem;
+}
+.cmd-head .live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--safe); box-shadow: 0 0 8px var(--safe);
+  animation: cmd-blink 1.4s infinite;
+}
+@keyframes cmd-blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+.cmd-center[data-frozen="true"] .live-dot { animation: none; opacity: 0.5; }
+.cmd-head .cmd-status {
+  font-family: var(--mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em;
+}
+
+/* Three-column grid: agents | metrics | docs */
+.cmd-grid {
+  display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 1.25rem;
+  position: relative; align-items: stretch;
+}
+@media (max-width: 1024px) { .cmd-grid { grid-template-columns: 1fr; } }
+
+.cmd-col-h {
+  font-family: var(--body-font); font-size: 0.78rem; font-weight: 700;
+  color: var(--muted); letter-spacing: 0.02em;
+  margin-bottom: 0.55rem; text-align: right;
+}
+
+/* ─ Agent column (left) ─ */
+.cmd-agents { display: flex; flex-direction: column; gap: 0.5rem; }
+.cmd-node {
+  position: relative;
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-deep); border: 1px solid var(--hairline);
+  border-right: 3px solid var(--col, var(--border));
+  border-radius: 10px;
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+.cmd-node[data-state="thinking"] {
+  background: var(--card-2);
+  box-shadow: 0 0 0 1px var(--col), 0 0 16px rgba(255,193,7,0.08);
+}
+.cmd-node[data-state="done"] { border-right-width: 4px; }
+.cmd-node .av {
+  width: 30px; height: 30px; border-radius: 50%;
+  flex-shrink: 0; background: var(--col, var(--gold));
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.82rem; font-weight: 700;
+  position: relative;
+}
+.cmd-node[data-state="thinking"] .av::after {
+  content: ""; position: absolute; inset: -3px; border-radius: 50%;
+  border: 1.5px solid var(--col); opacity: 0;
+  animation: cmd-ring 1.6s ease-out infinite;
+}
+@keyframes cmd-ring { 0% { opacity: 0.7; transform: scale(0.9); } 100% { opacity: 0; transform: scale(1.55); } }
+.cmd-node .nd-body { flex: 1; min-width: 0; }
+.cmd-node .nm { font-size: 0.84rem; font-weight: 600; color: var(--ink); }
+.cmd-node .conc {
+  font-family: var(--mono); font-size: 0.66rem; color: var(--muted);
+  margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cmd-node[data-state="done"] .conc { color: var(--col); }
+.cmd-node .stat-ic {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg-deep); border: 1px solid var(--dim);
+  font-size: 0.7rem; color: var(--dim); flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.cmd-node[data-state="thinking"] .stat-ic {
+  background: rgba(255,193,7,0.16); color: var(--warn); border-color: var(--warn);
+  animation: cmd-spin 2s linear infinite;
+}
+@keyframes cmd-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.cmd-node[data-state="done"] .stat-ic {
+  background: var(--col); color: white; border-color: var(--col);
+  box-shadow: 0 0 8px var(--col);
+}
+
+/* ─ Metrics column (center) ─ */
+.cmd-metrics {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+  align-content: start;
+}
+.cmd-met {
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.55rem 0.75rem; background: var(--bg-deep);
+  border: 1px solid var(--hairline); border-radius: 8px;
+  border-right: 3px solid var(--col, var(--pending));
+  transition: border-color 0.3s, background 0.3s;
+}
+.cmd-met .met-ic { font-size: 1rem; flex-shrink: 0; opacity: 0.85; }
+.cmd-met .met-body { flex: 1; min-width: 0; }
+.cmd-met .met-l {
+  font-family: var(--body-font); font-size: 0.7rem; color: var(--muted);
+  text-align: right;
+}
+.cmd-met .met-v {
+  font-size: 0.92rem; color: var(--ink); font-weight: 600; margin-top: 1px;
+  display: flex; align-items: baseline; gap: 0.3rem;
+}
+.cmd-met .met-v .num { font-family: var(--mono); }
+.cmd-met .met-v .unit { font-size: 0.7rem; color: var(--muted); font-weight: 400; }
+.cmd-met .met-flag {
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.cmd-met[data-band="safe"]    { --col: var(--safe);    }
+.cmd-met[data-band="warn"]    { --col: var(--warn);    }
+.cmd-met[data-band="risk"]    { --col: var(--risk);    }
+.cmd-met[data-band="info"]    { --col: var(--info);    }
+.cmd-met[data-band="pending"] { --col: var(--pending); }
+.cmd-met[data-band="safe"] .met-flag { color: var(--safe); }
+.cmd-met[data-band="warn"] .met-flag { color: var(--warn); }
+.cmd-met[data-band="risk"] .met-flag { color: var(--risk); }
+.cmd-met[data-band="info"] .met-flag { color: var(--info); }
+.cmd-met[data-band="pending"] .met-flag { color: var(--pending); opacity: 0.6; }
+
+/* ─ Docs column (right) ─ */
+.cmd-docs { display: flex; flex-direction: column; gap: 0.4rem; }
+.cmd-doc-chip {
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--bg-deep); border: 1px solid var(--hairline);
+  border-radius: 8px;
+  font-family: var(--body-font); font-size: 0.78rem; color: var(--ink);
+}
+.cmd-doc-chip .doc-ic { font-size: 0.95rem; flex-shrink: 0; }
+.cmd-doc-chip .doc-name { flex: 1; }
+.cmd-doc-chip .doc-stat {
+  font-family: var(--mono); font-size: 0.65rem;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cmd-doc-chip[data-up="true"] {
+  border-color: rgba(0,200,83,0.4);
+}
+.cmd-doc-chip[data-up="true"] .doc-stat {
+  background: var(--safe); color: white;
+}
+.cmd-doc-chip[data-up="false"] .doc-stat {
+  background: var(--bg); border: 1px dashed var(--dim); color: var(--muted);
+}
+
+/* ─ Final recommendation row + progress bar ─ */
+.cmd-final {
+  margin-top: 1.25rem; padding-top: 1rem;
+  border-top: 1px dashed var(--hairline);
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.cmd-final .label-block {
+  font-family: var(--mono); font-size: 0.65rem; color: var(--gold);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.cmd-final-pill {
+  font-family: var(--display); font-weight: 700; font-size: 0.95rem;
+  padding: 0.5rem 1.15rem; border-radius: 999px;
+  border: 1.5px solid var(--col, var(--pending));
+  background: var(--pill-bg, rgba(106,106,133,0.12));
+  color: var(--col, var(--pending));
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.cmd-final-pill[data-rec="recommend_initial_approval"]         { --col: var(--safe); --pill-bg: rgba(0,200,83,0.14); }
+.cmd-final-pill[data-rec="recommend_approval_with_conditions"] { --col: var(--warn); --pill-bg: rgba(255,193,7,0.14); }
+.cmd-final-pill[data-rec="needs_human_review"]                 { --col: var(--warn); --pill-bg: rgba(255,193,7,0.14); }
+.cmd-final-pill[data-rec="not_recommended"]                    { --col: var(--risk); --pill-bg: rgba(255,23,68,0.14); }
+.cmd-secondary-badge {
+  font-family: var(--body-font); font-size: 0.78rem; font-weight: 600;
+  padding: 0.4rem 0.85rem; border-radius: 999px;
+  background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.5);
+  color: var(--warn);
+}
+.cmd-reason {
+  margin-top: 0.6rem; padding: 0.55rem 0.85rem;
+  background: rgba(255,193,7,0.06); border-right: 3px solid var(--warn);
+  border-radius: 8px;
+  font-size: 0.85rem; color: var(--ink); line-height: 1.6;
+}
+.cmd-reason .lab { font-weight: 700; color: var(--warn); margin-left: 0.3rem; }
+.cmd-final-meta {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+  display: inline-flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
+}
+.cmd-final-meta .pip {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.25rem 0.55rem; background: var(--bg-deep);
+  border: 1px solid var(--hairline); border-radius: 999px;
+  color: var(--ink);
+}
+
+/* Phase progress bar */
+.cmd-progress {
+  margin-top: 0.85rem; display: flex; align-items: center; gap: 0.85rem;
+  font-family: var(--body-font); font-size: 0.78rem; color: var(--muted);
+}
+.cmd-progress .phases { display: flex; gap: 0.4rem; flex: 1; }
+.cmd-progress .ph {
+  flex: 1; height: 4px; border-radius: 999px;
+  background: var(--bg-deep); position: relative; overflow: hidden;
+}
+.cmd-progress .ph .fill {
+  position: absolute; inset: 0; transform-origin: right;
+  background: linear-gradient(90deg, var(--gold), var(--safe));
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.5s ease-out;
+}
+.cmd-progress .label { font-weight: 600; }
+
+/* ── Compact agent metric cards (replaces narrative-heavy review-card) ── */
+.agent-stack { display: flex; flex-direction: column; gap: 1rem; }
+.agent-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-right: 4px solid var(--col, var(--border));
+  border-radius: 14px; padding: 1rem 1.2rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.agent-card[data-tone="safe"]    { border-right-color: var(--safe); }
+.agent-card[data-tone="warn"]    { border-right-color: var(--warn); }
+.agent-card[data-tone="risk"]    { border-right-color: var(--risk); }
+.agent-card[data-tone="info"]    { border-right-color: var(--info); }
+.agent-card[data-tone="purple"]  { border-right-color: #AA00FF;     }
+.agent-card[data-tone="gold"]    { border-right-color: var(--gold); }
+.agent-card[data-state="thinking"] { box-shadow: 0 0 0 1px var(--col), 0 0 24px rgba(255,193,7,0.06); }
+
+.ag-h {
+  display: flex; align-items: center; gap: 0.7rem;
+  margin-bottom: 0.85rem;
+}
+.ag-h .av {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--col, var(--gold)); flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.95rem; font-weight: 700;
+}
+.ag-h .who { flex: 1; min-width: 0; }
+.ag-h .who .nm { font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+.ag-h .who .rl {
+  font-family: var(--mono); font-size: 0.65rem; color: var(--muted);
+  margin-top: 1px;
+}
+.ag-h .pill {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 700;
+  padding: 0.25rem 0.65rem; border-radius: 999px;
+  letter-spacing: 0.1em; border: 1px solid var(--hairline);
+}
+.ag-h .pill[data-state="idle"]     { background: var(--bg-deep); color: var(--muted); }
+.ag-h .pill[data-state="thinking"] { background: rgba(255,193,7,0.14); color: var(--warn); border-color: var(--warn); }
+.ag-h .pill[data-state="done"]     { background: rgba(0,200,83,0.14); color: var(--safe); border-color: var(--safe); }
+
+.ag-metrics {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.55rem; margin-bottom: 0.75rem;
+}
+.ag-met {
+  background: var(--bg-deep); border: 1px solid var(--hairline);
+  border-radius: 8px; padding: 0.55rem 0.7rem;
+  border-right: 2px solid var(--col, var(--pending));
+  display: flex; flex-direction: column; gap: 0.15rem;
+  position: relative;
+}
+.ag-met[data-band="safe"]    { --col: var(--safe); }
+.ag-met[data-band="warn"]    { --col: var(--warn); }
+.ag-met[data-band="risk"]    { --col: var(--risk); }
+.ag-met[data-band="info"]    { --col: var(--info); }
+.ag-met[data-band="pending"] { --col: var(--pending); }
+.ag-met .l {
+  font-family: var(--body-font); font-size: 0.7rem; color: var(--muted);
+  text-align: right;
+}
+.ag-met .v {
+  font-size: 0.9rem; color: var(--ink); font-weight: 600;
+  display: flex; align-items: baseline; gap: 0.3rem;
+}
+.ag-met .v .num { font-family: var(--mono); }
+.ag-met .v .unit { font-size: 0.7rem; color: var(--muted); font-weight: 400; }
+.ag-met .v .flag { font-size: 0.85rem; }
+.ag-met[data-band="safe"] .v .flag { color: var(--safe); }
+.ag-met[data-band="warn"] .v .flag { color: var(--warn); }
+.ag-met[data-band="risk"] .v .flag { color: var(--risk); }
+.ag-met[data-band="info"] .v .flag { color: var(--info); }
+
+.ag-conc {
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.55rem 0.75rem; background: var(--bg-deep);
+  border: 1px dashed var(--hairline); border-radius: 8px;
+  font-size: 0.85rem; color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.ag-conc .ic { font-size: 1rem; flex-shrink: 0; }
+.ag-conc[data-tone="safe"]   { border-color: rgba(0,200,83,0.45); border-style: solid; }
+.ag-conc[data-tone="warn"]   { border-color: rgba(255,193,7,0.45); border-style: solid; }
+.ag-conc[data-tone="risk"]   { border-color: rgba(255,23,68,0.45); border-style: solid; }
+.ag-conc[data-tone="info"]   { border-color: rgba(41,121,255,0.4);  border-style: solid; }
+.ag-conc[data-tone="purple"] { border-color: rgba(170,0,255,0.4);   border-style: solid; }
+.ag-conc[data-tone="gold"]   { border-color: rgba(201,168,118,0.45);border-style: solid; }
+.ag-conc[data-tone="pending"]{ color: var(--muted); }
+
+.ag-toggle {
+  font-family: var(--mono); font-size: 0.7rem; color: var(--gold);
+  background: transparent; border: 1px solid var(--hairline);
+  padding: 0.4rem 0.85rem; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+.ag-toggle:hover { border-color: var(--gold); }
+.ag-toggle .arr { transition: transform 0.2s; display: inline-block; }
+.ag-toggle[aria-expanded="true"] .arr { transform: rotate(180deg); }
+
+.ag-details {
+  margin-top: 0.85rem; padding-top: 0.85rem;
+  border-top: 1px dashed var(--hairline);
+}
+.ag-details .narrative-block {
+  background: var(--bg-deep); border: 1px solid var(--hairline);
+  border-radius: 8px; padding: 0.85rem 1rem;
+  font-size: 0.88rem; line-height: 1.7; color: var(--body);
+  white-space: pre-wrap; max-height: 320px; overflow-y: auto;
+}
+.ag-details .compliance {
+  margin-top: 0.85rem;
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+  background: rgba(201,168,118,0.04);
+  border: 1px solid rgba(201,168,118,0.2);
+  border-radius: 8px; padding: 0.6rem 0.85rem;
+}
+.ag-details .compliance .lab {
+  color: var(--gold); font-weight: 700; letter-spacing: 0.1em;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cmd-node[data-state="thinking"] .av::after,
+  .cmd-node[data-state="thinking"] .stat-ic,
+  .cmd-head .live-dot { animation: none !important; }
+}
+</style>
+</head>
+<body x-data="mortgageApp()" x-init="init()">
+
+<!-- ============ HEADER ============ -->
+<header class="muz-header">
+  <div class="muz-header-inner">
+    <a href="/" class="muz-logo" data-logo-link>
+      <img src="{% static 'munjiz-logo.webp' %}" alt="Munjiz" data-logo>
+    </a>
+    <div class="muz-header-meta">
+      <span style="color:var(--muted);">نظام تقييم القرض العقاري الأوّلي</span>
+      <a href="/landing/" class="back-link" title="العودة للموقع">← العودة للموقع</a>
+      <button id="themeToggle" class="theme-btn" aria-label="theme">
+        <span class="icon-dark">☾</span>
+        <span class="icon-light">☀</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ SHELL ============ -->
+<main class="shell">
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step-pill" :class="stage === 'intake' ? 'active' : (stage === 'review' || stage === 'report' ? 'done' : '')">
+      <span class="num">01</span> إدخال الطلب والمستندات
+    </div>
+    <span class="arr">←</span>
+    <div class="step-pill" :class="stage === 'review' ? 'active' : (stage === 'report' ? 'done' : '')">
+      <span class="num">02</span> مراجعة الوكلاء الخمسة
+    </div>
+    <span class="arr">←</span>
+    <div class="step-pill" :class="stage === 'report' ? 'active' : ''">
+      <span class="num">03</span> تقرير التوصية
+    </div>
+  </div>
+
+  <!-- ============================ STAGE 1: INTAKE ============================ -->
+  <section x-show="stage === 'intake'" x-transition>
+    <div class="intake-grid">
+
+      <!-- LEFT: Form -->
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <span class="eyebrow">إدخال الطلب</span>
+            <h2 style="margin-top:0.4rem;">بيانات المتقدّم والعقار</h2>
+          </div>
+          <span style="font-family:var(--mono); font-size:0.7rem; color:var(--muted);">طلب جديد</span>
+        </div>
+
+        <!-- Quick presets -->
+        <div>
+          <span class="eyebrow" style="margin-bottom:0.4rem; display:block;">تعبئة سريعة من ملف تجريبي</span>
+          <div class="preset-row">
+            <template x-for="a in applicants" :key="a.applicant_id">
+              <button type="button" class="preset" :class="form.applicant_id === a.applicant_id ? 'selected' : ''" @click="loadPreset(a)">
+                <div class="pre-name" x-text="a.name_ar"></div>
+                <div class="pre-meta" x-text="a.applicant_id + ' · راتب ' + Math.round(a.monthly_salary_sar).toLocaleString('ar-SA') + ' ر.س'"></div>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <hr style="border-color: var(--hairline); margin: 1rem 0;">
+
+        <h3 style="margin-bottom: 0.85rem; font-size: 0.95rem;">المتقدّم</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>الاسم</label>
+            <input type="text" x-model="form.name_ar" placeholder="مثال: محمد عبدالعزيز">
+          </div>
+          <div class="field">
+            <label>الجنسية</label>
+            <select x-model="form.nationality">
+              <option value="saudi">مواطن سعودي</option>
+              <option value="resident">مقيم</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>رقم الهوية</label>
+            <input type="text" x-model="form.national_id" placeholder="١٠٠٠٠٠٠٠٠٠" required maxlength="10" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label>العمر</label>
+            <input type="number" x-model.number="form.age" min="18" max="80">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>الراتب الشهري (ر.س)</label>
+            <input type="number" x-model.number="form.monthly_salary_sar">
+          </div>
+          <div class="field">
+            <label>الالتزامات الشهرية (ر.س)</label>
+            <input type="number" x-model.number="form.existing_monthly_obligations_sar">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>جهة العمل</label>
+            <input type="text" x-model="form.employer_name">
+          </div>
+          <div class="field">
+            <label>القطاع</label>
+            <select x-model="form.employer_sector">
+              <option value="government">حكومي</option>
+              <option value="private">قطاع خاص</option>
+              <option value="semi_government">شبه حكومي</option>
+              <option value="self_employed">عمل حر</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="margin: 1rem 0 0.85rem; font-size: 0.95rem;">القرض المطلوب</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>المبلغ (ر.س)</label>
+            <input type="number" x-model.number="form.requested_loan_sar">
+          </div>
+          <div class="field">
+            <label>المدّة (سنوات)</label>
+            <input type="number" x-model.number="form.requested_term_years">
+          </div>
+        </div>
+
+        <h3 style="margin: 1rem 0 0.85rem; font-size: 0.95rem;">العقار</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>المصدر</label>
+            <select x-model="form.property_source">
+              <option value="sakani">مشروع Sakani / مُسَجَّل</option>
+              <option value="independent">عقار مستقلّ (يحتاج تقييم)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>السعر المُعلَن (ر.س)</label>
+            <input type="number" x-model.number="form.property_declared_price_sar">
+          </div>
+        </div>
+        <div class="field" x-show="form.property_source === 'sakani'">
+          <label>رقم العقار / المشروع (Sakani)</label>
+          <input type="text" x-model="form.property_id" placeholder="SAKANI-2026-1042">
+        </div>
+        <div class="field" x-show="form.property_source === 'independent'">
+          <label>عنوان العقار</label>
+          <input type="text" x-model="form.property_address" placeholder="حي الياسمين، الرياض">
+        </div>
+
+        <h3 style="margin: 1rem 0 0.85rem; font-size: 0.95rem;">فحص الدعم والموافقة</h3>
+        <p style="font-size: 0.78rem; color: var(--muted); margin-bottom: 0.75rem;">
+          إجاباتك هنا تُستخدَم فقط لتوفير الدعم المناسب وتنسيق الموافقة.
+        </p>
+
+        <label class="check-row">
+          <input type="checkbox" x-model="form.needs_general_support">
+          <div class="check-text">
+            أحتاج دعماً عاماً خلال إجراءات الطلب
+            <small>سيُكَلَّف مستشار علاقات لمتابعة طلبك</small>
+          </div>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" x-model="form.needs_legal_representative">
+          <div class="check-text">
+            أحتاج إشراك ولِيّ شؤون مالية / مُمَثِّل قانوني
+            <small>إجراء قانوني إضافي قبل التوقيع — احترامي للموكِّل</small>
+          </div>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" x-model="form.needs_accessibility">
+          <div class="check-text">
+            أحتاج ترتيبات إتاحة (لغة الإشارة، خط بريل، خدمات إتاحة أخرى)
+            <small>سيُنَسَّق ذلك مع مسؤول الإتاحة في الفرع — حقّ، لا عبء</small>
+          </div>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" x-model="form.needs_translation">
+          <div class="check-text">
+            أحتاج خدمات ترجمة أو مترجم مُعتَمَد
+          </div>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" x-model="form.needs_extended_consent">
+          <div class="check-text">
+            أرغب في شرح بنود العقد بشكل مُيَسَّر قبل الموافقة
+          </div>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" x-model="form.needs_independent_advice">
+          <div class="check-text">
+            أرغب في استشارة مالية مستقلّة قبل الالتزام
+          </div>
+        </label>
+      </div>
+
+      <!-- RIGHT: Documents + CTA -->
+      <div>
+        <div class="card">
+          <div class="card-h">
+            <div>
+              <span class="eyebrow">المستندات</span>
+              <h2 style="margin-top:0.4rem;">رفع المستندات الأساسية</h2>
+            </div>
+          </div>
+
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem;">
+            في النسخة التجريبية: رفع المستندات اختياري. الفحوصات تَستخدِم بيانات الملف المُختار.
+          </p>
+
+          <div class="upload-grid">
+            <template x-for="doc in docTypes" :key="doc.kind">
+              <div class="upload-row" :class="uploadedDocs[doc.kind] ? 'uploaded' : ''">
+                <div class="label-block">
+                  <div class="name" x-text="doc.label"></div>
+                  <div class="hint" x-text="doc.hint"></div>
+                </div>
+                <template x-if="!uploadedDocs[doc.kind]">
+                  <label class="file-trigger">
+                    اختر ملفاً
+                    <input type="file" :data-kind="doc.kind" style="display:none;" @change="handleUpload($event, doc.kind)">
+                  </label>
+                </template>
+                <template x-if="uploadedDocs[doc.kind]">
+                  <span class="uploaded-tag" x-text="'✓ ' + uploadedDocs[doc.kind].slice(0, 18) + '...'"></span>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <hr style="border-color: var(--hairline); margin: 1.5rem 0;">
+
+          <button class="btn btn-primary" @click="startReview()" :disabled="reviewing" style="width:100%; justify-content:center;">
+            <span x-show="!reviewing">⚖️ ابدأ مراجعة الوكلاء الخمسة</span>
+            <span x-show="reviewing">جاري إرسال الطلب...</span>
+          </button>
+
+          <p style="font-size: 0.72rem; color: var(--muted); margin-top: 0.85rem; text-align:center;">
+            بضغط الزر، يُرسَل الطلب لخمسة وكلاء AI متخصّصين. الوقت المتوقَّع: <strong style="color:var(--ink);">~٧٠ ثانية</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ STAGE 2: REVIEW ============================ -->
+  <section x-show="stage === 'review' || stage === 'report'" x-transition>
+    <div class="card-h" style="margin-bottom: 1rem;">
+      <div>
+        <span class="eyebrow">المراجعة الحيّة</span>
+        <h2 style="margin-top:0.4rem;">الوكلاء يُراجعون طلبك</h2>
+      </div>
+      <span style="font-family: var(--mono); font-size: 0.78rem; color: var(--muted);" x-text="'رقم الطلب · ' + (applicationId || '...')"></span>
+    </div>
+
+    <!-- ╭─ Static Risk Command Center ─╮ -->
+    <div class="cmd-center" :data-frozen="frozen ? 'true' : 'false'">
+      <div class="cmd-head">
+        <h3>
+          <span class="live-dot"></span>
+          مركز قيادة المخاطر الائتمانية
+        </h3>
+        <span class="cmd-status">
+          <template x-if="!frozen">
+            <span x-text="doneCount() + ' / 5 وكلاء أكملوا · جارٍ المراجعة'"></span>
+          </template>
+          <template x-if="frozen">
+            <span style="color: var(--safe);">المراجعة مكتملة</span>
+          </template>
+        </span>
+      </div>
+
+      <div class="cmd-grid">
+
+        <!-- LEFT: Agent status nodes -->
+        <div>
+          <div class="cmd-col-h">الوكلاء</div>
+          <div class="cmd-agents">
+            <template x-for="a in reviewAgents" :key="a.agent_type">
+              <div class="cmd-node"
+                   :data-state="a.status"
+                   :style="'--col:' + a.color">
+                <div class="av" x-text="a.name.charAt(0)"></div>
+                <div class="nd-body">
+                  <div class="nm" x-text="a.name + ' · ' + a.role.split('/')[0].trim()"></div>
+                  <div class="conc" x-text="agentConclusion(a) || a.role.split('/')[1]?.trim() || ''"></div>
+                </div>
+                <div class="stat-ic" x-text="a.status === 'done' ? '✓' : (a.status === 'thinking' ? '◐' : '·')"></div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- CENTER: Extracted key metrics -->
+        <div>
+          <div class="cmd-col-h">المؤشرات الرئيسية</div>
+          <div class="cmd-metrics">
+
+            <div class="cmd-met" :data-band="bands().simah">
+              <span class="met-ic">📊</span>
+              <div class="met-body">
+                <div class="met-l">درجة سمة الائتمانية</div>
+                <div class="met-v">
+                  <span class="num" x-text="liveNumbers.sara?.simah ?? '—'"></span>
+                </div>
+              </div>
+              <span class="met-flag" x-text="bandIcon(bands().simah)"></span>
+            </div>
+
+            <div class="cmd-met" :data-band="bands().dbr">
+              <span class="met-ic">📉</span>
+              <div class="met-body">
+                <div class="met-l">نسبة الاستقطاع بعد التمويل</div>
+                <div class="met-v">
+                  <span class="num" x-text="liveNumbers.sara?.dbr ?? '—'"></span>
+                  <span class="unit" x-show="liveNumbers.sara?.dbr != null">٪</span>
+                </div>
+              </div>
+              <span class="met-flag" x-text="bandIcon(bands().dbr)"></span>
+            </div>
+
+            <div class="cmd-met" :data-band="bands().identity">
+              <span class="met-ic">🪪</span>
+              <div class="met-body">
+                <div class="met-l">التحقق من الهوية</div>
+                <div class="met-v" x-text="idStatusLabel(liveNumbers.fahad?.id_status)"></div>
+              </div>
+              <span class="met-flag" x-text="bandIcon(bands().identity)"></span>
+            </div>
+
+            <div class="cmd-met" :data-band="bands().employer">
+              <span class="met-ic">🏢</span>
+              <div class="met-body">
+                <div class="met-l">مطابقة جهة العمل</div>
+                <div class="met-v" x-text="employerLabel(liveNumbers.fahad?.employer)"></div>
+              </div>
+              <span class="met-flag" x-text="bandIcon(bands().employer)"></span>
+            </div>
+
+            <div class="cmd-met" :data-band="bands().ltv">
+              <span class="met-ic">🏠</span>
+              <div class="met-body">
+                <div class="met-l">نسبة التمويل إلى قيمة العقار</div>
+                <div class="met-v">
+                  <span class="num" x-text="liveNumbers.nora?.ltv ?? '—'"></span>
+                  <span class="unit" x-show="liveNumbers.nora?.ltv != null">٪</span>
+                </div>
+              </div>
+              <span class="met-flag" x-text="bandIcon(bands().ltv)"></span>
+            </div>
+
+            <div class="cmd-met" :data-band="bands().property">
+              <span class="met-ic">📐</span>
+              <div class="met-body">
+                <div class="met-l">مصدر تقييم العقار</div>
+                <div class="met-v" x-text="propertyLabel(liveNumbers.nora?.sakani)"></div>
+              </div>
+              <span class="met-flag" x-text="bandIcon(bands().property)"></span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT: Document chips -->
+        <div>
+          <div class="cmd-col-h">المستندات</div>
+          <div class="cmd-docs">
+            <template x-for="d in docTypes" :key="d.kind">
+              <div class="cmd-doc-chip" :data-up="uploadedDocs[d.kind] ? 'true' : 'false'">
+                <span class="doc-ic" x-text="docIcon(d.kind)"></span>
+                <span class="doc-name" x-text="d.label"></span>
+                <span class="doc-stat" x-text="uploadedDocs[d.kind] ? '✓' : '·'"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Final recommendation row -->
+      <div class="cmd-final">
+        <span class="label-block">⚖️ التوصية النهائية</span>
+        <span class="cmd-final-pill" :data-rec="liveNumbers.orch?.recommendation || 'pending'" aria-live="polite">
+          <span x-text="liveNumbers.orch?.label_ar || 'بانتظار التحليل من جميع الوكلاء'"></span>
+        </span>
+        <span class="cmd-secondary-badge" x-show="liveNumbers.orch?.recommendation === 'needs_human_review'">
+          تتطلب مراجعة مسؤول ائتماني قبل الاعتماد النهائي
+        </span>
+        <div class="cmd-final-meta" x-show="frozen && finalReport">
+          <span class="pip" x-show="finalReport?.conditions_if_any?.length">
+            <span x-text="(finalReport?.conditions_if_any?.length || 0)"></span> شروط
+          </span>
+          <span class="pip" x-show="finalReport?.residual_risks_for_human_review?.length">
+            <span x-text="(finalReport?.residual_risks_for_human_review?.length || 0)"></span> مخاطر
+          </span>
+        </div>
+      </div>
+      <div class="cmd-reason" x-show="liveNumbers.orch?.recommendation === 'needs_human_review' && (liveNumbers.orch?.escalation_reason || finalReport?.escalation_reason)">
+        <span class="lab">السبب:</span>
+        <span x-text="liveNumbers.orch?.escalation_reason || finalReport?.escalation_reason || ''"></span>
+      </div>
+
+      <!-- Phase progress bar -->
+      <div class="cmd-progress">
+        <span class="label">المرحلة</span>
+        <div class="phases">
+          <div class="ph"><div class="fill" style="--p: 1;"></div></div>
+          <div class="ph"><div class="fill" :style="'--p:' + (doneCount() / 5)"></div></div>
+          <div class="ph"><div class="fill" :style="'--p:' + (frozen && finalReport ? 1 : 0)"></div></div>
+        </div>
+        <span class="label" x-text="frozen ? 'التقرير' : 'المراجعة'"></span>
+      </div>
+    </div>
+    <!-- ╰─ /Static Risk Command Center ─╯ -->
+
+    <!-- ── Compact agent metric cards ── -->
+    <div class="agent-stack">
+      <template x-for="agent in reviewAgents" :key="agent.agent_type">
+        <article class="agent-card"
+                 :data-state="agent.status"
+                 :data-tone="cardTone(agent)"
+                 :style="'--col:' + agent.color">
+          <div class="ag-h">
+            <div class="av" x-text="agent.name.charAt(0)"></div>
+            <div class="who">
+              <div class="nm" x-text="agent.name + ' · ' + agent.role.split('/')[0].trim()"></div>
+              <div class="rl" x-text="agent.model"></div>
+            </div>
+            <span class="pill" :data-state="agent.status"
+                  x-text="agent.status === 'done' ? '✓ مكتمل' : (agent.status === 'thinking' ? '◐ يحلّل' : 'في الانتظار')"></span>
+          </div>
+
+          <div class="ag-metrics">
+            <template x-for="m in agentMetrics(agent)" :key="m.l">
+              <div class="ag-met" :data-band="m.band">
+                <div class="l" x-text="m.l"></div>
+                <div class="v">
+                  <span class="num" x-show="m.num != null" x-text="m.num"></span>
+                  <span x-show="m.text" x-text="m.text"></span>
+                  <span class="unit" x-show="m.unit" x-text="m.unit"></span>
+                  <span class="flag" x-text="bandIcon(m.band)"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div class="ag-conc" :data-tone="cardTone(agent)" x-show="agentConclusion(agent)">
+            <span class="ic" x-text="conclusionIcon(agent)"></span>
+            <span x-text="agentConclusion(agent) || ''"></span>
+          </div>
+
+          <button class="ag-toggle" :aria-expanded="expandedAgents[agent.agent_type] ? 'true' : 'false'"
+                  @click="toggleAgent(agent.agent_type)" x-show="agent.review">
+            <span x-text="expandedAgents[agent.agent_type] ? 'إخفاء التفاصيل' : 'عرض التفاصيل'"></span>
+            <span class="arr">▾</span>
+          </button>
+
+          <div class="ag-details" x-show="expandedAgents[agent.agent_type] && agent.review" x-collapse>
+            <div class="narrative-block" x-text="cleanNarrative(agent.review?.content)"></div>
+            <template x-if="agent.review?.compliance_snapshot && hasComplianceSnapshot(agent.review.compliance_snapshot)">
+              <div class="compliance">
+                <span class="lab">📜 المصادر التي اعتمد عليها الوكيل</span>
+                <div style="margin-top:0.35rem; line-height:1.7;" x-html="renderCompliance(agent.review.compliance_snapshot)"></div>
+              </div>
+            </template>
+          </div>
+        </article>
+      </template>
+    </div>
+  </section>
+
+  <!-- ============================ STAGE 3: REPORT ============================ -->
+  <section x-show="stage === 'report' && finalReport" x-transition>
+    <div class="final-card">
+      <span class="eyebrow">التوصية النهائية</span>
+      <h2 style="margin: 0.4rem 0 1rem;">تقرير المنسق</h2>
+
+      <div style="display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; margin-bottom: 0.5rem;">
+        <span class="rec-pill" :class="finalReport.recommendation"
+              x-text="finalReport.recommendation_label_ar"></span>
+        <span class="cmd-secondary-badge" x-show="finalReport.recommendation === 'needs_human_review'">
+          تتطلب مراجعة مسؤول ائتماني قبل الاعتماد النهائي
+        </span>
+      </div>
+      <div class="cmd-reason" x-show="finalReport.recommendation === 'needs_human_review' && (finalReport.escalation_reason || (finalReport.residual_risks_for_human_review || [])[0])" style="margin-bottom: 1.1rem;">
+        <span class="lab">السبب:</span>
+        <span x-text="finalReport.escalation_reason || (finalReport.residual_risks_for_human_review || [])[0] || ''"></span>
+      </div>
+
+      <div class="summary-grid">
+        <template x-for="agent in reviewAgents.slice(0, 4)" :key="agent.agent_type">
+          <div class="summary-card" :style="'--col:' + agent.color">
+            <div class="name" x-text="agent.name + ' · ' + agent.role.split('/')[0].trim()"></div>
+            <div class="text" x-text="finalReport.summary_per_agent[agent.short] || finalReport.summary_per_agent[agent.agent_type] || '—'"></div>
+          </div>
+        </template>
+      </div>
+
+      <template x-if="finalReport.conditions_if_any && finalReport.conditions_if_any.length">
+        <div style="margin-top: 1.25rem;">
+          <span class="eyebrow">الشروط في حال الموافقة</span>
+          <ul class="condition-list" style="margin-top:0.4rem;">
+            <template x-for="c in finalReport.conditions_if_any" :key="c">
+              <li x-text="c"></li>
+            </template>
+          </ul>
+        </div>
+      </template>
+
+      <template x-if="finalReport.residual_risks_for_human_review && finalReport.residual_risks_for_human_review.length">
+        <div style="margin-top: 1.25rem;">
+          <span class="eyebrow" x-text="finalReport.recommendation === 'needs_human_review' ? 'الإجراءات المطلوبة من المسؤول الائتماني' : 'مخاطر متبقّية تَحتاج مراجعة بشرية'"></span>
+          <ul class="condition-list" style="margin-top:0.4rem;">
+            <template x-for="r in finalReport.residual_risks_for_human_review" :key="r">
+              <li x-text="r"></li>
+            </template>
+          </ul>
+        </div>
+      </template>
+
+      <p style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--muted); text-align: center;">
+        هذه التوصية مبدئية وتخضع لمراجعة مسؤول ائتماني قبل الاعتماد النهائي.
+      </p>
+
+      <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn btn-ghost" @click="resetForm()">طلب جديد</button>
+        <button class="btn btn-ghost" onclick="window.print()">🖨️ طباعة التقرير</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+function mortgageApp() {
+  return {
+    stage: 'intake',
+    applicationId: null,
+    ws: null,
+    reviewing: false,
+
+    applicants: {{ applicants_json|default:'[]'|safe }},
+    uploadedDocs: {},
+
+    docTypes: [
+      { kind: 'national_id',      label: 'الهوية الوطنية', hint: 'PDF أو JPG' },
+      { kind: 'salary_slip',      label: 'تعريف بالراتب', hint: 'آخر شهر' },
+      { kind: 'employment_letter',label: 'خطاب تعريف',     hint: 'مَختوم من جهة العمل' },
+      { kind: 'bank_statement',   label: 'كشف حساب بنكي',  hint: 'آخر ٣ أشهر' },
+      { kind: 'property_deed',    label: 'صك / عرض العقار', hint: 'مستند ملكية أو عرض المُلّاك' },
+    ],
+
+    form: {
+      applicant_id: null,
+      name_ar: 'مهند نايف الزيادي',
+      national_id: '',
+      nationality: 'saudi',
+      age: 35,
+      monthly_salary_sar: 22000,
+      existing_monthly_obligations_sar: 1500,
+      employer_name: 'شركة الراجحي للتقنية',
+      employer_sector: 'private',
+      employment_duration_months: 48,
+      requested_loan_sar: 850000,
+      requested_term_years: 25,
+      property_source: 'sakani',
+      property_id: 'SAKANI-2026-1042',
+      property_address: 'حي الياسمين، الرياض',
+      property_city: 'الرياض',
+      property_declared_price_sar: 1100000,
+      property_type: 'فيلا دوبلكس',
+      needs_general_support: false,
+      needs_legal_representative: false,
+      needs_accessibility: false,
+      accessibility_types: [],
+      needs_translation: false,
+      needs_extended_consent: false,
+      needs_independent_advice: false,
+    },
+
+    reviewAgents: [
+      { agent_type: 'analytics',    short: 'sara',    name: 'سارة',    role: 'تقييم الجدارة الائتمانية',                model: 'DeepSeek V3.2',     color: '#FF1744', status: 'idle', review: null },
+      { agent_type: 'operations',   short: 'fahad',   name: 'فهد',     role: 'التحقق من الهوية والأهلية القانونية',     model: 'GPT-4o mini',       color: '#FF6D00', status: 'idle', review: null },
+      { agent_type: 'customer',     short: 'khalid',  name: 'خالد',    role: 'قدرة العميل والدعم',                       model: 'Qwen3 80B',         color: '#2979FF', status: 'idle', review: null },
+      { agent_type: 'queue',        short: 'nora',    name: 'نورة',    role: 'تقييم العقار والضمان',                    model: 'Claude Sonnet 4.5', color: '#AA00FF', status: 'idle', review: null },
+      { agent_type: 'orchestrator', short: 'orchestrator', name: 'المنسق', role: 'التوصية النهائية',                    model: 'Claude Opus 4.7',   color: '#00C853', status: 'idle', review: null },
+    ],
+
+    finalReport: null,
+
+    // Command-center state (static, real-time)
+    frozen: false,
+    expandedAgents: {},
+    liveNumbers: {
+      sara:  { simah: null, dbr: null, verdict: null, late_payments: null, open_obligations: null },
+      fahad: { id_status: null, employer: null, salary_match: null, legal_blockers: null },
+      khalid:{ support: null, consent: null, needs_rep: null, ethical_ok: true },
+      nora:  { ltv: null, sakani: null, fair_value: null, declared: null, discrepancy: null, valuation_path: null },
+      orch:  { recommendation: null, label_ar: null, conditions_count: 0, risks_count: 0, needs_human: false, escalation_reason: null },
+    },
+
+    REC_LABELS: {
+      'recommend_initial_approval':         'موافقة أوّلية',
+      'recommend_approval_with_conditions': 'موافقة مشروطة',
+      'needs_human_review':                 'موافقة مبدئية مشروطة',
+      'not_recommended':                    'غير موصى',
+    },
+
+    init() {
+      // Theme toggle
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const syncLogos = () => {
+        const t = root.getAttribute('data-theme') || 'dark';
+        document.querySelectorAll('img[data-logo]').forEach(img => {
+          img.src = t === 'light' ? '/static/munjiz-logo-clean.png' : '/static/munjiz-logo.webp';
+        });
+      };
+      syncLogos();
+      btn?.addEventListener('click', () => {
+        const cur = root.getAttribute('data-theme') || 'dark';
+        const nxt = cur === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', nxt);
+        try { localStorage.setItem('munjiz-theme', nxt); } catch(e){}
+        syncLogos();
+      });
+
+      this.$watch('stage', (v) => {
+        if (v === 'report') this.frozen = true;
+      });
+    },
+
+    _ingestStructured(agent_type, structured) {
+      if (!structured || typeof structured !== 'object') return;
+      const ln = this.liveNumbers;
+      if (agent_type === 'analytics') {
+        if (structured.simah_score_demo != null)     ln.sara.simah = structured.simah_score_demo;
+        if (structured.dbr_after_loan_percent != null) ln.sara.dbr   = structured.dbr_after_loan_percent;
+        if (structured.verdict)                       ln.sara.verdict = structured.verdict;
+      } else if (agent_type === 'operations') {
+        if (structured.identity_check_demo)           ln.fahad.id_status = structured.identity_check_demo;
+        if (structured.employer_verification_demo)    ln.fahad.employer  = structured.employer_verification_demo;
+        if (Array.isArray(structured.legal_blockers_demo)) ln.fahad.legal_blockers = structured.legal_blockers_demo;
+      } else if (agent_type === 'customer') {
+        const s = Array.isArray(structured.support_needs_flagged) ? structured.support_needs_flagged : [];
+        ln.khalid.support  = s.length ? s.join('، ') : 'لا يوجد';
+        ln.khalid.needs_rep = !!structured.needs_legal_representative;
+        ln.khalid.consent   = structured.needs_legal_representative ? 'مع وليّ شؤون' : 'موافقة مستقلّة';
+      } else if (agent_type === 'queue') {
+        if (structured.ltv_percent != null)   ln.nora.ltv = structured.ltv_percent;
+        if (structured.valuation_path)        ln.nora.sakani = structured.valuation_path;
+        if (structured.verified_value_sar != null) ln.nora.fair_value = structured.verified_value_sar;
+        if (structured.declared_price_sar != null) ln.nora.declared = structured.declared_price_sar;
+        if (structured.discrepancy_flag != null)   ln.nora.discrepancy = !!structured.discrepancy_flag;
+      } else if (agent_type === 'orchestrator') {
+        if (structured.recommendation) {
+          ln.orch.recommendation = structured.recommendation;
+          ln.orch.label_ar = this.REC_LABELS[structured.recommendation] || structured.recommendation;
+          ln.orch.needs_human = (structured.recommendation === 'needs_human_review');
+        }
+        if (Array.isArray(structured.conditions_if_any))               ln.orch.conditions_count = structured.conditions_if_any.length;
+        if (Array.isArray(structured.residual_risks_for_human_review)) ln.orch.risks_count      = structured.residual_risks_for_human_review.length;
+        if (structured.escalation_reason)                              ln.orch.escalation_reason = structured.escalation_reason;
+        else if (Array.isArray(structured.residual_risks_for_human_review) && structured.residual_risks_for_human_review.length)
+                                                                       ln.orch.escalation_reason = structured.residual_risks_for_human_review[0];
+      }
+    },
+
+    // ── Risk-band classifiers ────────────────────────────────────────────
+    bands() {
+      const ln = this.liveNumbers;
+      return {
+        simah:    this._simahBand(ln.sara.simah),
+        dbr:      this._dbrBand(ln.sara.dbr),
+        identity: this._idBand(ln.fahad.id_status),
+        employer: this._employerBand(ln.fahad.employer),
+        ltv:      this._ltvBand(ln.nora.ltv),
+        property: this._propertyBand(ln.nora.sakani),
+      };
+    },
+
+    _simahBand(v) {
+      if (v == null) return 'pending';
+      if (v >= 750) return 'safe';
+      if (v >= 600) return 'warn';
+      return 'risk';
+    },
+    _dbrBand(v) {
+      if (v == null) return 'pending';
+      if (v <= 45) return 'safe';
+      if (v <= 55) return 'warn';
+      return 'risk';
+    },
+    _idBand(v) {
+      if (!v) return 'pending';
+      if (v === 'passed') return 'safe';
+      if (v === 'flagged') return 'warn';
+      return 'risk';
+    },
+    _employerBand(v) {
+      if (!v) return 'pending';
+      if (v === 'consistent') return 'safe';
+      if (v === 'partial')    return 'safe';   // preliminary match — wording diff only
+      return 'warn';                            // inconsistent → amber, not red
+    },
+    _ltvBand(v) {
+      if (v == null) return 'pending';
+      if (v <= 70) return 'safe';
+      if (v <= 85) return 'warn';
+      return 'risk';
+    },
+    _propertyBand(path) {
+      if (!path) return 'pending';
+      if (path === 'sakani') return 'safe';
+      return 'warn';
+    },
+
+    bandIcon(b) {
+      return b === 'safe' ? '✓' :
+             b === 'warn' ? '⚠' :
+             b === 'risk' ? '✕' :
+             b === 'info' ? 'ℹ' : '·';
+    },
+
+    // ── Display label helpers ────────────────────────────────────────────
+    idStatusLabel(v) {
+      if (!v) return '—';
+      return ({passed: 'صالحة', flagged: 'تَحتاج فحصاً', failed: 'فشل التحقّق'})[v] || v;
+    },
+    employerLabel(v) {
+      if (!v) return '—';
+      return ({consistent: 'مطابق', partial: 'مطابق مبدئياً', inconsistent: 'يحتاج تحقق'})[v] || v;
+    },
+    propertyLabel(v) {
+      if (!v) return '—';
+      return v === 'sakani' ? 'Sakani' : 'البورصة العقارية';
+    },
+    docIcon(kind) {
+      return ({national_id: '🪪', salary_slip: '💼', employment_letter: '🖋️',
+               bank_statement: '🏦', property_deed: '🏠'})[kind] || '📄';
+    },
+
+    // ── Per-agent: card tone, conclusion, metric tiles ───────────────────
+    cardTone(agent) {
+      const t = agent.agent_type;
+      const ln = this.liveNumbers;
+      if (t === 'analytics') {
+        const w = ln.sara.verdict;
+        if (w === 'eligible')    return 'safe';
+        if (w === 'conditional') return 'warn';
+        if (w === 'not_eligible')return 'risk';
+        const sb = this.bands().simah, db = this.bands().dbr;
+        if (sb === 'risk' || db === 'risk') return 'risk';
+        if (sb === 'warn' || db === 'warn') return 'warn';
+        if (sb === 'safe' && db === 'safe') return 'safe';
+        return 'pending';
+      }
+      if (t === 'operations') {
+        const blockers = (ln.fahad.legal_blockers || []).length;
+        if (blockers > 0) return 'risk';
+        const i = this.bands().identity, e = this.bands().employer;
+        if (i === 'risk') return 'risk';                  // identity failure is critical
+        if (i === 'warn' || e === 'warn') return 'warn';   // either identity or employer needs verification
+        if (i === 'safe' && e === 'safe') return 'safe';
+        return 'pending';
+      }
+      if (t === 'customer') return 'info';
+      if (t === 'queue')    return 'purple';
+      if (t === 'orchestrator') {
+        const r = ln.orch.recommendation;
+        if (r === 'recommend_initial_approval')         return 'safe';
+        if (r === 'recommend_approval_with_conditions') return 'warn';
+        if (r === 'needs_human_review')                 return 'warn';
+        if (r === 'not_recommended')                    return 'risk';
+        return 'gold';
+      }
+      return 'pending';
+    },
+
+    conclusionIcon(agent) {
+      const tone = this.cardTone(agent);
+      return ({safe:'✓', warn:'⚠', risk:'✕', info:'🤝', purple:'🏠', gold:'⚖️'})[tone] || '·';
+    },
+
+    agentConclusion(agent) {
+      const t = agent.agent_type;
+      const ln = this.liveNumbers;
+      if (agent.status === 'idle' && !agent.review) return '';
+      if (t === 'analytics') {
+        if (ln.sara.simah == null) return '';
+        const sb = this.bands().simah, db = this.bands().dbr;
+        if (db === 'risk') return 'DBR يَتجاوز حدّ ساما — مرفوض ائتمانياً';
+        if (sb === 'risk') return 'درجة SIMAH منخفضة — لا يُوصى';
+        if (db === 'warn' || sb === 'warn') return 'ائتمان متوسّط — DBR قريب من حدّ ساما';
+        return 'ائتمان قوي — ضمن حدود ساما';
+      }
+      if (t === 'operations') {
+        if (!ln.fahad.id_status) return '';
+        const blockers = (ln.fahad.legal_blockers || []).length;
+        if (blockers > 0) return `${blockers} موانع قانونية مَوصوفة`;
+        const i = this.bands().identity, e = this.bands().employer;
+        if (i === 'risk') return 'الهوية تَحتاج تحقّقاً يدوياً';
+        if (e === 'warn' || ln.fahad.employer === 'inconsistent') return 'جهة العمل تَحتاج تحقّقاً يدوياً';
+        if (i === 'warn') return 'الهوية تَحتاج تأكيداً يدوياً';
+        return 'الهوية وجهة العمل متطابقتان';
+      }
+      if (t === 'customer') {
+        if (ln.khalid.support == null) return '';
+        if (ln.khalid.needs_rep) return 'يَحتاج وليّ شؤون مالية للموافقة';
+        if (ln.khalid.support === 'لا يوجد') return 'لا توجد احتياجات دعم — موافقة مستقلّة';
+        return `احتياجات دعم: ${ln.khalid.support}`;
+      }
+      if (t === 'queue') {
+        if (ln.nora.ltv == null) return '';
+        if (ln.nora.discrepancy) return 'تباين في السعر — يَحتاج تقييماً مُعَمَّقاً';
+        const lb = this.bands().ltv;
+        if (lb === 'risk') return `LTV ${ln.nora.ltv}٪ مرتفعة جداً`;
+        if (lb === 'warn') return `LTV ${ln.nora.ltv}٪ ضمن المقبول`;
+        return `LTV ${ln.nora.ltv}٪ ممتازة`;
+      }
+      if (t === 'orchestrator') {
+        if (!ln.orch.recommendation) return '';
+        return ln.orch.label_ar;
+      }
+      return '';
+    },
+
+    agentMetrics(agent) {
+      const t = agent.agent_type;
+      const ln = this.liveNumbers;
+      const snap = agent.review?.compliance_snapshot || {};
+      if (t === 'analytics') {
+        const lp = snap.simah?.late_payments_12m;
+        return [
+          { l: 'درجة سمة الائتمانية',   num: ln.sara.simah ?? '—', band: this.bands().simah },
+          { l: 'نسبة الاستقطاع بعد التمويل',   num: ln.sara.dbr ?? '—',   unit: '٪', band: this.bands().dbr },
+          { l: 'التأخّرات السابقة', num: lp != null ? lp : '—', band: lp == null ? 'pending' : (lp === 0 ? 'safe' : (lp <= 2 ? 'warn' : 'risk')) },
+          { l: 'نتيجة التقييم',       text: ln.sara.verdict ? ({eligible:'مؤهَّل', conditional:'مشروط', not_eligible:'غير مؤهَّل'})[ln.sara.verdict] : '—',
+            band: ln.sara.verdict === 'eligible' ? 'safe' : (ln.sara.verdict === 'conditional' ? 'warn' : (ln.sara.verdict === 'not_eligible' ? 'risk' : 'pending')) },
+        ];
+      }
+      if (t === 'operations') {
+        const eDuration = snap.employer?.employment_duration_months;
+        const blockers = (ln.fahad.legal_blockers || []).length;
+        const variance = snap.employer?.salary_variance_pct;
+        const varianceText = variance == null ? '—' : (variance === 0 ? 'مُتطابق' : `فرق ${Math.abs(variance * 100).toFixed(0)}٪`);
+        const varianceBand = variance == null ? 'pending' : (variance === 0 ? 'safe' : 'warn');
+        return [
+          { l: 'التحقق من الهوية',  text: this.idStatusLabel(ln.fahad.id_status), band: this.bands().identity },
+          { l: 'مطابقة جهة العمل',  text: this.employerLabel(ln.fahad.employer),  band: this.bands().employer },
+          { l: 'مدّة الخدمة',        num: eDuration ?? '—', unit: 'شهر', band: eDuration == null ? 'pending' : (eDuration >= 24 ? 'safe' : (eDuration >= 12 ? 'warn' : 'risk')) },
+          { l: 'فرق الراتب',          text: varianceText, band: varianceBand },
+          { l: 'موانع قانونية',     num: ln.fahad.legal_blockers != null ? blockers : '—', band: ln.fahad.legal_blockers == null ? 'pending' : (blockers === 0 ? 'safe' : 'risk') },
+        ];
+      }
+      if (t === 'customer') {
+        const supportText = ln.khalid.support === 'لا يوجد' ? 'لا يوجد' : (ln.khalid.support || '—');
+        return [
+          { l: 'احتياجات الدعم', text: supportText, band: ln.khalid.support == null ? 'pending' : (ln.khalid.support === 'لا يوجد' ? 'safe' : 'info') },
+          { l: 'الموافقة',       text: ln.khalid.consent || '—',    band: ln.khalid.consent == null ? 'pending' : 'safe' },
+          { l: 'وَلِيّ الشؤون',     text: ln.khalid.needs_rep == null ? '—' : (ln.khalid.needs_rep ? 'مطلوب' : 'غير مطلوب'),
+            band: ln.khalid.needs_rep == null ? 'pending' : (ln.khalid.needs_rep ? 'info' : 'safe') },
+          { l: 'الفحص الأخلاقي', text: '✓ متوافق', band: 'safe' },
+        ];
+      }
+      if (t === 'queue') {
+        const declared = ln.nora.declared ?? this.form?.property_declared_price_sar;
+        const verified = ln.nora.fair_value;
+        const fmt = (n) => n != null ? Number(n).toLocaleString('ar-SA') : '—';
+        return [
+          { l: 'مصدر تقييم العقار',     text: this.propertyLabel(ln.nora.sakani), band: this.bands().property },
+          { l: 'السعر المُعلَن',         text: fmt(declared), unit: 'ر.س', band: 'info' },
+          { l: 'القيمة العادلة',        text: fmt(verified), unit: 'ر.س', band: verified == null ? 'pending' : (ln.nora.discrepancy ? 'warn' : 'safe') },
+          { l: 'نسبة التمويل إلى قيمة العقار', num: ln.nora.ltv ?? '—', unit: '٪', band: this.bands().ltv },
+        ];
+      }
+      if (t === 'orchestrator') {
+        const r = ln.orch.recommendation;
+        const recBand = r === 'recommend_initial_approval' ? 'safe' :
+                        r === 'recommend_approval_with_conditions' ? 'warn' :
+                        r === 'needs_human_review' ? 'warn' :
+                        r === 'not_recommended' ? 'risk' : 'pending';
+        return [
+          { l: 'التوصية',                text: ln.orch.label_ar || '—', band: recBand },
+          { l: 'الشروط',                 num: r ? ln.orch.conditions_count : '—', band: r ? (ln.orch.conditions_count > 0 ? 'warn' : 'safe') : 'pending' },
+          { l: 'المخاطر المتبقّية',       num: r ? ln.orch.risks_count : '—',      band: r ? (ln.orch.risks_count > 0 ? 'warn' : 'safe') : 'pending' },
+          { l: 'يَحتاج مراجعة بشرية',     text: r ? (ln.orch.needs_human ? 'نعم' : 'لا') : '—', band: r ? (ln.orch.needs_human ? 'info' : 'safe') : 'pending' },
+        ];
+      }
+      return [];
+    },
+
+    doneCount() {
+      return this.reviewAgents.filter(a => a.status === 'done').length;
+    },
+
+    toggleAgent(t) {
+      this.expandedAgents[t] = !this.expandedAgents[t];
+    },
+
+    cleanNarrative(text) {
+      if (!text) return '';
+      // Strip fenced JSON / code blocks (the structured-output trailer the agents emit)
+      let out = text.replace(/```(?:json)?[\s\S]*?```/g, '').trim();
+      // Strip inline structural keys that would otherwise leak through
+      out = out.replace(/^\s*\{[\s\S]*?\}\s*$/gm, '').trim();
+      // Drop trailing "demo / non-binding" reminder lines the LLM emits
+      out = out.split('\n').filter(line => {
+        const t = line.trim();
+        if (!t) return true;
+        if (/تجريب|\bDemo\b|fake demo|ليست\s+قراراً\s+ائتمانياً|غير\s+ملزم|non[- ]binding/i.test(t)) return false;
+        return true;
+      }).join('\n').trim();
+      // Collapse 3+ blank lines
+      out = out.replace(/\n{3,}/g, '\n\n');
+      return out;
+    },
+
+    loadPreset(a) {
+      this.form.applicant_id = a.applicant_id;
+      this.form.name_ar = a.name_ar;
+      this.form.national_id = a.national_id || '';
+      this.form.nationality = a.nationality;
+      this.form.monthly_salary_sar = a.monthly_salary_sar;
+      this.form.existing_monthly_obligations_sar = a.existing_obligations_sar;
+      this.form.employer_name = a.employer_name;
+      this.form.employer_sector = a.employer_sector;
+    },
+
+    async handleUpload(ev, kind) {
+      const f = ev.target.files?.[0];
+      if (!f) return;
+      // For demo, we just record the filename — real upload happens after application is created
+      this.uploadedDocs[kind] = f.name;
+    },
+
+    async startReview() {
+      if (this.reviewing) return;
+      this.reviewing = true;
+      try {
+        const res = await fetch('/api/applications/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.form),
+        });
+        if (!res.ok) {
+          this.reviewing = false;
+          alert('تعذّر إنشاء الطلب. حاول مرّة أخرى.');
+          return;
+        }
+        const data = await res.json();
+        this.applicationId = data.application_id;
+        this.stage = 'review';
+        this.connectWS(data.ws_url);
+      } catch (e) {
+        this.reviewing = false;
+        alert('خطأ: ' + e.message);
+      }
+    },
+
+    connectWS(wsUrl) {
+      const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+      const url = `${proto}://${location.host}${wsUrl}`;
+      this.ws = new WebSocket(url);
+      this.ws.addEventListener('open', () => {
+        this.ws.send(JSON.stringify({ action: 'start_review' }));
+      });
+      this.ws.addEventListener('message', (e) => this.handleWSMessage(e));
+    },
+
+    handleWSMessage(e) {
+      let data;
+      try { data = JSON.parse(e.data); } catch { return; }
+      if (data.type === 'agent.status') {
+        const a = this.reviewAgents.find(x => x.agent_type === data.agent_type);
+        if (a) a.status = data.status === 'thinking' ? 'thinking' : (a.review ? 'done' : 'idle');
+      }
+      else if (data.type === 'agent.review') {
+        const r = data.review;
+        const a = this.reviewAgents.find(x => x.agent_type === r.agent_type);
+        if (a) {
+          a.review = r;
+          a.status = 'done';
+        }
+        this._ingestStructured(r.agent_type, r.structured);
+      }
+      else if (data.type === 'review.lifecycle' && data.phase === 'review_complete') {
+        this.fetchReport();
+      }
+    },
+
+    async fetchReport() {
+      const res = await fetch(`/api/applications/${this.applicationId}/report/`);
+      const data = await res.json();
+      this.finalReport = data.final_recommendation;
+      // also load reviews if WS missed any
+      data.reviews.forEach(r => {
+        const a = this.reviewAgents.find(x => x.agent_type === r.agent_type);
+        if (a && !a.review) {
+          a.review = r;
+          a.status = 'done';
+        }
+      });
+      this.stage = 'report';
+      this.reviewing = false;
+    },
+
+    flattenStructured(s) {
+      if (!s || typeof s !== 'object') return {};
+      const out = {};
+      for (const [k, v] of Object.entries(s)) {
+        if (k === 'agent' || k === 'domain' || k === 'key_findings' || k === 'recommendation_to_orchestrator') continue;
+        if (Array.isArray(v)) {
+          if (v.length) out[k] = v.join(' · ');
+        } else if (typeof v === 'object' && v !== null) {
+          // skip nested
+        } else if (v !== null && v !== undefined && v !== '') {
+          out[k] = String(v);
+        }
+      }
+      return out;
+    },
+
+    hasComplianceSnapshot(snap) {
+      return snap && Object.keys(snap).length > 0;
+    },
+
+    renderCompliance(snap) {
+      const lines = [];
+      if (snap.simah) {
+        const s = snap.simah;
+        lines.push(`السجل الائتماني — درجة ${s.credit_score} · نسبة الدين ${(s.debt_burden_ratio*100).toFixed(0)}٪ · شريحة "${s.risk_band}" · ${s.late_payments_12m} تأخّر/١٢ش`);
+      }
+      if (snap.sdaia) {
+        const s = snap.sdaia;
+        lines.push(`الهوية — الحالة: ${s.id_status} · ${s.residency_status} · حظر سفر: ${s.travel_ban_demo ? 'نعم' : 'لا'}`);
+      }
+      if (snap.employer) {
+        const e = snap.employer;
+        lines.push(`جهة العمل — ${e.employer_name_verified} · مدّة ${e.employment_duration_months}ش · راتب ${e.verified_salary_sar.toLocaleString('ar-SA')} ر.س · مُتّسق: ${e.consistent ? 'نعم' : 'لا'}`);
+      }
+      if (snap.abd) {
+        const a = snap.abd;
+        const needs = a.support_needs_declared.length ? a.support_needs_declared.join('، ') : 'لا حاجة معلنة';
+        lines.push(`الدعم والإتاحة — احتياجات: ${needs} · مسارات الدعم: ${(a.suggested_bank_pathways||[]).join('، ') || 'لا يوجد'}`);
+      }
+      if (snap.sakani) {
+        const s = snap.sakani;
+        lines.push(`المشروع المُسَجَّل — ${s.project_name} · ${s.unit_type} · سعر مُسَجَّل ${s.listed_price_sar.toLocaleString('ar-SA')} ر.س · فارق ${s.discrepancy_with_declared_pct}٪`);
+      }
+      if (snap.real_estate_exchange) {
+        const r = snap.real_estate_exchange;
+        lines.push(`تقييم السوق العقاري — قيمة عادلة ${r.fair_value_sar.toLocaleString('ar-SA')} ر.س · انحراف عن المُعلَن ${r.deviation_from_fair_value_pct}٪`);
+      }
+      return lines.map(l => '<div>' + l + '</div>').join('');
+    },
+
+    resetForm() {
+      this.applicationId = null;
+      this.finalReport = null;
+      this.uploadedDocs = {};
+      this.reviewAgents.forEach(a => { a.status = 'idle'; a.review = null; });
+      this.stopCmdCycle();
+      this.act = 0;
+      this.frozen = false;
+      this.liveNumbers = {
+        sara:  { simah: null, dbr: null, verdict: null },
+        fahad: { id_status: null, employer: null },
+        khalid:{ support: null, consent: null },
+        nora:  { ltv: null, sakani: null, fair_value: null },
+        orch:  { recommendation: null, label_ar: null },
+      };
+      this.stage = 'intake';
+      if (this.ws) { try { this.ws.close(); } catch(e){} this.ws = null; }
+    },
+  };
+}
+</script>
+
+</body>
+</html>

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="ar-SA" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منجز Branch AI — ذكاء كل فرع، تحت رقابة كل مدير</title>
-<meta name="description" content="منصة وكلاء ذكاء اصطناعي متعددة النماذج للفروع البنكية في المملكة العربية السعودية. خمسة وكلاء متخصصون يتخذون قرارات تشغيلية في أقل من ثانيتين، باللهجة السعودية، تحت إشراف المدير.">
+<title>منجِز — تقييم القرض العقاري الأوّلي بالذكاء الاصطناعي</title>
+<meta name="description" content="منصة وكلاء ذكاء اصطناعي متعددة النماذج لتقييم طلبات التمويل العقاري في البنوك السعودية. خمسة وكلاء متخصصون يَدرسون الجدارة الائتمانية، الهوية، الدعم، والعقار، ويُصدِرون توصية مبدئية مَدعومة بالأدلة لمراجعة المسؤول الائتماني.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1143,16 +1143,10 @@ section {
 <!-- ============== HEADER ============== -->
 <header class="site-header" id="header">
     <div class="header-inner">
-        <a href="#" class="logo" aria-label="مُنجز Branch AI">
-            <img class="logo-img" data-logo src="munjiz-logo.webp" alt="Munjiz">
-            <span class="logo-en">BRANCH&nbsp;AI</span>
+        <a href="/landing/" class="logo" aria-label="مُنجِز">
+            <img class="logo-img" data-logo src="{% static 'munjiz-logo.webp' %}" alt="Munjiz">
         </a>
-        <nav class="nav-links">
-            <a href="#narrative">القصة</a>
-            <a href="#architecture">المعمارية</a>
-            <a href="#integrations">التكامل</a>
-        </nav>
-        <a href="http://localhost:8001/" target="_blank" rel="noopener" class="nav-cta">جرّب مُنجِز ↗</a>
+        <a href="/" class="nav-cta">جرّب الآن ↗</a>
         <button id="themeToggle" class="theme-btn" aria-label="تبديل المظهر" title="تبديل المظهر" style="margin-right:0.5rem;">
             <span class="icon-dark" aria-hidden="true">☾</span>
             <span class="icon-light" aria-hidden="true">☀</span>
@@ -1164,15 +1158,15 @@ section {
 <section class="hero">
     <div class="container hero-grid">
         <div class="hero-text">
-            <span class="eyebrow hero-eyebrow">ذكاء تشغيلي للفروع البنكية · المملكة العربية السعودية</span>
+            <span class="eyebrow hero-eyebrow">تقييم القرض العقاري الأوّلي · المملكة العربية السعودية</span>
             <h1>
-                كل فرع بنك يولّد قرارات أكثر من قدرة <span class="accent">مدير واحد</span> على اتخاذها.
+                طلب التمويل العقاري لا يَستحق أن يَنتظر <span class="accent">أسبوعاً</span> ليَصِل إلى توصية مبدئية.
             </h1>
             <p class="hero-sub">
-                خمسة وكلاء ذكاء اصطناعي. كل واحد بنموذج مختلف، مختار لطبيعة دوره. يعملون معاً ليتخذوا القرار التشغيلي خلال ثانيتين، باللهجة السعودية، تحت إشراف المدير.
+                خمسة وكلاء ذكاء اصطناعي يَدرسون الطلب بالتوازي: الجدارة الائتمانية، الهوية والأهلية، قدرة العميل والدعم، تقييم العقار، ثم توصية نهائية مَدعومة بالأدلة. كل ذلك خلال دقيقة، باللغة العربية المهنية، تحت إشراف المسؤول الائتماني.
             </p>
             <div class="hero-actions">
-                <a href="http://localhost:8001/" target="_blank" rel="noopener" class="btn btn-primary" id="primaryCta">
+                <a href="/" class="btn btn-primary" id="primaryCta">
                     جرّب مُنجِز الآن
                     <span class="btn-arrow">↗</span>
                 </a>
@@ -1182,7 +1176,7 @@ section {
                 <span class="trust-pill">PDPL</span>
                 <span class="trust-pill">KSA Data Residency</span>
                 <div class="trust-stack">
-                    Claude Opus 4.7
+                    Claude Opus 4
                     <span style="color:var(--dim)">·</span>
                     Claude Sonnet 4.5
                     <span style="color:var(--dim)">·</span>
@@ -1293,123 +1287,137 @@ section {
 <section class="narrative" id="narrative">
     <div class="container">
         <div class="section-head reveal">
-            <span class="eyebrow">يوم في فرع حي العليا</span>
-            <h2>ثلاث لحظات تكشف كيف يفكر منجز.</h2>
-            <p>قصة حقيقية من فرع RYD-OLY-042. كل لحظة فيها قرار ضائع للمدير اليوم — ومُلتقَط للوكلاء غداً.</p>
+            <span class="eyebrow">ثلاثة طلبات · ثلاث توصيات مختلفة</span>
+            <h2>كيف يَدرس مُنجِز ملفّ التمويل العقاري؟</h2>
+            <p>كل طلب يَمرّ بنفس الخمسة وكلاء، لكن كل ملفّ له تَوصية مُغايرة. هذه ثلاث حالات حقيقية من بيانات تجريبية أَنتَجت توصيات مَختلفة جذرياً.</p>
         </div>
 
-        <!-- Vignette 1 -->
+        <!-- Vignette 1 — Strong file → initial approval -->
         <article class="vignette reveal">
             <div class="vignette-time">
-                ١١:٣٠
-                <span class="meta">يوم خميس · نهاية الشهر</span>
+                ٠١
+                <span class="meta">ملف نظيف · توصية بالموافقة الأوّلية</span>
             </div>
             <div class="vignette-body">
-                <h3>ذروة الراتب — SLA على وشك الانهيار</h3>
+                <h3>سلمان القحطاني — مهندس بأرامكو، طلب ٨٥٠ ألف ريال لفلّة في الياسمين</h3>
                 <p class="setup">
-                    ٣٤ عميلاً في الانتظار، متوسط الانتظار ١٨ دقيقة. خالد الغامدي في استراحة. أبو محمد السديري — VIP بقيمة سنوية ٨.٥ مليون ريال — يصل خلال ٥ دقائق ولا يتحمل دقيقة انتظار واحدة.
+                    راتب ٢٢ ألف ريال، التزامات شهرية ١.٢ ألف فقط، خبرة ٧٢ شهراً، عقار مُسَجَّل في Sakani. الخمسة وكلاء يَدرسون الطلب بالتوازي. النتيجة بعد ٦٢ ثانية.
                 </p>
                 <div class="dialogue">
                     <div class="line">
                         <div class="line-avatar" style="background:#FF1744">س</div>
                         <div class="line-content" style="border-inline-start-color:#FF1744">
-                            <span class="name">سارة · تحليلات</span>
-                            <strong>SLA Standard على وشك الاختراق خلال ١٢ دقيقة.</strong> التوقع: ٨ مخالفات في الساعة القادمة = ٢,٠٠٠ ريال غرامات محتملة.
+                            <span class="name">سارة · الجدارة الائتمانية</span>
+                            درجة سمة ٨٥٤ — شريحة منخفضة المخاطر. <strong>نسبة الاستقطاع بعد التمويل ١٧.٦٪</strong> — أقلّ بكثير من حدّ ساما (٥٥٪). لا تأخّرات في آخر ١٢ شهراً. <strong>الحُكم: مؤهَّل.</strong>
                         </div>
                     </div>
                     <div class="line">
                         <div class="line-avatar" style="background:#FF6D00">ف</div>
                         <div class="line-content" style="border-inline-start-color:#FF6D00">
-                            <span class="name">فهد · عمليات</span>
-                            ٥ صرافين فقط نشطين والاستفادة من الموظفين ٩٦٪. لا مساحة للزيادة بدون مورد إضافي.
+                            <span class="name">فهد · الهوية والأهلية</span>
+                            الهوية الوطنية صالحة ومُتطابقة. جهة العمل (أرامكو السعودية) مُتطابقة مع المُصَرَّح. مدّة الخدمة ٧٢ شهراً تَكفي وتَزيد. <strong>لا موانع قانونية.</strong>
                         </div>
                     </div>
                     <div class="line">
                         <div class="line-avatar" style="background:#AA00FF">ن</div>
                         <div class="line-content" style="border-inline-start-color:#AA00FF">
-                            <span class="name">نورة · طوابير</span>
-                            خطة ثلاثية: استدعاء خالد طوعياً، تحويل ١٢ معاملة بسيطة للكيوسكات، تحديث الشاشة. الأثر: ١٨ دقيقة → ٩ دقائق خلال ربع ساعة.
+                            <span class="name">نورة · تقييم العقار</span>
+                            مَسار Sakani — مَشروع نسائم الياسمين، فيلا دوبلكس مُسَلَّمة. السعر المُسَجَّل ١.١٦ مليون، السعر المُعلَن ١.١ مليون — فارق ٥.٢٪ ضمن المقبول. <strong>نسبة التمويل ٧٣٪.</strong>
                         </div>
                     </div>
                     <div class="line">
                         <div class="line-avatar" style="background:#00C853">م</div>
                         <div class="line-content" style="border-inline-start-color:#00C853">
-                            <span class="name">المنسق · القرار</span>
-                            <strong>تنفيذ خطة نورة.</strong> التكلفة: ٢٥ ريال (مكافأة خالد). الوفر: ١,٨٠٠ ريال غرامات + رضا VIP محفوظ. <strong style="color:var(--orchestrator)">ROI = ٧٢×</strong>. ضمن صلاحياتي — لا حاجة للمدير.
+                            <span class="name">المنسّق · التوصية النهائية</span>
+                            <strong>مُوافقة أوّلية.</strong> كل المؤشرات إيجابية: SIMAH ممتاز، DBR منخفض، جهة عمل شبه حكومية ثابتة، عقار في مَشروع مُعتَمَد، LTV مُريحة. <strong style="color:var(--orchestrator)">لا شروط · لا مخاطر متبقّية.</strong>
                         </div>
                     </div>
                 </div>
             </div>
         </article>
 
-        <!-- Vignette 2 -->
+        <!-- Vignette 2 — Mid-DBR conditional approval -->
         <article class="vignette reveal">
             <div class="vignette-time">
-                ١٢:٠٠
-                <span class="meta">قبل أذان الظهر بـ ١٥ دقيقة</span>
+                ٠٢
+                <span class="meta">DBR قريب من الحدّ · موافقة مشروطة</span>
             </div>
             <div class="vignette-body">
-                <h3>بروتوكول الصلاة — ٢٢ عميلاً ينتظرون</h3>
+                <h3>منيرة الدوسري — معلّمة حكومية، طلب ٧٠٠ ألف ريال لشقّة في حي الياسمين</h3>
                 <p class="setup">
-                    أذان الظهر في ١٢:١٥. الفرع يحتاج إغلاقاً مؤقتاً ٢٥ دقيقة. ٢٢ عميلاً في الانتظار، ٤ منهم جدد متوقعون قبل الإغلاق. سؤال واحد: من نخدم، من نؤجل، وكيف لا نُغضب أحداً؟
-                </p>
-                <div class="dialogue">
-                    <div class="line">
-                        <div class="line-avatar" style="background:#2979FF">خ</div>
-                        <div class="line-content" style="border-inline-start-color:#2979FF">
-                            <span class="name">خالد · عملاء</span>
-                            إشعار WhatsApp قبل ١٠ دقائق لجميع المنتظرين: <em>"نستأنف ١٢:٤٠ — وقت الصلاة"</em>. لمن لا يقدر ينتظر، خيار حجز موعد مرتجع بدون طابور.
-                        </div>
-                    </div>
-                    <div class="line">
-                        <div class="line-avatar" style="background:#FF1744">س</div>
-                        <div class="line-content" style="border-inline-start-color:#FF1744">
-                            <span class="name">سارة · تحليلات</span>
-                            في الإغلاقات السابقة: ٣٨٪ يتركون، ٦٢٪ ينتظرون. مع الإشعار المسبق، الرضا يرتفع من ٤.١ إلى ٤.٤ من ٥.
-                        </div>
-                    </div>
-                    <div class="line">
-                        <div class="line-avatar" style="background:#00C853">م</div>
-                        <div class="line-content" style="border-inline-start-color:#00C853">
-                            <span class="name">المنسق · القرار</span>
-                            إشعار جماعي ١٢:٠٥. شاشة S1 تعرض عداداً تنازلياً. الكيوسكات تبقى شغالة طوال الفترة. كل القرارات تلقائية — صفر تدخل بشري.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- Vignette 3 -->
-        <article class="vignette reveal">
-            <div class="vignette-time">
-                ١٦:٤٥
-                <span class="meta">تصعيد حرج · مخاطر تسرّب</span>
-            </div>
-            <div class="vignette-body">
-                <h3>عبدالرحمن العمري يهدد بإغلاق حسابه</h3>
-                <p class="setup">
-                    عميل Premium، قيمة سنوية ٦٤٠ ألف ريال، تصنيف <em>high churn risk</em>. صوته عالٍ في الفرع — قرض عقاري قدّم له طلباً قبل ٣ ساعات بلا رد. القرار الخطأ هنا يكلّف البنك ١.٨٤ مليون ريال (هو + ٨ من أقاربه يتركون البنك معه).
+                    راتب ١٦.٥ ألف ريال، التزامات شهرية ٤.٢ ألف بسبب قرض شخصي قائم، خبرة ١٤٤ شهراً في وزارة التعليم. الملفّ آمن، لكنّه يَستحقّ شروطاً قبل الاعتماد.
                 </p>
                 <div class="dialogue">
                     <div class="line">
                         <div class="line-avatar" style="background:#FF1744">س</div>
                         <div class="line-content" style="border-inline-start-color:#FF1744">
-                            <span class="name">سارة · تحليلات</span>
-                            خسارة عبدالرحمن = ٦٤٠ ألف ريال + احتمال ٣٥٪ يأخذ معه ٨ عملاء آخرين قيمتهم ١.٢ مليون. <strong>إجمالي المخاطر: ١.٨٤ مليون ريال سنوياً.</strong> التكلفة المعقولة لإنقاذه: حتى ٥,٠٠٠ ريال.
+                            <span class="name">سارة · الجدارة الائتمانية</span>
+                            درجة سمة ٧٧١ — شريحة منخفضة المخاطر. لكن <strong>DBR بعد التمويل = ٤٩.١٪</strong>، قَريب من حدّ ساما. الحُكم: مؤهَّل بشروط — يَحتاج هامش أمان أكبر.
                         </div>
                     </div>
                     <div class="line">
                         <div class="line-avatar" style="background:#FF6D00">ف</div>
                         <div class="line-content" style="border-inline-start-color:#FF6D00">
-                            <span class="name">فهد · عمليات</span>
-                            طلبه عالق بسبب خطأ نظامي. تعويض +٥٠٠ ضمن صلاحيات المنسق. أكثر من ذلك يحتاج موافقة المدير ماجد — وهو متاح في مكتبه.
+                            <span class="name">فهد · الهوية والأهلية</span>
+                            الهوية صالحة. جهة العمل (وزارة التعليم) مُتطابقة. الراتب المُتحقَّق منه يُساوي المُصَرَّح به تماماً. <strong>الجهة وَجِّهة حكومية مُستقرّة — لا موانع.</strong>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="line-avatar" style="background:#AA00FF">ن</div>
+                        <div class="line-content" style="border-inline-start-color:#AA00FF">
+                            <span class="name">نورة · تقييم العقار</span>
+                            مَسار Sakani — السعر المُعلَن ٩٥٠ ألف، السعر العادل ١.٠٠ مليون. لا تَباين سعري. <strong>نسبة التمويل ٦٩.٨٪</strong> ضمن الحدود المُريحة.
                         </div>
                     </div>
                     <div class="line">
                         <div class="line-avatar" style="background:#00C853">م</div>
                         <div class="line-content" style="border-inline-start-color:#00C853">
-                            <span class="name">المنسق · القرار</span>
-                            <strong>تصعيد جزئي للمدير.</strong> ضمن صلاحياتي: استقبال فوري في قسم VIP، معالجة الطلب، تعويض ٥٠٠ ريال. <strong>يحتاج المدير:</strong> تعويض ١,٥٠٠ + ترقية VIP ٦ أشهر — أرسلت تنبيهاً مع تحليل سارة. <strong style="color:var(--gold)">ROI = ١,٢٢٧×</strong>. أنتظر ٣ دقائق.
+                            <span class="name">المنسّق · التوصية النهائية</span>
+                            <strong>مُوافقة مشروطة.</strong> الشروط الثلاثة: تأمين حماية ائتماني إلزامي، مراجعة دورية كل ٦ أشهر، عدم الحصول على التزامات جديدة لمدّة سنتين. <strong style="color:var(--gold)">المخاطر المتبقّية</strong>: هامش أمان ضيّق على DBR، وتأكيد استمرارية الراتب الحكومي.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Vignette 3 — Salary verification difference → conditional initial approval (needs human review) -->
+        <article class="vignette reveal">
+            <div class="vignette-time">
+                ٠٣
+                <span class="meta">فرق راتب · موافقة مبدئية مشروطة</span>
+            </div>
+            <div class="vignette-body">
+                <h3>تركي الشمري — صاحب عمل حُرّ، طلب ٦٥٠ ألف لعقار مستقلّ</h3>
+                <p class="setup">
+                    راتب مُصَرَّح ١٤ ألف ريال، التزامات ٥.٨ ألف، تَجربة عمل حُرّ ١٨ شهراً فقط، عقار غير مُسَجَّل في Sakani. الوكلاء يَكتشفون فَرقاً في الراتب المُتحقَّق منه — لكنّ ذلك ليس سَبباً للرفض، بل للتأكّد.
+                </p>
+                <div class="dialogue">
+                    <div class="line">
+                        <div class="line-avatar" style="background:#FF1744">س</div>
+                        <div class="line-content" style="border-inline-start-color:#FF1744">
+                            <span class="name">سارة · الجدارة الائتمانية</span>
+                            درجة سمة ٦٤٥ — شريحة متوسّطة. <strong>DBR بعد التمويل ٥٢.٤٪</strong> — قَريب من حدّ ساما. الحُكم: مَشروط، يَحتاج تأكيداً بشرياً قبل الاعتماد.
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="line-avatar" style="background:#FF6D00">ف</div>
+                        <div class="line-content" style="border-inline-start-color:#FF6D00">
+                            <span class="name">فهد · الهوية والأهلية</span>
+                            الهوية صالحة. جهة العمل مَطابقة مَبدئياً (اختلاف بسيط في صياغة الاسم بين السجل التجاري والمُصَرَّح به). <strong>الراتب المُتحقَّق منه أقلّ من المُصَرَّح بنسبة ٧٪</strong> — يَحتاج تأكيداً مع كَشف بنكي.
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="line-avatar" style="background:#AA00FF">ن</div>
+                        <div class="line-content" style="border-inline-start-color:#AA00FF">
+                            <span class="name">نورة · تقييم العقار</span>
+                            مَسار البورصة العقارية — مُتوسّط مَبيعات الحيّ ٨٨٠ ألف، تَقدير المُقَيِّم المستقلّ ٩١٠ ألف. <strong>القيمة العادلة ٨٩٥ ألف</strong>، انحراف ضمن ٤٪ — مَقبول.
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="line-avatar" style="background:#00C853">م</div>
+                        <div class="line-content" style="border-inline-start-color:#00C853">
+                            <span class="name">المنسّق · التوصية النهائية</span>
+                            <strong>مُوافقة مبدئية مشروطة.</strong> + شارة ثانوية: <span style="color:var(--warn);font-weight:700">تَتطلّب مُراجعة مسؤول ائتماني قبل الاعتماد النهائي</span>. <strong style="color:var(--gold)">السبب:</strong> فرق الراتب يَحتاج تأكيداً، وجهة العمل مَطابقة مَبدئياً (ليست كياناً مختلفاً). الإجراءات المطلوبة من المسؤول الائتماني: تأكيد الراتب الفعلي، مَطابقة السجل التجاري، التأكّد من عدم وجود التزامات غير مُصَرَّح بها.
                         </div>
                     </div>
                 </div>
@@ -1429,20 +1437,20 @@ section {
 
         <div class="arch-grid reveal-stagger">
             <article class="arch-card" style="--accent:#FF1744">
-                <div class="role">ANALYTICS</div>
+                <div class="role">CREDIT</div>
                 <h3>سارة</h3>
-                <p class="desc">أرقام، توقعات، ROI. تقارن اليوم بأمس وتحسب الأثر المالي لكل قرار.</p>
+                <p class="desc">تقييم الجدارة الائتمانية. تَحسب درجة سمة، نسبة الاستقطاع بعد التمويل، وتُقارنهما بحدود ساما.</p>
                 <div class="specs">
                     <div class="spec-row"><span>Model</span><span class="v">DeepSeek V3.2</span></div>
-                    <div class="spec-row"><span>Temperature</span><span class="v">0.2</span></div>
+                    <div class="spec-row"><span>Temperature</span><span class="v">0.3</span></div>
                     <div class="spec-row"><span>Cost / decision</span><span class="v">~$0.003</span></div>
                 </div>
             </article>
 
             <article class="arch-card" style="--accent:#FF6D00">
-                <div class="role">OPERATIONS</div>
+                <div class="role">IDENTITY</div>
                 <h3>فهد</h3>
-                <p class="desc">يطبّق قواعد SLA بصرامة. يعرف الموظفين والصلاحيات ومتى يصعّد.</p>
+                <p class="desc">التحقق من الهوية والأهلية القانونية. يُطابق المستندات مع السجلات، يَكشف الموانع، ويُميِّز الفرق البسيط في الصياغة عن الكيان المختلف.</p>
                 <div class="specs">
                     <div class="spec-row"><span>Model</span><span class="v">GPT-4o mini</span></div>
                     <div class="spec-row"><span>Temperature</span><span class="v">0.3</span></div>
@@ -1451,33 +1459,33 @@ section {
             </article>
 
             <article class="arch-card" style="--accent:#2979FF">
-                <div class="role">CUSTOMER</div>
+                <div class="role">SUPPORT</div>
                 <h3>خالد</h3>
-                <p class="desc">يقرأ مشاعر العميل ويرد باللهجة السعودية الدافئة. حياك الله، تأمر، لا تصرنا.</p>
+                <p class="desc">قدرة العميل والدعم. يَفحص احتياجات الإتاحة وترتيبات الموافقة، أَخلاقياً وبدون أن تَدخل أيّ منها في قرار الجدارة.</p>
                 <div class="specs">
                     <div class="spec-row"><span>Model</span><span class="v">Qwen3 80B Instruct</span></div>
-                    <div class="spec-row"><span>Temperature</span><span class="v">0.7</span></div>
+                    <div class="spec-row"><span>Temperature</span><span class="v">0.4</span></div>
                     <div class="spec-row"><span>Cost / decision</span><span class="v">~$0.0015</span></div>
                 </div>
             </article>
 
             <article class="arch-card" style="--accent:#AA00FF">
-                <div class="role">QUEUE</div>
+                <div class="role">PROPERTY</div>
                 <h3>نورة</h3>
-                <p class="desc">تخطيط استراتيجي إبداعي للطوابير. تتنبأ بالذروات وتقترح حلولاً متعددة المراحل.</p>
+                <p class="desc">تقييم العقار والضمان. مَسار Sakani للمَشاريع المُسَجَّلة، أو البورصة العقارية والمُقَيِّم المستقلّ للعقارات المستقلّة. تُحَسِّب نسبة التمويل وتَكشف الفروق.</p>
                 <div class="specs">
                     <div class="spec-row"><span>Model</span><span class="v">Claude Sonnet 4.5</span></div>
-                    <div class="spec-row"><span>Temperature</span><span class="v">0.6</span></div>
+                    <div class="spec-row"><span>Temperature</span><span class="v">0.4</span></div>
                     <div class="spec-row"><span>Cost / decision</span><span class="v">~$0.025</span></div>
                 </div>
             </article>
 
             <article class="arch-card" style="--accent:#00C853">
                 <div class="role">ORCHESTRATOR</div>
-                <h3>المنسق</h3>
-                <p class="desc">يوازن آراء الأربعة، يطبّق حدود الصلاحيات، ويصعّد للمدير عند الحاجة فقط.</p>
+                <h3>المنسّق</h3>
+                <p class="desc">التوصية النهائية. يَدمج آراء الأربعة، يُصدر إحدى أربع توصيات (موافقة أوّلية / مشروطة / مبدئية مشروطة / غير موصى)، ويُحَدِّد الإجراءات المطلوبة من المسؤول الائتماني.</p>
                 <div class="specs">
-                    <div class="spec-row"><span>Model</span><span class="v">Claude Opus 4.7</span></div>
+                    <div class="spec-row"><span>Model</span><span class="v">Claude Opus 4</span></div>
                     <div class="spec-row"><span>Temperature</span><span class="v">0.2</span></div>
                     <div class="spec-row"><span>Cost / decision</span><span class="v">~$0.05</span></div>
                 </div>
@@ -1491,7 +1499,7 @@ section {
     <div class="container">
         <div class="section-head reveal">
             <span class="eyebrow">التميّز التقني</span>
-            <h2>منجز ليس روبوت محادثة. مقارنة أمينة مع البدائل.</h2>
+            <h2>مُنجِز ليس مجرّد تقييم آلي. مقارنة أمينة مع البدائل.</h2>
         </div>
 
         <div class="reveal" style="overflow-x:auto">
@@ -1499,47 +1507,47 @@ section {
                 <thead>
                     <tr>
                         <th>القدرة</th>
-                        <th class="munjiz">منجز</th>
+                        <th class="munjiz">مُنجِز</th>
+                        <th>محرّك قواعد تقليدي</th>
                         <th>روبوت محادثة عام</th>
-                        <th>BPM تقليدي</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>HETEROGENEOUS MODELS</td>
-                        <td class="yes detail">٥ نماذج مختارة لكل دور</td>
+                        <td>تخصّص لكل عامل قرار</td>
+                        <td class="yes detail">٥ نماذج مختارة لكل تَخصّص</td>
+                        <td class="no detail">قواعد ثابتة بلا نماذج</td>
                         <td class="no detail">نموذج واحد لكل شيء</td>
-                        <td class="no detail">قواعد ثابتة، بلا نماذج</td>
                     </tr>
                     <tr>
-                        <td>SAUDI DIALECT</td>
-                        <td class="yes detail">Qwen3 80B عربي أصيل</td>
-                        <td class="partial detail">إنجليزي مترجَم</td>
-                        <td class="no detail">قوالب ثابتة</td>
+                        <td>توصية مَدعومة بالأدلة</td>
+                        <td class="yes detail">شروط ومخاطر متبقّية مَكتوبة</td>
+                        <td class="partial detail">سبب رفض / قبول واحد</td>
+                        <td class="no detail">بلا سياق مالي</td>
                     </tr>
                     <tr>
-                        <td>AUTHORITY LIMITS</td>
-                        <td class="yes detail">حدود مالية + تصعيد تلقائي</td>
-                        <td class="no detail">يقرر بلا حدود</td>
-                        <td class="partial detail">يدوي، بطيء</td>
+                        <td>الاستجابة لاختلاف الصياغة</td>
+                        <td class="yes detail">يُميِّز فرق الصياغة عن فرق الكيان</td>
+                        <td class="no detail">رفض على أيّ اختلاف</td>
+                        <td class="partial detail">يَعتمد على المُدخل</td>
                     </tr>
                     <tr>
-                        <td>AUDIT TRAIL</td>
-                        <td class="yes detail">سجل كامل غير قابل للتعديل</td>
-                        <td class="partial detail">لوغات أساسية</td>
-                        <td class="yes detail">موجود لكن منفصل</td>
+                        <td>سجلّ تَدقيق كامل</td>
+                        <td class="yes detail">كل قرار وكيل مُسجَّل بِنَصّه</td>
+                        <td class="yes detail">لوغ الإجراءات</td>
+                        <td class="partial detail">لوغ المحادثة فقط</td>
                     </tr>
                     <tr>
-                        <td>SAMA / PDPL</td>
-                        <td class="yes detail">مصمَّم وفق الإطار من البداية</td>
+                        <td>SAMA / PDPL · بيانات داخل المملكة</td>
+                        <td class="yes detail">مَصمَّم وفق الإطار من البداية</td>
+                        <td class="partial detail">يَحتاج تَكويناً يَدوياً</td>
                         <td class="no detail">سحابة خارجية</td>
-                        <td class="partial detail">يحتاج تكوين يدوي</td>
                     </tr>
                     <tr>
-                        <td>DECISION SPEED</td>
-                        <td class="yes detail">أقل من ٢ ثانية</td>
-                        <td class="yes detail">سريع لكن بدون قرار</td>
-                        <td class="no detail">دقائق إلى ساعات</td>
+                        <td>سُرعة التوصية</td>
+                        <td class="yes detail">أقل من دقيقة لخمسة وكلاء</td>
+                        <td class="partial detail">ثوانٍ معدودة لكن بلا تحليل</td>
+                        <td class="yes detail">سريع لكن بلا قرار</td>
                     </tr>
                 </tbody>
             </table>
@@ -1547,20 +1555,20 @@ section {
 
         <div class="section-head reveal" style="margin-top:5rem">
             <span class="eyebrow">التكامل مع الأنظمة القائمة</span>
-            <h2>منجز يعمل فوق ما تملكه — لا يستبدله.</h2>
+            <h2>مُنجِز يَعمل فوق نظام التمويل العقاري لديك — لا يَستبدله.</h2>
         </div>
 
         <div class="integrations reveal-stagger">
-            <div class="integration"><div class="acro">QMS</div><div class="name">Queue Management</div></div>
+            <div class="integration"><div class="acro">LOS</div><div class="name">Loan Origination</div></div>
             <div class="integration"><div class="acro">CBS</div><div class="name">Core Banking</div></div>
             <div class="integration"><div class="acro">CRM</div><div class="name">Customer 360</div></div>
-            <div class="integration"><div class="acro">WFM</div><div class="name">Workforce Mgmt</div></div>
-            <div class="integration"><div class="acro">KSK</div><div class="name">Self-Service Kiosks</div></div>
-            <div class="integration"><div class="acro">SIG</div><div class="name">Digital Signage</div></div>
-            <div class="integration"><div class="acro">COM</div><div class="name">WhatsApp · SMS</div></div>
-            <div class="integration"><div class="acro">HR</div><div class="name">Staff Schedule</div></div>
-            <div class="integration"><div class="acro">CV</div><div class="name">Computer Vision</div></div>
-            <div class="integration"><div class="acro">PT</div><div class="name">Prayer Times API</div></div>
+            <div class="integration"><div class="acro">SIM</div><div class="name">SIMAH / Bayan</div></div>
+            <div class="integration"><div class="acro">SDA</div><div class="name">SDAIA · Yakeen</div></div>
+            <div class="integration"><div class="acro">SKN</div><div class="name">Sakani Portal</div></div>
+            <div class="integration"><div class="acro">REX</div><div class="name">البورصة العقارية</div></div>
+            <div class="integration"><div class="acro">VAL</div><div class="name">Independent Valuers</div></div>
+            <div class="integration"><div class="acro">DOC</div><div class="name">Document OCR</div></div>
+            <div class="integration"><div class="acro">ABD</div><div class="name">Accessibility Authority</div></div>
         </div>
 
         <div class="compliance-badges reveal">
@@ -1569,7 +1577,7 @@ section {
             <span class="badge">✓ PDPL</span>
             <span class="badge">✓ KSA Data Residency</span>
             <span class="badge">⏳ ISO 27001 (في التدقيق)</span>
-            <span class="badge">✓ PCI-DSS Ready</span>
+            <span class="badge">✓ غير ملزم — قرار المسؤول الائتماني نهائي</span>
         </div>
     </div>
 </section>
@@ -1579,10 +1587,10 @@ section {
     <div class="container">
         <div class="footer-grid">
             <div class="footer-brand">
-                <a href="#" class="logo" aria-label="مُنجز Branch AI">
-                    <img class="logo-img" src="munjiz-logo.webp" alt="Munjiz" style="height:48px;">
+                <a href="/landing/" class="logo" aria-label="مُنجِز">
+                    <img class="logo-img" data-logo src="{% static 'munjiz-logo.webp' %}" alt="Munjiz" style="height:48px;">
                 </a>
-                <p class="tagline">ذكاء كل فرع، تحت رقابة كل مدير.</p>
+                <p class="tagline">قرار ائتماني مَدعوم بالأدلة، تحت إشراف المسؤول الائتماني.</p>
                 <form class="footer-newsletter" id="newsletterForm">
                     <input type="email" placeholder="بريدك المهني" aria-label="البريد للنشرة">
                     <button type="submit">اشتراك</button>
@@ -1592,10 +1600,10 @@ section {
             <div class="footer-col">
                 <h4>المنتج</h4>
                 <ul>
+                    <li><a href="/">جرّب التقييم الآن</a></li>
                     <li><a href="#architecture">المعمارية</a></li>
                     <li><a href="#integrations">التكاملات</a></li>
-                    <li><a href="#proof">النتائج</a></li>
-                    <li><a href="#">الخارطة</a></li>
+                    <li><a href="#narrative">حالات تجريبية</a></li>
                 </ul>
             </div>
 
@@ -1604,16 +1612,16 @@ section {
                 <ul>
                     <li><a href="#">SAMA Framework</a></li>
                     <li><a href="#">PDPL</a></li>
-                    <li><a href="#">Audit Trail</a></li>
-                    <li><a href="#">Security</a></li>
+                    <li><a href="#">سجلّ التدقيق</a></li>
+                    <li><a href="#">حدود الصلاحية</a></li>
                 </ul>
             </div>
 
         </div>
 
         <div class="legal">
-            <span>© ٢٠٢٦ منجز للذكاء الاصطناعي · سجل تجاري ١٠١٠XXXXXX</span>
-            <span class="sama">⚠ منجز في مرحلة التجربة التنظيمية. غير مرخّصة من ساما حالياً.</span>
+            <span>© ٢٠٢٦ مُنجِز للذكاء الاصطناعي · سجل تجاري ١٠١٠XXXXXX</span>
+            <span class="sama">⚠ التوصيات المُنتَجة مبدئية وتَخضع لمراجعة مسؤول ائتماني قبل الاعتماد النهائي.</span>
             <span>Made in Riyadh · KSA</span>
         </div>
     </div>
@@ -1628,9 +1636,7 @@ section {
         const t = root.getAttribute('data-theme') || 'dark';
         document.querySelectorAll('img[data-logo]').forEach(img => {
             const want = t === 'light' ? 'munjiz-logo-clean.png' : 'munjiz-logo.webp';
-            // Use relative path for landing.html (file://) or absolute under /static/ for django
-            const isStatic = location.pathname.includes('/static/');
-            img.src = isStatic ? '/static/' + want : want;
+            img.src = '/static/' + want;
         });
     }
     syncLogos();
@@ -1665,11 +1671,11 @@ document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(e
 
 // ============== Hero Agent Network ==============
 const AGENTS = {
-    analytics:    { name:'سارة',   role:'وكيلة التحليلات',     model:'DeepSeek V3.2',      temp:'T = 0.2', why:'نموذج استدلال متخصص للأرقام، توقعات ROI، ومقارنات منهجية بأقل تكلفة.', color:'#FF1744', from:[80,80] },
-    operations:   { name:'فهد',    role:'وكيل العمليات',       model:'GPT-4o mini',        temp:'T = 0.3', why:'سرعة عالية والتزام صارم بقواعد SLA — مثالي لتطبيق السياسات.',  color:'#FF6D00', from:[320,80] },
-    customer:     { name:'خالد',   role:'وكيل خدمة العملاء',    model:'Qwen3 80B Instruct', temp:'T = 0.7', why:'الأقوى عربياً — يتقن اللهجة السعودية الدافئة بطلاقة طبيعية.',     color:'#2979FF', from:[80,320] },
-    queue:        { name:'نورة',   role:'وكيلة ذكاء الطوابير',  model:'Claude Sonnet 4.5',  temp:'T = 0.6', why:'تخطيط استراتيجي إبداعي + قدرة على بناء حلول متعددة المراحل.',   color:'#AA00FF', from:[320,320] },
-    orchestrator: { name:'المنسق', role:'منسق القرارات',         model:'Claude Opus 4.7',    temp:'T = 0.2', why:'استدلال متقدم لموازنة المقايضات واتخاذ القرار النهائي بثقة.',    color:'#00C853', from:[200,200] },
+    analytics:    { name:'سارة',   role:'تقييم الجدارة الائتمانية',           model:'DeepSeek V3.2',      temp:'T = 0.3', why:'نموذج استدلال متخصص بالأرقام لحساب درجة سمة، نسبة الاستقطاع، ومقارنتها بحدود ساما.', color:'#FF1744', from:[80,80] },
+    operations:   { name:'فهد',    role:'التحقّق من الهوية والأهلية',         model:'GPT-4o mini',        temp:'T = 0.3', why:'سريع ودقيق في مَطابقة المستندات مع السجلات والكشف عن الفروق الجوهرية مقابل الصياغية.', color:'#FF6D00', from:[320,80] },
+    customer:     { name:'خالد',   role:'قدرة العميل والدعم',                model:'Qwen3 80B Instruct', temp:'T = 0.4', why:'الأقوى عربياً لِفَهم احتياجات الإتاحة وترتيبات الموافقة بأخلاقية ودقة.',     color:'#2979FF', from:[80,320] },
+    queue:        { name:'نورة',   role:'تقييم العقار والضمان',               model:'Claude Sonnet 4.5',  temp:'T = 0.4', why:'تَخطيط مَنهجي لتحليل مَسار العقار (Sakani أو البورصة العقارية) وحساب نسبة التمويل.',   color:'#AA00FF', from:[320,320] },
+    orchestrator: { name:'المنسّق', role:'التوصية النهائية',                  model:'Claude Opus 4',      temp:'T = 0.2', why:'استدلال متقدم لِدَمج آراء الوكلاء واختيار التوصية والشروط والمخاطر المتبقّية.',    color:'#00C853', from:[200,200] },
 };
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const particlesG = document.getElementById('particles');

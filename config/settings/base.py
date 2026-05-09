@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'apps.queue_system',
     'apps.analytics',
     'apps.dashboard',
+    'apps.mortgage',
+    'apps.compliance',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +119,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Templates dirs — make sure mortgage templates are picked up
+# (apps' own templates dirs work via APP_DIRS=True already)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

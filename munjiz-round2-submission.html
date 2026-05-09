@@ -557,15 +557,18 @@ b,strong{font-weight:600}
 
       <h1 class="title">MUNJIZ</h1>
       <div class="title-rule"></div>
-      <div class="subtitle">Multi-Agent AI Dashboard for Saudi Bank Branches</div>
+      <div class="subtitle">Multi-Agent AI for Saudi Mortgage Pre-Approval</div>
 
       <p class="desc">
         Five specialized AI agents — <b>Sara, Fahad, Khalid, Nora</b> and the
-        <b>Orchestrator</b> — reason in real time, coordinate over an
-        <span class="gold">A2A protocol</span>, and stream live decisions to a
-        branch operations console. Munjiz automates up to
-        <span class="gold">85%</span> of daily branch decisions so managers
-        focus on strategy and exceptions.
+        <b>Orchestrator</b> — review every mortgage application end-to-end:
+        <b>credit</b>, <b>identity &amp; legal</b>, <b>capacity</b>, and
+        <b>collateral</b>. They coordinate over an
+        <span class="gold">A2A protocol</span>, query
+        <b>SIMAH</b>, <b>Absher / Yakeen</b> and <b>Sakani</b>, and stream a
+        structured pre-approval recommendation in
+        <span class="gold">real time</span> — Saudi Arabic native, fully
+        auditable.
       </p>
 
       <div class="stats">
@@ -574,16 +577,16 @@ b,strong{font-weight:600}
           <div class="cap">AI Agents</div>
         </div>
         <div class="stat">
-          <div class="num">85<small>%</small></div>
-          <div class="cap">Decisions Automated</div>
+          <div class="num">4</div>
+          <div class="cap">Recommendation Outcomes</div>
         </div>
         <div class="stat">
-          <div class="num">50<small>+</small></div>
-          <div class="cap">Daily Decisions / Branch</div>
+          <div class="num">&lt;3<small>min</small></div>
+          <div class="cap">Avg Pre-Approval Time</div>
         </div>
         <div class="stat">
           <div class="num">RT</div>
-          <div class="cap">Real-Time WebSocket</div>
+          <div class="cap">Real-Time Streaming</div>
         </div>
       </div>
     </div>
@@ -623,12 +626,16 @@ b,strong{font-weight:600}
   </div>
 
   <p class="lead">
-    Munjiz is a <b>hierarchical multi-agent system</b>. A central
-    <span class="gold">Orchestrator</span> coordinates four specialist agents
-    over an <b>A2A (agent-to-agent) protocol</b>. Every agent has access to
-    internal <b>tools</b>, queries <b>LLM APIs</b> through OpenRouter, and writes
-    each reasoning step into <b>memory</b> — Redis for live context,
-    PostgreSQL for an immutable, replayable audit log.
+    Munjiz is a <b>hierarchical multi-agent system</b> for mortgage
+    pre-approval. A loan officer submits an applicant; the central
+    <span class="gold">Orchestrator</span> dispatches the case to four
+    specialist agents — <b>Credit, Identity, Capacity, Collateral</b> — over an
+    <b>A2A protocol</b>. Each agent calls Saudi mortgage tools (SIMAH,
+    Absher/Yakeen, employer verification, Sakani, property valuation),
+    reasons via its dedicated LLM, and persists every step to
+    <b>memory</b> — Redis for live context, PostgreSQL as an immutable,
+    replayable audit log. The Orchestrator merges the outputs into a
+    structured recommendation and streams it back live.
   </p>
 
   <div class="arch-frame">
@@ -647,11 +654,11 @@ b,strong{font-weight:600}
               fill="#F5F1EA" stroke="#1A1A1F" stroke-width="1.2"/>
         <text x="550" y="44" text-anchor="middle"
               font-family="JetBrains Mono" font-size="9.5" font-weight="700"
-              letter-spacing="2" fill="#B8945E">// USER · BRANCH MANAGER</text>
+              letter-spacing="2" fill="#B8945E">// USER · LOAN OFFICER</text>
         <line x1="430" y1="54" x2="670" y2="54" stroke="#D0C7B0" stroke-width="0.6"/>
         <text x="550" y="71" text-anchor="middle"
               font-family="IBM Plex Sans" font-size="14" font-weight="600"
-              fill="#1A1A1F">Live Dashboard · RTL · WebSocket</text>
+              fill="#1A1A1F">Mortgage Review Console · RTL</text>
       </g>
 
       <!-- arrow user → orch -->
@@ -692,7 +699,7 @@ b,strong{font-weight:600}
       <text x="200" y="226" text-anchor="middle" font-family="IBM Plex Sans"
             font-size="15" font-weight="700" fill="#1A1A1F">Sara</text>
       <text x="200" y="244" text-anchor="middle" font-family="JetBrains Mono"
-            font-size="8" letter-spacing="1.4" fill="#5C5950">ANALYTICS</text>
+            font-size="8" letter-spacing="1.4" fill="#5C5950">CREDIT</text>
 
       <!-- Fahad -->
       <g filter="url(#softShadow)">
@@ -703,7 +710,7 @@ b,strong{font-weight:600}
       <text x="900" y="226" text-anchor="middle" font-family="IBM Plex Sans"
             font-size="15" font-weight="700" fill="#1A1A1F">Fahad</text>
       <text x="900" y="244" text-anchor="middle" font-family="JetBrains Mono"
-            font-size="8" letter-spacing="1.4" fill="#5C5950">OPERATIONS</text>
+            font-size="8" letter-spacing="1.4" fill="#5C5950">IDENTITY</text>
 
       <!-- Khalid -->
       <g filter="url(#softShadow)">
@@ -714,7 +721,7 @@ b,strong{font-weight:600}
       <text x="290" y="416" text-anchor="middle" font-family="IBM Plex Sans"
             font-size="15" font-weight="700" fill="#1A1A1F">Khalid</text>
       <text x="290" y="434" text-anchor="middle" font-family="JetBrains Mono"
-            font-size="8" letter-spacing="1.4" fill="#5C5950">CUSTOMER</text>
+            font-size="8" letter-spacing="1.4" fill="#5C5950">CAPACITY</text>
 
       <!-- Nora -->
       <g filter="url(#softShadow)">
@@ -725,7 +732,7 @@ b,strong{font-weight:600}
       <text x="810" y="416" text-anchor="middle" font-family="IBM Plex Sans"
             font-size="15" font-weight="700" fill="#1A1A1F">Nora</text>
       <text x="810" y="434" text-anchor="middle" font-family="JetBrains Mono"
-            font-size="8" letter-spacing="1.4" fill="#5C5950">QUEUE</text>
+            font-size="8" letter-spacing="1.4" fill="#5C5950">COLLATERAL</text>
 
       <!-- A2A bidirectional links -->
       <line x1="471" y1="208" x2="258" y2="218" stroke="#B8945E" stroke-width="1.3"
@@ -754,15 +761,15 @@ b,strong{font-weight:600}
             font-weight="700" letter-spacing="2.4" fill="#B8945E">// TOOLS</text>
       <line x1="60" y1="520" x2="300" y2="520" stroke="#D0C7B0" stroke-width="0.6"/>
       <text x="60" y="540" font-family="IBM Plex Sans" font-size="11"
-            font-weight="500" fill="#1A1A1F">› Branch Operations API</text>
+            font-weight="500" fill="#1A1A1F">› SIMAH Credit API</text>
       <text x="60" y="558" font-family="IBM Plex Sans" font-size="11"
-            font-weight="500" fill="#1A1A1F">› Queue / Snapshot API</text>
+            font-weight="500" fill="#1A1A1F">› Absher / Yakeen ID</text>
       <text x="60" y="576" font-family="IBM Plex Sans" font-size="11"
-            font-weight="500" fill="#1A1A1F">› WhatsApp Notifier</text>
+            font-weight="500" fill="#1A1A1F">› Employer Verification</text>
       <text x="60" y="594" font-family="IBM Plex Sans" font-size="11"
-            font-weight="500" fill="#1A1A1F">› Analytics KPIs</text>
+            font-weight="500" fill="#1A1A1F">› Sakani Property API</text>
       <text x="60" y="612" font-family="IBM Plex Sans" font-size="11"
-            font-weight="500" fill="#1A1A1F">› Customer / VIP Lookup</text>
+            font-weight="500" fill="#1A1A1F">› Property Valuation Service</text>
 
       <!-- ===== LLM APIS (right bottom) ===== -->
       <g filter="url(#softShadow)">
@@ -776,13 +783,13 @@ b,strong{font-weight:600}
       <text x="800" y="540" font-family="IBM Plex Sans" font-size="10.5"
             fill="#1A1A1F" font-weight="500">· Claude Opus 4.7  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[ORCH]</tspan></text>
       <text x="800" y="558" font-family="IBM Plex Sans" font-size="10.5"
-            fill="#1A1A1F" font-weight="500">· Claude Sonnet 4.5  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[NORA]</tspan></text>
+            fill="#1A1A1F" font-weight="500">· Claude Sonnet 4.5  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[COLLATERAL]</tspan></text>
       <text x="800" y="576" font-family="IBM Plex Sans" font-size="10.5"
-            fill="#1A1A1F" font-weight="500">· Qwen3 80B  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[KHALID]</tspan></text>
+            fill="#1A1A1F" font-weight="500">· Qwen3 80B  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[CAPACITY]</tspan></text>
       <text x="800" y="594" font-family="IBM Plex Sans" font-size="10.5"
-            fill="#1A1A1F" font-weight="500">· DeepSeek V3.2  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[SARA]</tspan></text>
+            fill="#1A1A1F" font-weight="500">· DeepSeek V3.2  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[CREDIT]</tspan></text>
       <text x="800" y="612" font-family="IBM Plex Sans" font-size="10.5"
-            fill="#1A1A1F" font-weight="500">· GPT-4o mini  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[FAHAD]</tspan></text>
+            fill="#1A1A1F" font-weight="500">· GPT-4o mini  <tspan fill="#928D7E" font-family="JetBrains Mono" font-size="8" letter-spacing="1">[IDENTITY]</tspan></text>
 
       <!-- ===== MEMORY (center bottom) ===== -->
       <g filter="url(#softShadow)">
@@ -847,13 +854,13 @@ b,strong{font-weight:600}
       <div class="icon">A</div>
       <span class="lbl">// AGENTS</span>
       <div class="name">5 Specialized Agents</div>
-      <div class="desc">Orchestrator + Sara, Fahad, Khalid, Nora — each a domain expert with its own LLM and prompt.</div>
+      <div class="desc">Orchestrator + Sara (Credit), Fahad (Identity), Khalid (Capacity), Nora (Collateral) — each a domain expert with its own LLM and prompt.</div>
     </div>
     <div class="comp">
       <div class="icon">T</div>
       <span class="lbl">// TOOLS</span>
-      <div class="name">Internal APIs</div>
-      <div class="desc">Branch ops, queue snapshot, WhatsApp notifier, analytics, customer / VIP lookup.</div>
+      <div class="name">Saudi Mortgage APIs</div>
+      <div class="desc">SIMAH credit, Absher / Yakeen ID, employer verification, Sakani property, third-party valuation services.</div>
     </div>
     <div class="comp">
       <div class="icon">L</div>
@@ -871,10 +878,10 @@ b,strong{font-weight:600}
 
   <div class="flow">
     <ol>
-      <li><b>Trigger</b>Manager picks a scenario or a live event hits the dashboard; the request travels over WebSocket to the Orchestrator.</li>
-      <li><b>Coordinate</b>Orchestrator dispatches sub-tasks to specialist agents over the A2A protocol, by domain.</li>
-      <li><b>Reason</b>Each agent calls its LLM via OpenRouter, queries internal tools, and persists its reasoning to memory.</li>
-      <li><b>Decide &amp; Stream</b>Orchestrator merges outputs, enforces authority limits, and streams the final decision back live.</li>
+      <li><b>Intake</b>Loan officer submits applicant data + property + documents; the case enters the Orchestrator over WebSocket.</li>
+      <li><b>Dispatch</b>Orchestrator routes the case to Credit, Identity, Capacity and Collateral agents over the A2A protocol.</li>
+      <li><b>Reason</b>Each agent queries its mortgage tools (SIMAH, Absher, Sakani…), runs its LLM, and persists structured findings to memory.</li>
+      <li><b>Recommend</b>Orchestrator merges agent outputs into a structured recommendation — initial / conditional / human-review / not-recommended — and streams it live.</li>
     </ol>
   </div>
 
@@ -911,38 +918,39 @@ b,strong{font-weight:600}
         <span class="ix">// 01 · CAPABILITIES</span>
       </div>
       <p>
-        Munjiz observes the live state of a Saudi bank branch — queue length,
-        wait times, SLA compliance, kiosk usage, staff availability, VIP arrivals
-        — and continuously <b>plans, predicts, and acts</b> through five
-        cooperating agents. It speaks <b>Saudi Arabic</b> natively, runs in real
-        time on a manager-facing dashboard, and replaces
-        <span class="gold">50+ daily reactive decisions</span> with proactive,
-        explainable recommendations.
+        Munjiz reviews mortgage applications end-to-end. It ingests the
+        applicant's profile, property details and uploaded documents; runs
+        five-agent reasoning across credit, identity, capacity and collateral;
+        and produces a <b>structured pre-approval recommendation</b> with
+        explicit conditions, residual risks and a human-review flag. It speaks
+        <b>Saudi Arabic</b> natively, integrates with SIMAH, Absher/Yakeen
+        and Sakani, and writes every reasoning step into a
+        <span class="gold">replayable, compliance-ready audit log</span>.
       </p>
       <div class="cap-grid">
         <div class="cap-item">
-          <div class="glyph">Q</div>
-          <div class="body"><b>Queue planning</b>multi-phase forecasting, peak-hour and prayer-time mitigation.</div>
+          <div class="glyph">C</div>
+          <div class="body"><b>Credit assessment</b>SIMAH score, DBR after loan, late-payment history, open obligations.</div>
         </div>
         <div class="cap-item">
-          <div class="glyph">S</div>
-          <div class="body"><b>SLA enforcement</b>detects breaches, reallocates staff and kiosks instantly.</div>
+          <div class="glyph">I</div>
+          <div class="body"><b>Identity &amp; legal</b>Absher / Yakeen verification, employer match, legal blocker scan.</div>
         </div>
         <div class="cap-item">
-          <div class="glyph">V</div>
-          <div class="body"><b>VIP &amp; customer care</b>emotionally-aware Saudi-Arabic messaging, branch routing.</div>
+          <div class="glyph">K</div>
+          <div class="body"><b>Capacity &amp; support</b>affordability, accessibility / language / legal-rep flags, ethical guardrails.</div>
         </div>
         <div class="cap-item">
-          <div class="glyph">$</div>
-          <div class="body"><b>Financial impact</b>ROI modeling, churn-risk scoring, daily revenue forecasting.</div>
+          <div class="glyph">P</div>
+          <div class="body"><b>Collateral valuation</b>Sakani path, fair-value vs declared price, LTV computation.</div>
         </div>
         <div class="cap-item">
-          <div class="glyph">!</div>
-          <div class="body"><b>Manager escalation</b>only flags cases that exceed agent authority limits.</div>
+          <div class="glyph">R</div>
+          <div class="body"><b>Final recommendation</b>initial / conditional / human review / not recommended — with structured conditions.</div>
         </div>
         <div class="cap-item">
           <div class="glyph">⎙</div>
-          <div class="body"><b>Audit trail</b>every reasoning step is persisted, replayable, compliance-ready.</div>
+          <div class="body"><b>Audit trail</b>every reasoning step persisted, replayable, compliance-ready.</div>
         </div>
       </div>
     </div>
@@ -955,9 +963,10 @@ b,strong{font-weight:600}
       </div>
       <p>
         Each agent acts inside a strict authority envelope. The Orchestrator
-        enforces these limits before any action — <b>auto-executing</b>
-        low-risk operations, <b>proposing</b> higher-stakes ones to the manager,
-        and <b>escalating</b> anything compliance- or money-sensitive.
+        enforces these limits before any output — <b>auto-confirming</b>
+        well-bounded checks, <b>proposing</b> conditional approvals or
+        flagged findings, and <b>escalating</b> anything compliance- or
+        edge-case-sensitive to a human reviewer.
       </p>
       <div class="dec-table-wrap">
         <table class="dec-table">
@@ -970,37 +979,37 @@ b,strong{font-weight:600}
           </thead>
           <tbody>
             <tr>
-              <td class="dec">Re-route customer to a faster kiosk or counter</td>
-              <td class="owner">Nora · Khalid</td>
+              <td class="dec">Confirm SIMAH score &amp; DBR within bands</td>
+              <td class="owner">Sara</td>
               <td><span class="badge auto">Auto</span></td>
             </tr>
             <tr>
-              <td class="dec">Send WhatsApp wait-time notification</td>
-              <td class="owner">Khalid</td>
-              <td><span class="badge auto">Auto</span></td>
-            </tr>
-            <tr>
-              <td class="dec">Reassign a staff member between counters</td>
+              <td class="dec">Verify ID (Absher) &amp; employer match</td>
               <td class="owner">Fahad</td>
-              <td><span class="badge prop">Propose</span></td>
+              <td><span class="badge auto">Auto</span></td>
             </tr>
             <tr>
-              <td class="dec">Open or close a service line for the next hour</td>
-              <td class="owner">Nora · Fahad</td>
-              <td><span class="badge prop">Propose</span></td>
-            </tr>
-            <tr>
-              <td class="dec">VIP exception (priority queue · private room)</td>
-              <td class="owner">Khalid · Orchestrator</td>
-              <td><span class="badge prop">Propose</span></td>
-            </tr>
-            <tr>
-              <td class="dec">Branch-wide SLA breach above threshold</td>
+              <td class="dec">Issue <b>initial approval</b> recommendation</td>
               <td class="owner">Orchestrator</td>
-              <td><span class="badge esc">Escalate</span></td>
+              <td><span class="badge auto">Auto</span></td>
             </tr>
             <tr>
-              <td class="dec">Any monetary decision over authority limit</td>
+              <td class="dec">Propose <b>approval with conditions</b> (extra docs · cap · rate adj.)</td>
+              <td class="owner">Orchestrator</td>
+              <td><span class="badge prop">Propose</span></td>
+            </tr>
+            <tr>
+              <td class="dec">Flag legal-representative or accessibility need</td>
+              <td class="owner">Khalid</td>
+              <td><span class="badge prop">Propose</span></td>
+            </tr>
+            <tr>
+              <td class="dec">Property fair-value discrepancy beyond threshold</td>
+              <td class="owner">Nora</td>
+              <td><span class="badge prop">Propose</span></td>
+            </tr>
+            <tr>
+              <td class="dec">Refer for <b>human review</b> (compliance · edge · not recommended)</td>
               <td class="owner">Orchestrator</td>
               <td><span class="badge esc">Escalate</span></td>
             </tr>
@@ -1071,7 +1080,7 @@ b,strong{font-weight:600}
             coordinating 4 specialized peers.
           </div>
           <ul class="why-list">
-            <li><b>Why multi-agent</b> — branch decisions span analytics, ops, customer care and queue planning; one prompt cannot reason them all coherently.</li>
+            <li><b>Why multi-agent</b> — mortgage decisions span credit, identity, capacity and collateral; one prompt cannot reason them all coherently.</li>
             <li><b>Why hierarchical</b> — the Orchestrator enforces authority limits and produces one consistent decision instead of conflicts.</li>
             <li><b>Why A2A</b> — agents share structured context, debate when needed, and produce an immutable, replayable trail.</li>
             <li><b>Why heterogeneous LLMs</b> — each agent uses the model best suited to its job.</li>
@@ -1106,7 +1115,7 @@ b,strong{font-weight:600}
     <div class="sig-line">MUNJIZ</div>
     <div class="divider"></div>
     <div class="tagline">
-      Intelligence for every branch,<br>oversight for every manager.
+      Intelligent pre-approval,<br>human oversight where it counts.
     </div>
 
     <div class="team-block">

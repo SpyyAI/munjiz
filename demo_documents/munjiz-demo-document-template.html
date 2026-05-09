@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUNJIZ Demo Documents</title>
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #0b1220;
+  color: #111827;
+  font-family: Arial, "Tahoma", sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 20mm;
+  background: #f7f7f4;
+  position: relative;
+  overflow: hidden;
+}
+.page::before {
+  content: "نموذج تجريبي غير رسمي";
+  position: absolute;
+  inset-inline-start: -30mm;
+  top: 126mm;
+  width: 270mm;
+  text-align: center;
+  transform: rotate(-28deg);
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: rgba(168, 85, 247, 0.12);
+  z-index: 0;
+}
+.page > * { position: relative; z-index: 1; }
+.topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  border-bottom: 3px solid #0f766e;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0f766e, #10b981);
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: 800;
+  font-size: 22px;
+}
+.brand h1 {
+  margin: 0;
+  font-size: 20px;
+}
+.brand p,
+.meta p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #6b7280;
+}
+.meta {
+  text-align: left;
+  direction: ltr;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: #374151;
+}
+.demo-strip {
+  margin: 16px 0 22px;
+  padding: 10px 14px;
+  border: 1px solid #d6a758;
+  background: #fff7e6;
+  color: #7c4a03;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.doc-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin: 28px 0 18px;
+}
+.doc-title h2 {
+  margin: 0;
+  font-size: 30px;
+  color: #111827;
+}
+.doc-title span {
+  font-family: "Courier New", monospace;
+  color: #6b7280;
+  font-size: 12px;
+  direction: ltr;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+.field {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.field.full { grid-column: 1 / -1; }
+.label {
+  display: block;
+  color: #6b7280;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+.value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+.value.small { font-size: 14px; line-height: 1.7; font-weight: 600; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+th, td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: right;
+  font-size: 13px;
+}
+th {
+  background: #0f766e;
+  color: white;
+}
+tr:last-child td { border-bottom: none; }
+.signature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 32px;
+}
+.sig-box {
+  min-height: 72px;
+  border-top: 1px solid #9ca3af;
+  padding-top: 10px;
+  color: #4b5563;
+  font-size: 12px;
+}
+.footer-note {
+  position: absolute;
+  right: 20mm;
+  left: 20mm;
+  bottom: 14mm;
+  border-top: 1px solid #d1d5db;
+  padding-top: 8px;
+  color: #6b7280;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 112px;
+  height: 112px;
+  border: 3px solid #a855f7;
+  color: #7e22ce;
+  border-radius: 999px;
+  opacity: 0.22;
+  font-weight: 800;
+  transform: rotate(-12deg);
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const docs = {
+  identity: {
+    title: "ملخص بيانات الهوية",
+    ref: "DEMO-ID-1029384756",
+    subtitle: "ملخص بيانات عميل لأغراض الاختبار فقط",
+    fields: [
+      ["الاسم", "مهند نايف الزيادي"],
+      ["رقم الهوية", "1029384756"],
+      ["الجنسية", "سعودي"],
+      ["تاريخ الميلاد", "1407/08/18 هـ"],
+      ["حالة الهوية", "سارية"],
+      ["تاريخ الانتهاء", "1449/03/12 هـ"],
+      ["العنوان الوطني", "الرياض - حي الربيع - رقم مبنى تجريبي 4821", "full"],
+      ["ملاحظة", "هذه الصفحة ليست بطاقة هوية رسمية ولا تحتوي على شعار أو ختم حكومي. الغرض منها اختبار قراءة البيانات داخل نظام منجِز.", "full"]
+    ]
+  },
+  salary: {
+    title: "تعريف بالراتب",
+    ref: "DEMO-SAL-2026-041",
+    subtitle: "مستند راتب تجريبي صادر من جهة عمل افتراضية",
+    fields: [
+      ["اسم الموظف", "مهند نايف الزيادي"],
+      ["رقم الهوية", "1029384756"],
+      ["جهة العمل", "شركة مدار التقنية المحدودة"],
+      ["المسمى الوظيفي", "مدير مشاريع تقنية"],
+      ["الراتب الأساسي", "18,500 ريال سعودي"],
+      ["البدلات", "3,500 ريال سعودي"],
+      ["إجمالي الراتب الشهري", "22,000 ريال سعودي"],
+      ["تاريخ المباشرة", "2019/04/14 م"],
+      ["الغرض", "تقديمه ضمن طلب تمويل عقاري مبدئي", "full"]
+    ]
+  },
+  employment: {
+    title: "خطاب تعريف",
+    ref: "DEMO-EMP-2026-118",
+    subtitle: "خطاب تعريفي مختوم بختم افتراضي لأغراض التجربة",
+    fields: [
+      ["إلى", "إدارة التمويل العقاري"],
+      ["الموظف", "مهند نايف الزيادي"],
+      ["رقم الهوية", "1029384756"],
+      ["جهة العمل", "شركة مدار التقنية المحدودة"],
+      ["الحالة الوظيفية", "على رأس العمل"],
+      ["نوع العقد", "دوام كامل"],
+      ["مدة الخدمة", "6 سنوات و 10 أشهر"],
+      ["نص الخطاب", "نفيدكم بأن المذكور أعلاه يعمل لدينا حتى تاريخه بوظيفة مدير مشاريع تقنية. صدر هذا الخطاب بناءً على طلبه دون أدنى مسؤولية على الشركة، وهو نموذج تجريبي غير رسمي مخصص لاختبار نظام منجِز.", "full"]
+    ]
+  },
+  bank: {
+    title: "كشف حساب بنكي",
+    ref: "DEMO-BNK-2026-Q1",
+    subtitle: "ملخص حركة حساب تجريبي لآخر 3 أشهر",
+    fields: [
+      ["اسم العميل", "مهند نايف الزيادي"],
+      ["رقم الهوية", "1029384756"],
+      ["رقم الحساب", "SA00 0000 0000 0000 0000 0000"],
+      ["الفترة", "يناير 2026 - مارس 2026"],
+      ["متوسط الرصيد", "38,420 ريال سعودي"],
+      ["متوسط الالتزامات الشهرية", "1,500 ريال سعودي"]
+    ],
+    rows: [
+      ["2026/01/27", "إيداع راتب شهري", "20,240", "دائن"],
+      ["2026/02/27", "إيداع راتب شهري", "20,240", "دائن"],
+      ["2026/03/27", "إيداع راتب شهري", "20,240", "دائن"],
+      ["2026/03/30", "قسط تمويل شخصي", "1,500", "مدين"]
+    ]
+  },
+  property: {
+    title: "صك / عرض العقار",
+    ref: "DEMO-PRP-SAKANI-1042",
+    subtitle: "عرض عقار تجريبي لاختبار تقييم الضمان",
+    fields: [
+      ["اسم مقدم الطلب", "مهند نايف الزيادي"],
+      ["نوع العقار", "فيلا سكنية"],
+      ["مصدر العقار", "مشروع Sakani / مسجل"],
+      ["رقم العقار / المشروع", "SAKANI-2026-1042"],
+      ["المدينة", "الرياض"],
+      ["المساحة", "312 م²"],
+      ["السعر المعلن", "1,100,000 ريال سعودي"],
+      ["القيمة المرجعية التجريبية", "1,160,427 ريال سعودي"],
+      ["ملاحظة تقييم", "القيمة المرجعية ضمن نطاق مقبول لأغراض العرض التجريبي. هذا المستند ليس صكاً رسمياً ولا يثبت ملكية.", "full"]
+    ]
+  }
+};
+
+const key = new URLSearchParams(location.search).get("doc") || "identity";
+const doc = docs[key] || docs.identity;
+
+function fieldHtml(field) {
+  const [label, value, span] = field;
+  return `<div class="field ${span === "full" ? "full" : ""}">
+    <span class="label">${label}</span>
+    <div class="value ${String(value).length > 60 ? "small" : ""}">${value}</div>
+  </div>`;
+}
+
+function rowsHtml(rows) {
+  if (!rows) return "";
+  return `<table>
+    <thead><tr><th>التاريخ</th><th>الوصف</th><th>المبلغ</th><th>النوع</th></tr></thead>
+    <tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>
+  </table>`;
+}
+
+document.getElementById("app").innerHTML = `
+  <section class="page">
+    <div class="topline">
+      <div class="brand">
+        <div class="mark">م</div>
+        <div>
+          <h1>منجِز للتمويل العقاري</h1>
+          <p>حزمة مستندات اختبارية لنظام تقييم المخاطر الائتمانية</p>
+        </div>
+      </div>
+      <div class="meta">
+        <strong>MUNJIZ DEMO DOCUMENT</strong>
+        <p>${doc.ref}</p>
+        <p>Generated for UI testing only</p>
+      </div>
+    </div>
+    <div class="demo-strip">هذا مستند تجريبي غير رسمي، ولا يُستخدم لإثبات هوية أو راتب أو ملكية أو علاقة تعاقدية.</div>
+    <div class="doc-title">
+      <div>
+        <h2>${doc.title}</h2>
+        <p>${doc.subtitle}</p>
+      </div>
+      <span>${doc.ref}</span>
+    </div>
+    <div class="grid">${doc.fields.map(fieldHtml).join("")}</div>
+    ${rowsHtml(doc.rows)}
+    <div class="signature">
+      <div class="sig-box">اسم المسؤول المختص: نموذج تجريبي</div>
+      <div class="sig-box">التوقيع / الختم: <span class="stamp">DEMO</span></div>
+    </div>
+    <div class="footer-note">
+      جميع البيانات الواردة في هذا المستند مصطنعة ومخصصة لاختبار واجهة منجِز فقط. لا يحتوي المستند على شعارات حكومية أو أختام رسمية أو رموز تحقق حقيقية.
+    </div>
+  </section>`;
+</script>
+</body>
+</html>

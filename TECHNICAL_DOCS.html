@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="ar-SA" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منجِز — التوثيق التقني / Munjiz Technical Documentation</title>
+<meta name="description" content="مرجع تقني لمنصة منجِز · تقييم القرض العقاري الأوّلي: معمارية الوكلاء، بروتوكول التواصل، تدفق المراجعة، الأمان، والامتثال.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    /* Theme tokens lifted directly from munjizv1.pptx */
+    --bg-deepest: #0B1220;
+    --bg-slide:   #121A2A;
+    --bg-card:    #1E2A3F;
+    --bg-card-2:  #143428;
+    --ink:        #E6EDF7;
+    --ink-soft:   #FFFFFF;
+    --muted:      #8B9AB3;
+    --olive:      #717A43;
+    --emerald:    #008C66;
+    --neon:       #00E5A0;
+    --cyan:       #17FFFF;
+
+    --display: 'Somar Bold', 'IBM Plex Sans Arabic', sans-serif;
+    --body:    'IBM Plex Sans Arabic', sans-serif;
+    --mono:    'JetBrains Mono', monospace;
+    --brand-logo: url("static/munjiz-logo-docs.png");
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body{
+    background: var(--bg-deepest);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.7;
+    font-weight: 400;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+body::before{
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        radial-gradient(ellipse 60% 40% at 90% 0%, rgba(0,229,160,0.06), transparent 65%),
+        radial-gradient(ellipse 50% 35% at 10% 100%, rgba(23,255,255,0.04), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+a { color: var(--neon); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--cyan); }
+::selection { background: var(--neon); color: var(--bg-deepest); }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-slide); }
+::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--olive); }
+
+main, header, footer, section { position: relative; z-index: 1; }
+
+/* ── Typography ── */
+h1, h2, h3, h4 {
+    font-family: var(--display);
+    color: var(--ink-soft);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+h1 { font-size: clamp(2.75rem, 6vw, 5rem); line-height: 1.05; letter-spacing: -0.02em; }
+h2 { font-size: clamp(2rem, 4vw, 3.25rem); }
+h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 600; }
+h4 { font-size: 1.0625rem; font-weight: 600; }
+p { margin: 0; }
+
+.eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    direction: ltr;
+    text-align: right;
+    display: inline-block;
+}
+.eyebrow .sig { color: var(--neon); margin-left: 0.5rem; font-weight: 700; }
+
+/* ── Layout ── */
+.shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 4vw, 3rem);
+}
+section.page {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    border-bottom: 1px solid rgba(139,154,179,0.08);
+    position: relative;
+    overflow: hidden;
+}
+section.page:last-child { border-bottom: none; }
+section.page::after,
+.toc::after {
+    content: "";
+    position: absolute;
+    top: clamp(1.25rem, 3vw, 2rem);
+    left: clamp(1.5rem, 4vw, 3rem);
+    width: clamp(7rem, 11vw, 10rem);
+    aspect-ratio: 432 / 578;
+    background-image: var(--brand-logo);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.28;
+    pointer-events: none;
+    z-index: 0;
+}
+section.page > .shell,
+.toc > .shell {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Cover hero ── */
+.cover {
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    padding: clamp(3rem, 8vw, 6rem) 0 clamp(2rem, 5vw, 4rem);
+    background:
+        radial-gradient(ellipse 60% 60% at 90% 10%, rgba(0,229,160,0.08), transparent 60%),
+        radial-gradient(ellipse 50% 60% at 10% 90%, rgba(23,255,255,0.05), transparent 60%);
+}
+.cover-inner { width: 100%; }
+.cover-logo {
+    display: block;
+    width: min(62vw, 560px);
+    max-width: 100%;
+    height: auto;
+    margin: 0 0 clamp(1.75rem, 4vw, 3rem) auto;
+    filter: drop-shadow(0 0 44px rgba(0,229,160,0.16));
+}
+.cover .meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(139,154,179,0.15);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+.cover .meta-bar .brand { color: var(--ink-soft); font-family: var(--display); font-size: 1.0625rem; letter-spacing: 0; text-transform: none; }
+.cover .meta-bar .stamp { color: var(--neon); }
+.cover h1 {
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    color: var(--neon);
+    text-shadow: 0 0 40px rgba(0,229,160,0.2);
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5rem;
+}
+.cover .lede {
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+    color: var(--ink);
+    line-height: 1.6;
+    max-width: 60ch;
+    margin-bottom: 2rem;
+}
+.cover .lede strong { color: var(--neon); font-weight: 600; }
+.cover .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(139,154,179,0.18);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    direction: ltr;
+}
+.cover .doc-meta strong { color: var(--ink-soft); font-weight: 600; }
+.cover .doc-meta .v { color: var(--neon); }
+
+/* ── TOC ── */
+.toc { padding: 4rem 0; background: var(--bg-slide); }
+.toc h2 { color: var(--ink-soft); margin-bottom: 2rem; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 2rem;
+    counter-reset: toc;
+}
+@media (max-width: 760px) { .toc-grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) {
+    section.page::after,
+    .toc::after {
+        width: 6.25rem;
+        opacity: 0.18;
+    }
+    .cover-logo {
+        width: min(88vw, 420px);
+    }
+}
+.toc-grid a {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px dashed rgba(139,154,179,0.1);
+    color: var(--ink);
+    font-family: var(--body);
+    font-weight: 500;
+    transition: color 0.2s, border-color 0.2s;
+}
+.toc-grid a::before {
+    counter-increment: toc;
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--neon);
+    font-weight: 700;
+    width: 2.5em;
+    flex-shrink: 0;
+    direction: ltr;
+}
+.toc-grid a:hover {
+    color: var(--neon);
+    border-bottom-color: var(--neon);
+}
+
+/* ── Section heads ── */
+.section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(139,154,179,0.15);
+    flex-wrap: wrap;
+}
+.section-head .num {
+    font-family: var(--mono);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 700;
+    color: var(--neon);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    direction: ltr;
+}
+.section-head .titles { flex: 1; }
+.section-head h2 { color: var(--ink-soft); margin-top: 0.75rem; }
+.section-head .lede {
+    color: var(--muted);
+    font-size: 1.0625rem;
+    margin-top: 1rem;
+    max-width: 56ch;
+}
+
+/* ── Body content ── */
+.lede-body {
+    color: var(--ink);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    max-width: 70ch;
+    margin-bottom: 2rem;
+}
+.lede-body strong { color: var(--ink-soft); font-weight: 600; }
+.lede-body em { color: var(--neon); font-style: normal; font-weight: 600; }
+
+/* ── Cards ── */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+}
+.card {
+    background: var(--bg-card);
+    border: 1px solid rgba(139,154,179,0.12);
+    border-radius: 12px;
+    padding: 1.5rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+}
+.card:hover {
+    transform: translateY(-3px);
+    border-color: var(--neon);
+}
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon), transparent);
+}
+.card .ix {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--neon);
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    direction: ltr;
+    margin-bottom: 0.5rem;
+}
+.card h3 {
+    color: var(--ink-soft);
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+.card p {
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+.card .tag-row {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed rgba(139,154,179,0.18);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    direction: ltr;
+}
+.card .tag-row b { color: var(--neon); font-weight: 600; }
+
+.keep-together {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* Numbered step cards */
+.step {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.5rem;
+    padding: 1.75rem;
+    background: var(--bg-card);
+    border: 1px solid rgba(139,154,179,0.1);
+    border-radius: 12px;
+    border-right: 3px solid var(--neon);
+    margin-bottom: 1rem;
+    position: relative;
+}
+.step .step-num {
+    font-family: var(--mono);
+    font-size: 2.5rem;
+    color: var(--neon);
+    font-weight: 700;
+    line-height: 1;
+    direction: ltr;
+}
+.step h3 { color: var(--ink-soft); margin-bottom: 0.5rem; }
+.step p { color: var(--ink); }
+.step ul { margin-top: 0.75rem; padding-right: 1.25rem; }
+.step ul li {
+    list-style: none;
+    position: relative;
+    padding-right: 1rem;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+}
+.step ul li::before {
+    content: "▸";
+    position: absolute;
+    right: 0;
+    color: var(--neon);
+}
+
+/* ── Code & monospace blocks ── */
+pre, code {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    direction: ltr;
+    text-align: left;
+}
+pre {
+    background: var(--bg-deepest);
+    border: 1px solid rgba(139,154,179,0.12);
+    border-right: 3px solid var(--neon);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    color: var(--ink);
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 1.25rem 0;
+}
+code:not(pre code) {
+    background: var(--bg-card);
+    color: var(--neon);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+pre .k { color: var(--neon); font-weight: 600; }
+pre .s { color: var(--cyan); }
+pre .c { color: var(--muted); font-style: italic; }
+pre .n { color: var(--ink-soft); }
+
+/* ── Tables ── */
+.tbl {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: var(--bg-card);
+    border: 1px solid rgba(139,154,179,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.95rem;
+}
+.tbl th, .tbl td {
+    padding: 0.85rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid rgba(139,154,179,0.08);
+}
+.tbl thead th {
+    background: rgba(0,229,160,0.06);
+    color: var(--ink-soft);
+    font-family: var(--display);
+    font-weight: 600;
+    border-bottom: 1px solid var(--neon);
+}
+.tbl tbody td:first-child {
+    color: var(--neon);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+.tbl tbody tr:last-child td { border-bottom: none; }
+.tbl tbody tr:hover { background: rgba(0,229,160,0.04); }
+
+/* ── Stat badges ── */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.stat {
+    background: var(--bg-card);
+    border: 1px solid rgba(139,154,179,0.12);
+    border-radius: 12px;
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.stat::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon), transparent);
+}
+.stat .v {
+    font-family: var(--display);
+    font-size: 2.25rem;
+    color: var(--neon);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+.stat .v small { font-size: 0.6em; color: var(--ink); font-weight: 500; }
+.stat .l {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    direction: ltr;
+}
+
+/* Callout box */
+.callout {
+    border-right: 3px solid var(--neon);
+    background: linear-gradient(90deg, rgba(0,229,160,0.06) 0%, transparent 60%);
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+.callout .label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--neon);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    direction: ltr;
+    display: block;
+}
+.callout p { color: var(--ink); }
+
+/* SVG flow diagram styles */
+.flow-svg {
+    width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+    background: var(--bg-deepest);
+    border: 1px solid rgba(139,154,179,0.12);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+/* List style */
+.tlist {
+    list-style: none;
+    counter-reset: tlist;
+    margin: 1rem 0;
+}
+.tlist li {
+    counter-increment: tlist;
+    position: relative;
+    padding: 0.6rem 2.5rem 0.6rem 0;
+    color: var(--ink);
+    line-height: 1.6;
+    border-bottom: 1px dashed rgba(139,154,179,0.08);
+}
+.tlist li::before {
+    content: "0" counter(tlist);
+    position: absolute;
+    right: 0;
+    top: 0.7rem;
+    font-family: var(--mono);
+    color: var(--neon);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+.tlist li strong { color: var(--ink-soft); font-weight: 600; }
+
+/* Highlight strip */
+.strip {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--neon) 30%, var(--cyan) 70%, transparent 100%);
+    margin: 3rem 0;
+}
+
+/* Page footer */
+.page-foot {
+    background: var(--bg-deepest);
+    padding: 3rem 0 2rem;
+    border-top: 1px solid rgba(139,154,179,0.15);
+}
+.page-foot .row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    direction: ltr;
+    text-align: right;
+}
+.page-foot .row .sig { color: var(--neon); font-weight: 700; }
+
+/* Print niceties */
+@page { size: A4; margin: 0; }
+@media print {
+    *, *::before, *::after {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    html, body {
+        background: var(--bg-deepest);
+        color: var(--ink);
+    }
+    .cover, .toc {
+        break-after: page;
+        page-break-after: always;
+    }
+    .cover {
+        min-height: 100vh;
+        padding: 1.1rem 0 1rem;
+    }
+    .cover .meta-bar {
+        margin-bottom: 1.35rem;
+        padding-bottom: 0.85rem;
+    }
+    .cover-logo {
+        width: min(58vw, 380px);
+        margin-bottom: 1.2rem;
+    }
+    .cover h1 {
+        font-size: 4.6rem;
+        margin-bottom: 0.75rem;
+    }
+    .cover .lede {
+        font-size: 0.98rem;
+        line-height: 1.45;
+        margin-bottom: 0.9rem;
+    }
+    .cover .doc-meta {
+        margin-top: 1.1rem;
+        padding-top: 0.85rem;
+        gap: 0.5rem 1.4rem;
+    }
+    section.page {
+        padding: 2rem 0 2.25rem;
+        page-break-inside: auto;
+        break-inside: auto;
+        overflow: visible;
+    }
+    p, li {
+        widows: 3;
+        orphans: 3;
+    }
+    .section-head,
+    .card,
+    .step,
+    .stat,
+    .callout,
+    .tbl,
+    pre,
+    .tlist li,
+    article {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    .section-head,
+    h2,
+    h3,
+    h4 {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+    .card-grid,
+    .stats {
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+    .card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+    .card p {
+        font-size: 0.86rem;
+        line-height: 1.45;
+    }
+    .tbl tr,
+    .tbl thead,
+    .tbl tbody {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    .tbl {
+        overflow: visible;
+    }
+    .tbl thead {
+        display: table-header-group;
+    }
+    .tbl tfoot {
+        display: table-footer-group;
+    }
+    .section-head + *,
+    h3 + *,
+    h4 + * {
+        break-before: avoid;
+        page-break-before: avoid;
+    }
+    .step {
+        margin-bottom: 0.7rem;
+        padding: 1.25rem;
+    }
+    .card {
+        padding: 1.15rem;
+    }
+    .lede-body {
+        margin-bottom: 1.25rem;
+    }
+    .page-foot {
+        break-after: auto;
+        page-break-after: auto;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ COVER ═══════════════════════ -->
+<section class="cover">
+  <div class="shell cover-inner">
+    <div class="meta-bar">
+      <span class="brand">[ منجِز ] · MUNJIZ</span>
+      <span class="stamp">EDITION 01 · 2026 · TECH DOCUMENTATION</span>
+    </div>
+    <span class="eyebrow"><span class="sig">//</span> Multi-Agent Mortgage AI · Technical Reference</span>
+    <img class="cover-logo" src="static/munjiz-logo-docs.png" alt="Munjiz logo">
+    <h1>MUNJIZ</h1>
+    <p class="lede">
+      هذا مرجع تقني لمنصة <strong>منجِز · تقييم القرض العقاري الأوّلي</strong>. يشرح تصميم الوكلاء متعددة النماذج، وطريقة تبادل السياق عبر A2A، ومسار الطلب من إدخال البيانات حتى التوصية النهائية، وما يلزم للأمان والامتثال والتشغيل. أُعد للمهندسين والمدققين والجهات التنظيمية.
+    </p>
+    <p class="lede" style="color:var(--muted); font-size:1rem;">
+      Technical reference for Munjiz Mortgage AI: multi-model agent design, A2A communication, the mortgage application review flow, security and compliance posture, and production economics. Written for engineers, auditors, and regulators.
+    </p>
+    <div class="doc-meta">
+      <span><strong>Version</strong> <span class="v">v1.0</span></span>
+      <span><strong>Status</strong> <span class="v">Pilot-ready</span></span>
+      <span><strong>Pages</strong> <span class="v">14</span></span>
+      <span><strong>Stack</strong> Django · Channels · Celery · Redis · PostgreSQL · Docker</span>
+      <span><strong>LLM Surface</strong> OpenRouter (Claude · GPT · Qwen · DeepSeek)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ TABLE OF CONTENTS ═══════════════════════ -->
+<section class="toc">
+  <div class="shell">
+    <span class="eyebrow"><span class="sig">//</span> CONTENTS · المحتويات</span>
+    <h2>الفهرس</h2>
+    <div class="toc-grid">
+      <a href="#summary">الملخّص التنفيذي · Executive Summary</a>
+      <a href="#architecture">المعمارية النظامية · System Architecture</a>
+      <a href="#heterogeneous">المعمارية متعددة النماذج · Heterogeneous Design</a>
+      <a href="#a2a">بروتوكول A2A · Agent-to-Agent Protocol</a>
+      <a href="#agents">مواصفات الوكلاء · Agent Specifications</a>
+      <a href="#flow">تدفق التنفيذ الكامل · End-to-End Flow</a>
+      <a href="#data">نموذج البيانات · Data Model</a>
+      <a href="#api">واجهة API · API Surface</a>
+      <a href="#resilience">الصمود والتعافي · Resilience &amp; Fallback</a>
+      <a href="#deployment">معمارية النشر · Deployment Architecture</a>
+      <a href="#security">الأمان والامتثال · Security &amp; Compliance</a>
+      <a href="#economics">الاقتصاديات والقياس · Economics &amp; Scale</a>
+      <a href="#observability">المراقبة والتدقيق · Observability &amp; Audit</a>
+      <a href="#roadmap">خارطة الطريق · Roadmap</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 01 EXECUTIVE SUMMARY ═══════════════════════ -->
+<section class="page" id="summary">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">01</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> EXECUTIVE SUMMARY</span>
+        <h2>الملخّص التنفيذي</h2>
+        <p class="lede">منجِز منصة وكلاء ذكاء اصطناعي تساعد البنوك السعودية على مراجعة طلبات القرض العقاري. يمر كل طلب على خمسة وكلاء متخصصين، ثم يخرج النظام بتوصية أولية واضحة تراعي السياق المحلي والضوابط التنظيمية.</p>
+      </div>
+    </div>
+
+    <p class="lede-body">
+      <strong>منجِز · تقييم القرض العقاري الأوّلي</strong> طبقة ذكية لمراجعة طلبات التمويل العقاري. تضم <em>خمسة وكلاء متخصصين</em>، ولكل وكيل نموذج LLM يناسب مهمته: الجدارة الائتمانية، التحقق من الهوية والأهلية القانونية، قدرة العميل والدعم، تقييم العقار والضمان، ثم التوصية النهائية. يتبادل الوكلاء السياق عبر بروتوكول A2A داخلي، ويصدرون توصية أولية مرتبة (موافقة / مشروطة / مراجعة بشرية / غير موصى) خلال أقل من دقيقتين، بصياغة عربية واضحة، وحدود صلاحيات معلنة، وسجل تدقيق يمكن الرجوع إليه.
+    </p>
+    <p class="lede-body">
+      <strong>Munjiz Mortgage AI</strong> is an intelligent review layer for Saudi mortgage applications. <em>Five specialized agents</em> — Credit, Identity &amp; Legal, Capacity &amp; Support, Collateral, and the Orchestrator — each use an LLM suited to the task, coordinate through an internal A2A protocol, and produce a structured pre-approval recommendation in under two minutes, in clear Arabic, with explicit authority limits and a traceable audit record.
+    </p>
+
+    <div class="stats">
+      <div class="stat"><div class="v">5</div><div class="l">specialized agents</div></div>
+      <div class="stat"><div class="v">5</div><div class="l">heterogeneous LLMs</div></div>
+      <div class="stat"><div class="v">~60s</div><div class="l">end-to-end pre-approval</div></div>
+      <div class="stat"><div class="v">~$0.08</div><div class="l">cost per application</div></div>
+      <div class="stat"><div class="v">4</div><div class="l">recommendation outcomes</div></div>
+      <div class="stat"><div class="v">100%</div><div class="l">decisions audit-logged</div></div>
+    </div>
+
+    <div class="callout">
+      <span class="label">// THE THESIS</span>
+      <p>تقييم طلب التمويل العقاري يجمع بيانات من مصادر مختلفة (SIMAH، أبشر/يقين، تحقق من جهة العمل، Sakani أو تثمين العقار)، ثم يراجع جدارة العميل وأهليته القانونية وقدرته الفعلية وضمانه. منجِز يرتب هذه المراجعة المتكررة في مسار ثابت، ويترك الحالات الحدية للمراجع البشري.</p>
+      <p style="margin-top:0.5rem; color:var(--muted);">A mortgage application review pulls data from multiple sources — SIMAH, Absher/Yakeen, employer verification, Sakani or independent valuation — and weighs creditworthiness, legal eligibility, real affordability, and collateral. Munjiz turns that repeatable review into a consistent, structured path, leaving edge cases to a human reviewer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 02 SYSTEM ARCHITECTURE ═══════════════════════ -->
+<section class="page" id="architecture">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">02</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> SYSTEM ARCHITECTURE</span>
+        <h2>المعمارية النظامية</h2>
+        <p class="lede">يمتد النظام من المتصفح إلى مزودات النماذج. كل طبقة لها مسؤولية واضحة، ويمكن اختبارها أو استبدالها دون إعادة بناء النظام كله.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 1rem; margin-bottom: 1rem;">الطبقات السبع · Seven Layers</h3>
+    <ol class="tlist">
+      <li><strong>Browser Layer</strong> — Vanilla JavaScript + Alpine.js + Tailwind. عميل WebSocket مع dedupe بثلاث طبقات، ونظام ثيمات، وتجربة عربية RTL أولاً.</li>
+      <li><strong>Edge / Reverse Proxy</strong> — Nginx يخدم الملفات الثابتة، ويمرر HTTP إلى Daphne ASGI server، ويدعم ترقية اتصال WebSocket.</li>
+      <li><strong>Application Layer</strong> — Django 5 + Django Channels + DRF. يستقبل طلبات HTTP وإطارات WebSocket، ويدفع المهام الطويلة إلى Celery.</li>
+      <li><strong>Async Compute Layer</strong> — Celery workers (concurrency=4 لكل instance) تلتقط مهام مراجعة الطلبات من Redis queue وتشغّل <code>AgentEngine</code> مع سياق الطلب.</li>
+      <li><strong>Agent Engine</strong> — قلب النظام. <code>AgentEngine.run_review_with_ai(application)</code> يستدعي الوكلاء الخمسة بالتسلسل، وكل وكيل يستخدم LLM مختلفاً عبر OpenRouter API ويقرأ نتائج الفحوصات المناسبة لدوره (SIMAH, Absher, Sakani…).</li>
+      <li><strong>Data Layer</strong> — PostgreSQL 16 للبيانات الدائمة: المتقدّمون، الطلبات، المستندات، مراجعات الوكلاء، التوصية النهائية، وسجلات التدقيق. Redis يستخدم للـ message broker و channel layer.</li>
+      <li><strong>External LLM Surface</strong> — OpenRouter يعمل كواجهة تجميع واحدة ويمرر الطلبات إلى Anthropic / OpenAI / Alibaba (Qwen) / DeepSeek عبر API موحد ومتوافق مع OpenAI.</li>
+    </ol>
+
+    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">مخطط النظام الكامل · Full System Diagram</h3>
+    <pre style="font-size: 0.78rem;">
+<span class="c">┌──────────────────────────────────────────────────────────────────────────────┐</span>
+<span class="c">│                              BROWSER (RTL Arabic)                            │</span>
+<span class="c">│   Dashboard ⇆ Landing Page · Alpine.js · WebSocket Client · Theme Toggle    │</span>
+<span class="c">└────────────────────────────────────┬─────────────────────────────────────────┘</span>
+                                     │  <span class="k">HTTPS</span> + <span class="k">WSS</span>
+<span class="c">┌────────────────────────────────────▼─────────────────────────────────────────┐</span>
+<span class="c">│                         NGINX (Reverse Proxy / Static)                       │</span>
+<span class="c">│             /static/* · /api/* · /ws/* (WebSocket upgrade)                  │</span>
+<span class="c">└────────────────────────────────────┬─────────────────────────────────────────┘</span>
+                                     │
+<span class="c">┌────────────────────────────────────▼─────────────────────────────────────────┐</span>
+<span class="c">│                     DAPHNE (ASGI) · Django 5 + Channels                      │</span>
+<span class="c">│   ┌──────────────────────┐    ┌───────────────────────────────────────┐    │</span>
+<span class="c">│   │ HTTP: DRF Viewsets   │    │ WebSocket: ApplicationConsumer        │    │</span>
+<span class="c">│   │  · /api/applicants/  │    │  · group "application:<id>" pub/sub   │    │</span>
+<span class="c">│   │  · /api/applications/│    │  · receive() → Celery .delay()        │    │</span>
+<span class="c">│   │  · …/trigger /report │    │  · group_send() → frontend            │    │</span>
+<span class="c">│   └──────────────────────┘    └───────────────────────────────────────┘    │</span>
+<span class="c">└────────────────────────────────────┬─────────────────────────────────────────┘</span>
+                                     │
+                ┌────────────────────┼────────────────────┐
+                │                    │                    │
+<span class="c">┌───────────────▼────┐  ┌────────────▼─────────┐  ┌──────▼──────────────┐</span>
+<span class="c">│  PostgreSQL 16     │  │  REDIS               │  │ CELERY WORKERS      │</span>
+<span class="c">│  · Applicant       │  │  · channel layer     │  │ ┌─────────────────┐ │</span>
+<span class="c">│  · MortgageApp     │  │    (channels-redis)  │  │ │ AgentEngine     │ │</span>
+<span class="c">│  · Document        │  │  · celery broker     │  │ │ run_review_     │ │</span>
+<span class="c">│  · AgentReview     │  │  · cache             │  │ │   with_ai()     │ │</span>
+<span class="c">│  · FinalRecommend. │  │                      │  │ │                 │ │</span>
+<span class="c">│  · AgentMessage    │  │                      │  │ │ for each agent: │ │</span>
+<span class="c">│  · (audit log)     │  │                      │  │ │   run_agent()   │ │</span>
+<span class="c">└────────────────────┘  └──────────────────────┘  │ │      │          │ │</span>
+                                                  <span class="c">│ └──────┼──────────┘ │</span>
+                                                  <span class="c">└────────┼────────────┘</span>
+                                                           │
+<span class="c">┌──────────────────────────────────────────────────────────▼───────────────────┐</span>
+<span class="c">│                      OPENROUTER (OpenAI-compatible API)                      │</span>
+<span class="c">│   ┌────────────┐ ┌────────────┐ ┌──────────┐ ┌──────────┐ ┌─────────────┐ │</span>
+<span class="c">│   │ Anthropic  │ │ Anthropic  │ │ OpenAI   │ │ DeepSeek │ │ Alibaba     │ │</span>
+<span class="c">│   │ Opus 4.7   │ │ Sonnet 4.5 │ │ 4o-mini  │ │ V3.2     │ │ Qwen3 80B   │ │</span>
+<span class="c">│   │ ← منسق     │ │ ← نورة     │ │ ← فهد    │ │ ← سارة   │ │ ← خالد      │ │</span>
+<span class="c">│   └────────────┘ └────────────┘ └──────────┘ └──────────┘ └─────────────┘ │</span>
+<span class="c">└──────────────────────────────────────────────────────────────────────────────┘</span></pre>
+
+    <p class="lede-body" style="margin-top: 2rem;">
+      <strong>الفكرة الأساسية:</strong> كل طبقة تعرف ما تحتاجه فقط. الـ AgentEngine لا يهمه إن كان الاستدعاء قادماً من Celery أو من Django shell. والـ DashboardConsumer لا يحتاج أن يعرف مزود الـ LLM خلف كل وكيل؛ يستقبل رسائل موحدة فقط. هذا يجعل التبديل والاختبار والتشغيل أوضح وأسهل في الصيانة.
+    </p>
+
+    <div class="strip"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 03 HETEROGENEOUS DESIGN ═══════════════════════ -->
+<section class="page" id="heterogeneous">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">03</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> HETEROGENEOUS MULTI-MODEL ARCHITECTURE</span>
+        <h2>المعمارية متعددة النماذج</h2>
+        <p class="lede">اختيار النماذج في منجِز ليس نسخة واحدة للجميع. كل وكيل يستخدم النموذج الأقرب لطبيعة دوره، مع موازنة بين جودة التفكير والتكلفة وثبات المخرجات.</p>
+      </div>
+    </div>
+
+    <h3>لماذا ليس نموذجاً واحداً؟ · Why Not a Single Model?</h3>
+    <p class="lede-body">
+      الاعتماد على نموذج واحد يعني التنازل في جانب ما. <em>Claude Opus</em> قوي في الموازنة بين توصيات الموافقة والشروط لكنه مكلف. <em>GPT-4o-mini</em> سريع ومنضبط مع قواعد التحقق من الهوية والأهلية القانونية، لكنه ليس الأفضل في الصياغة العربية. <em>Qwen3 80B</em> ممتاز عربياً وفي حوار قدرة العميل، لكنه ليس الخيار الأول لحسابات SIMAH وDBR. <em>DeepSeek V3.2</em> اقتصادي ومفيد في الاستدلال الرقمي على الجدارة الائتمانية، لكنه أقل مناسبة لتقييم العقار متعدد العوامل. لذلك يقوم التصميم على فكرة مباشرة: <strong>النموذج المناسب في المكان المناسب</strong>.
+    </p>
+
+    <h3 style="margin-top: 2rem;">المعايير الثلاثة لاختيار النموذج · Three Selection Criteria</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="ix">// 01</div>
+        <h3>الملاءمة المعرفية</h3>
+        <p>هل يثبت النموذج قوته في هذه المهمة تحديداً؟ Claude Opus لتوصية الموافقة النهائية، Sonnet لتقييم العقار وموازنة القيمة العادلة مع السعر المُعلَن، DeepSeek لحسابات الجدارة الائتمانية، Qwen للحوار العربي حول قدرة العميل، وGPT-4o-mini للتحقق المنضبط من الهوية والأهلية. الاختيار مبني على نتائج، لا على الانطباع العام.</p>
+      </div>
+      <div class="card">
+        <div class="ix">// 02</div>
+        <h3>التكلفة لكل طلب</h3>
+        <p>سعر المليون توكن وحده لا يكفي للحكم. الرقم الأهم هو تكلفة مراجعة طلب واحد بحجم المدخلات الفعلي. تشغيل كل شيء على Opus يصل إلى ٠.٢٥$ للطلب، بينما التصميم المتعدد يقارب ٠.٠٨$، أي وفر يقارب ٧٠٪.</p>
+      </div>
+      <div class="card">
+        <div class="ix">// 03</div>
+        <h3>موثوقية الإخراج</h3>
+        <p>الجودة وحدها لا تكفي؛ نحتاج مخرجات يمكن الاعتماد عليها في كل تشغيل. في الاختبار العملي، كان DeepSeek R1 يستهلك الميزانية في التفكير الداخلي ثم يعيد content فارغاً، لذلك استبدلناه بـ V3.2 instruct.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 2rem;">التوزيع النهائي · Final Assignment</h3>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>الوكيل / Agent</th>
+          <th>النموذج / Model</th>
+          <th>درجة الحرارة</th>
+          <th>السبب / Rationale</th>
+          <th>تكلفة/قرار</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>سارة / Sara — Credit</td>
+          <td>DeepSeek V3.2</td>
+          <td>0.2</td>
+          <td>تحليل SIMAH + DBR + التزامات بأقل تكلفة</td>
+          <td>~$0.003</td>
+        </tr>
+        <tr>
+          <td>فهد / Fahad — Identity</td>
+          <td>OpenAI GPT-4o mini</td>
+          <td>0.3</td>
+          <td>تحقق منضبط من الهوية والأهلية والقيود القانونية</td>
+          <td>~$0.0008</td>
+        </tr>
+        <tr>
+          <td>خالد / Khalid — Capacity</td>
+          <td>Qwen3 80B Instruct</td>
+          <td>0.7</td>
+          <td>صياغة عربية لقدرة العميل والدعم والإفصاحات</td>
+          <td>~$0.0015</td>
+        </tr>
+        <tr>
+          <td>نورة / Nora — Collateral</td>
+          <td>Anthropic Claude Sonnet 4.5</td>
+          <td>0.6</td>
+          <td>تقييم العقار: قيمة عادلة، مسار Sakani، LTV</td>
+          <td>~$0.025</td>
+        </tr>
+        <tr>
+          <td>المنسق / Orchestrator</td>
+          <td>Anthropic Claude Opus 4.7</td>
+          <td>0.2</td>
+          <td>توصية نهائية مرتبة + شروط + مخاطر متبقّية</td>
+          <td>~$0.05</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <span class="label">// VENDOR INDEPENDENCE</span>
+      <p>كل <code>model_name</code> محفوظ في قاعدة البيانات داخل <code>Agent.model_name</code>، وليس مكتوباً داخل الكود. إذا ظهر نموذج أفضل لاحقاً، يكفي تحديث صف واحد في قاعدة البيانات. هذا يقلل الارتباط بمزود واحد ويجعل التطوير أسرع.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 04 A2A PROTOCOL ═══════════════════════ -->
+<section class="page" id="a2a">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">04</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> AGENT-TO-AGENT PROTOCOL</span>
+        <h2>بروتوكول A2A</h2>
+        <p class="lede">يوضح الجزء التالي كيف يتبادل الوكلاء الرسائل والسياق، ولماذا يأتي كل وكيل في ترتيبه داخل سلسلة اتخاذ القرار.</p>
+      </div>
+    </div>
+
+    <h3>المغلَّف الموحَّد · The Unified Envelope</h3>
+    <p class="lede-body">
+      كل تفاعل بين الوكلاء يمر عبر <code>AgentMessageEnvelope</code>، وهو dataclass موحد يجعل الرسائل مفهومة لكل أجزاء النظام، حتى لو كانت النماذج المستخدمة خلف الوكلاء مختلفة.
+    </p>
+    <pre><span class="c"># apps/agents/a2a_protocol.py</span>
+<span class="k">@dataclass</span>
+<span class="k">class</span> <span class="n">AgentMessageEnvelope</span>:
+    <span class="n">from_agent</span>: str                    <span class="c"># 'analytics' | 'operations' | 'customer' | 'queue' | 'orchestrator'</span>
+    <span class="n">content</span>:    str                    <span class="c"># الرد الكامل للوكيل بالعربية</span>
+    <span class="n">message_type</span>: str = <span class="s">'update'</span>      <span class="c"># analysis | update | suggestion | decision | alert</span>
+    <span class="n">priority</span>:     str = <span class="s">'medium'</span>     <span class="c"># low | medium | high | critical</span>
+    <span class="n">to_agent</span>:     <span class="k">Optional</span>[str] = <span class="k">None</span>  <span class="c"># None = broadcast لكل التبويبات</span>
+    <span class="n">to_broadcast</span>: bool = <span class="k">True</span>
+    <span class="n">raw_data</span>:     <span class="k">Optional</span>[dict] = field(default=<span class="k">None</span>)  <span class="c"># البيانات التي بَنى عليها الوكيل قراره</span></pre>
+
+    <h3 style="margin-top: 2rem;">تسلسل المراجعة · The Review Sequence</h3>
+    <p class="lede-body">
+      الترتيب مقصود ويحاكي طريقة مدير ائتمان متمرس: نبدأ بالجدارة الائتمانية، ثم الهوية والأهلية القانونية، ثم قدرة العميل والدعم، ثم تقييم العقار/الضمان، وأخيراً التوصية النهائية.
+    </p>
+
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <h3>سارة (الجدارة الائتمانية) · Sara (Credit)</h3>
+        <p>تبدأ سارة لأن الجدارة الائتمانية هي بوابة الطلب. تقرأ بيانات SIMAH (الدرجة، التأخّرات، الالتزامات المفتوحة) وتحسب DBR بعد التمويل المطلوب، ثم تقدم حكماً رقمياً مع نسبة ثقة.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <h3>فهد (الهوية والقانوني) · Fahad (Identity &amp; Legal)</h3>
+        <p>يتحقق فهد من الهوية عبر أبشر/يقين، ويطابق راتب العميل مع جهة العمل، ويفحص أي قيود قانونية مثل إيقاف الخدمات أو حظر السفر. يضيف حالة الهوية، وتطابق صاحب العمل، وقائمة الحواجز إن وجدت.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <h3>خالد (قدرة العميل والدعم) · Khalid (Capacity &amp; Support)</h3>
+        <p>يفحص خالد القدرة الفعلية للعميل والإفصاحات الطوعية: اللغة، احتياجات الوصول، وليّ الشؤون القانوني، والحاجة إلى استشارة مستقلة. يضيف علامات الدعم اللازمة ويحدد الحاجة إلى ممثل قانوني.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <h3>نورة (تقييم العقار) · Nora (Collateral)</h3>
+        <p>تقيّم نورة العقار والضمان. تختار مسار Sakani أو التثمين المستقل، وتقارن السعر المُعلَن بالقيمة العادلة، وتحسب LTV، وتضع إشارة عند وجود فجوة كبيرة.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div>
+        <h3>المنسق · The Orchestrator</h3>
+        <p>يأتي المنسق في النهاية لأنه صاحب التوصية. يستلم <code>agent_inputs</code> وفيها مخرجات الوكلاء الأربعة، ثم يصدر توصية مرتبة من أربعة احتمالات (موافقة أولية / مشروطة / مراجعة بشرية / غير موصى) مع الشروط والمخاطر المتبقية.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 2rem;">آلية تمرير السياق · Context Passing Mechanism</h3>
+    <p class="lede-body">كل وكيل لاحق يستلم ما قاله من سبقه. مثلاً، عند استدعاء نورة، يحتوي <code>user_message</code> على:</p>
+    <pre>{
+  <span class="s">"application"</span>: { <span class="s">"id"</span>: <span class="s">"DEMO-APP-001"</span>, <span class="s">"requested_loan_sar"</span>: 850000, <span class="s">"requested_term_years"</span>: 25 },
+  <span class="s">"applicant"</span>:   { <span class="s">"name_ar"</span>: <span class="s">"أبو محمد"</span>, <span class="s">"monthly_salary_sar"</span>: 22000, <span class="s">"employer_sector"</span>: <span class="s">"government"</span> },
+  <span class="s">"property"</span>:    { <span class="s">"source"</span>: <span class="s">"sakani"</span>, <span class="s">"city"</span>: <span class="s">"الرياض"</span>, <span class="s">"declared_price_sar"</span>: 950000 },
+  <span class="s">"sara_review"</span>:   <span class="s">"📊 SIMAH 752 · DBR بعد التمويل 41٪..."</span>,
+  <span class="s">"fahad_review"</span>:  <span class="s">"⚙️ الهوية مطابقة · صاحب العمل مؤكَّد · لا قيود..."</span>,
+  <span class="s">"khalid_review"</span>: <span class="s">"💬 لا حاجة لوليّ شؤون · مستوى دعم اعتيادي..."</span>,
+  <span class="c">// نورة الآن ترى أحكام زملائها قبل أن تقيّم العقار</span>
+}</pre>
+
+    <h3 style="margin-top: 2rem;">صيغة الإخراج · Mandated Output Structure</h3>
+    <p class="lede-body">
+      لكل وكيل قالب إخراج داخل system prompt. القالب يترك مساحة للغة الطبيعية، وفي الوقت نفسه يضمن وجود <code>structured</code> JSON block قابل للقراءة الآلية والتدقيق البشري:
+    </p>
+    <ul class="tlist">
+      <li><strong>سارة:</strong> 📊 [SIMAH score] + [DBR after loan] + [verdict] + [مبرّر مختصر]</li>
+      <li><strong>فهد:</strong> [حالة الهوية] + [تطابق صاحب العمل] + [قائمة الحواجز] + [تحذير إن وُجد]</li>
+      <li><strong>خالد:</strong> [الحاجات المُفصَح عنها] + [قرار وليّ الشؤون] + [الموافقة الأخلاقية]</li>
+      <li><strong>نورة:</strong> [مسار التقييم] + [القيمة العادلة] + [LTV] + [علم الانحراف]</li>
+      <li><strong>المنسق:</strong> [تحليل موجز] ثم [توصية من أربعة] مع [شروط] و[مخاطر متبقّية للمراجع البشري]</li>
+    </ul>
+
+    <div class="callout">
+      <span class="label">// FUTURE: GOOGLE A2A STANDARD</span>
+      <p>البروتوكول الحالي بسيط عمداً. إذا احتجنا لاحقاً إلى workflows غير متزامنة، أو تنسيق بين فروع متعددة، أو agent discovery، يمكن توسيعه باتجاه معيار Google A2A الكامل دون تغيير كبير في شكل الرسالة الحالي.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 05 AGENT SPECIFICATIONS ═══════════════════════ -->
+<section class="page" id="agents">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">05</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> AGENT SPECIFICATIONS</span>
+        <h2>مواصفات الوكلاء التفصيلية</h2>
+        <p class="lede">لكل وكيل دور واضح، نموذج مناسب، مدخلات ومخرجات معروفة، وحدود صلاحية لا يتجاوزها.</p>
+      </div>
+    </div>
+
+    <!-- AGENT 1 -->
+    <article class="step">
+      <div class="step-num" style="color:#FF1744;">01</div>
+      <div>
+        <h3>سارة · Sara — الجدارة الائتمانية</h3>
+        <p style="color:var(--muted); font-family:var(--mono); font-size:0.85rem; margin-bottom:1rem;">MODEL: deepseek/deepseek-v3.2 · TEMP: 0.2 · COLOR: #FF1744 · TYPE: analytics</p>
+        <p><strong>المسؤولية:</strong> تقرأ بيانات SIMAH وتاريخ الالتزامات، وتحسب DBR بعد التمويل المطلوب، ثم تصدر حكماً رقمياً (آمن / تحذير / خطر) مع نسبة ثقة. كل حكم تقدمه يكون مستنداً إلى رقم واضح.</p>
+        <p style="margin-top:0.5rem;"><strong>المدخلات:</strong> applicant (راتب، التزامات شهرية، عمر)، application (مبلغ التمويل، المدة)، compliance snapshot من SIMAH.</p>
+        <p style="margin-top:0.5rem;"><strong>المخرجات (structured JSON):</strong> <code>simah_score_demo</code>, <code>dbr_after_loan_percent</code>, <code>verdict</code>, <code>late_payments</code>, <code>open_obligations</code>.</p>
+        <p style="margin-top:0.5rem;"><strong>عيِّنة برومبت نظامي:</strong></p>
+        <pre style="font-size: 0.8rem;">- لا تخرجي بحكم لا يدعمه رقم
+- استخدمي SIMAH score + DBR كركيزتين
+- bands: SIMAH ≥750 آمن · 600-749 تحذير · &lt;600 خطر
+- bands: DBR ≤45٪ آمن · 46-55٪ تحذير · &gt;55٪ خطر
+- صياغة ردك: 📊 [الدرجة + DBR] + [التفسير] + [الحكم] + [مبرّر مختصر]</pre>
+      </div>
+    </article>
+
+    <!-- AGENT 2 -->
+    <article class="step">
+      <div class="step-num" style="color:#FF6D00;">02</div>
+      <div>
+        <h3>فهد · Fahad — الهوية والأهلية القانونية</h3>
+        <p style="color:var(--muted); font-family:var(--mono); font-size:0.85rem; margin-bottom:1rem;">MODEL: openai/gpt-4o-mini · TEMP: 0.3 · COLOR: #FF6D00 · TYPE: operations</p>
+        <p><strong>المسؤولية:</strong> يتحقق من الهوية عبر أبشر/يقين، ويطابق راتب العميل مع جهة العمل المُعلَنة، ويفحص أي قيود قانونية. يعطي نتيجة واضحة، ويحوّل أي شك إلى المنسق.</p>
+        <p style="margin-top:0.5rem;"><strong>المخرجات (structured JSON):</strong> <code>identity_check_demo</code> (passed / flagged / failed), <code>employer_verification_demo</code>, <code>salary_match</code>, <code>legal_blockers_demo</code> (list).</p>
+        <p style="margin-top:0.5rem;"><strong>قواعد الصلاحيات:</strong></p>
+        <ul style="margin-top:0.5rem;">
+          <li>الهوية مطابقة + جهة العمل مؤكَّدة + لا قيود ← يدفع للمراجعة العادية</li>
+          <li>أي علامة <em>flagged</em> أو حاجز قانوني ← يصعّد إلى المنسق مباشرة</li>
+          <li>فشل التحقق التام ← يوصي بـ <code>not_recommended</code> قبل وصول باقي الوكلاء</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- AGENT 3 -->
+    <article class="step">
+      <div class="step-num" style="color:#2979FF;">03</div>
+      <div>
+        <h3>خالد · Khalid — قدرة العميل والدعم</h3>
+        <p style="color:var(--muted); font-family:var(--mono); font-size:0.85rem; margin-bottom:1rem;">MODEL: qwen/qwen3-next-80b-a3b-instruct · TEMP: 0.7 · COLOR: #2979FF · TYPE: customer</p>
+        <p><strong>المسؤولية:</strong> يفحص القدرة الفعلية للعميل والإفصاحات الطوعية المُدخَلة في مرحلة الفحص (وليّ شؤون، حاجة وصول، حاجة ترجمة، استشارة مستقلة)، ويحوّلها إلى علامات واضحة للمنسق.</p>
+        <p style="margin-top:0.5rem;"><strong>المخرجات (structured JSON):</strong> <code>support_needs_flagged</code> (list), <code>needs_legal_representative</code>, <code>ethical_ok</code>.</p>
+        <p style="margin-top:0.5rem;"><strong>درجة الحرارة 0.7</strong> — أعلى من غيره لأن صياغة الإفصاحات تحتاج لغة طبيعية ومحترمة، لا قائمة جامدة.</p>
+        <p style="margin-top:0.5rem;"><strong>لغة:</strong> صياغة عربية واضحة ومهذبة، وليست ترجمة حرفية من الإنجليزية.</p>
+      </div>
+    </article>
+
+    <!-- AGENT 4 -->
+    <article class="step">
+      <div class="step-num" style="color:#AA00FF;">04</div>
+      <div>
+        <h3>نورة · Nora — تقييم العقار والضمان</h3>
+        <p style="color:var(--muted); font-family:var(--mono); font-size:0.85rem; margin-bottom:1rem;">MODEL: anthropic/claude-sonnet-4.5 · TEMP: 0.6 · COLOR: #AA00FF · TYPE: queue</p>
+        <p><strong>المسؤولية:</strong> تقيّم العقار والضمان: تختار مسار Sakani عند الإمكان أو التثمين المستقل، وتستخرج القيمة العادلة، وتقارنها بالسعر المُعلَن، وتحسب LTV (نسبة التمويل إلى قيمة العقار).</p>
+        <p style="margin-top:0.5rem;"><strong>المخرجات (structured JSON):</strong> <code>valuation_path</code> (sakani / independent), <code>verified_value_sar</code>, <code>declared_price_sar</code>, <code>discrepancy_flag</code>, <code>ltv_percent</code>.</p>
+        <p style="margin-top:0.5rem;"><strong>bands:</strong> LTV ≤80٪ آمن · 81-90٪ تحذير · &gt;90٪ خطر. انحراف &gt;10٪ بين القيمة المُعلَنة والقيمة العادلة → إشارة انحراف تدفع التوصية إلى مسار الشروط.</p>
+      </div>
+    </article>
+
+    <!-- AGENT 5 -->
+    <article class="step">
+      <div class="step-num" style="color:#00C853;">05</div>
+      <div>
+        <h3>المنسق · The Orchestrator</h3>
+        <p style="color:var(--muted); font-family:var(--mono); font-size:0.85rem; margin-bottom:1rem;">MODEL: anthropic/claude-opus-4.7 · TEMP: 0.2 · COLOR: #00C853 · TYPE: orchestrator</p>
+        <p><strong>المسؤولية:</strong> يجمع مخرجات الوكلاء الأربعة ويصدر <strong>توصية مرتبة</strong> من أربعة احتمالات حصرية: <code>recommend_initial_approval</code> · <code>recommend_approval_with_conditions</code> · <code>needs_human_review</code> · <code>not_recommended</code>.</p>
+        <p style="margin-top:0.5rem;"><strong>المخرجات (structured JSON):</strong> <code>recommendation</code>, <code>summary_per_agent</code> (dict), <code>conditions_if_any</code> (list), <code>residual_risks_for_human_review</code> (list), <code>binding=False</code> (التوصية مساعدة قرار وليست قراراً ملزماً).</p>
+        <p style="margin-top:0.5rem;"><strong>قواعد التصعيد:</strong> أي حاجز قانوني من فهد، أو الحاجة لوليّ شؤون من خالد، أو علم انحراف عقار من نورة، أو SIMAH تحت ٦٠٠ من سارة → التوصية لا تكون <em>initial_approval</em> دون مرور بمراجع بشري.</p>
+        <p style="margin-top:0.5rem;"><strong>درجة الحرارة 0.2</strong> — منخفضة لأن التوصية يجب أن تكون ثابتة وقابلة للتدقيق.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 06 END-TO-END FLOW ═══════════════════════ -->
+<section class="page" id="flow">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">06</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> END-TO-END TECHNICAL FLOW</span>
+        <h2>تدفق التنفيذ الكامل</h2>
+        <p class="lede">من إدخال الطلب ورفع المستندات إلى ظهور التوصية النهائية على الشاشة، هذا هو مسار مراجعة الطلب داخل النظام.</p>
+      </div>
+    </div>
+
+    <h3>المراحل الثمانية · The Eight Stages</h3>
+
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <h3>الواجهة تُنشئ الطلب وترفع المستندات</h3>
+        <p>يدخل موظف القروض بيانات المتقدّم والعقار في Stage 01، ويرفع المستندات (هوية، تعريف بالراتب، خطاب جهة العمل، كشف بنكي، بيان Sakani أو صك). بعدها تستدعي الواجهة:</p>
+        <pre>POST /api/applications/                        <span class="c"># يُنشئ MortgageApplication بحالة 'draft'</span>
+POST /api/applications/&lt;id&gt;/documents/          <span class="c"># لكل مستند مرفوع</span>
+GET  /api/applications/&lt;id&gt;/compliance-preview/ <span class="c"># preview الفحوصات قبل التشغيل</span></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <h3>المستخدم يضغط "بدء المراجعة" → POST /trigger</h3>
+        <p>ترسل الواجهة <code>POST /api/applications/&lt;id&gt;/trigger/</code>. View الـ Django يحدّث <code>application.status = 'under_review'</code> ثم يرسل المهمة إلى Celery عبر <code>run_review_task.delay(application_id)</code>، ويعيد ack مباشرة بزمن استجابة أقل من 50ms.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <h3>Celery worker يلتقط مهمة المراجعة من Redis queue</h3>
+        <p>تبني الـ task السياق من قاعدة البيانات عبر <code>application.to_context()</code>: applicant, application, property, screening_answers, documents. ثم تمرر السياق إلى <code>AgentEngine.run_review_with_ai(application)</code>، حيث يعمل الوكلاء الخمسة بالتسلسل عبر OpenRouter.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <h3>review_started broadcast</h3>
+        <p>قبل تشغيل أي وكيل، يرسل الـ engine حدث lifecycle باسم <code>review_started</code> إلى group <code>application:&lt;id&gt;</code> في Redis pub/sub. كل تبويب مفتوح للطلب يستقبل الحدث ويمسح أي مراجعة قديمة، حتى لا تختلط الرسائل بين الطلبات.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">05</div>
+      <div>
+        <h3>حلقة الوكلاء الخمسة</h3>
+        <p>لكل وكيل بالتسلسل (Sara → Fahad → Khalid → Nora → Orchestrator):</p>
+        <ul style="margin-top: 0.5rem;">
+          <li><strong>أ.</strong> تحديث <code>agent.status = 'thinking'</code>، ثم broadcast للواجهة حتى يظهر مؤشر التفكير.</li>
+          <li><strong>ب.</strong> بناء <code>user_message</code>: سياق الطلب + مراجعات الوكلاء السابقين.</li>
+          <li><strong>ج.</strong> استدعاء <code>OpenAI(base_url=openrouter).chat.completions.create(...)</code> ← POST لـ openrouter.ai.</li>
+          <li><strong>د.</strong> فحص <code>response.choices[0].message.content</code> — إذا فارغ → <code>raise LLMUnavailable</code>.</li>
+          <li><strong>هـ.</strong> حفظ <code>AgentReview(content, structured, compliance_snapshot)</code> في PostgreSQL.</li>
+          <li><strong>و.</strong> بث الرسالة + الـ <code>structured</code> JSON إلى الواجهة.</li>
+          <li><strong>ز.</strong> تحديث <code>agent.status = 'done'</code>، broadcast.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">06</div>
+      <div>
+        <h3>FinalRecommendation persistence + review_ended</h3>
+        <p>بعد انتهاء المنسق، يستخرج الـ engine الـ <code>structured</code> من مراجعته ويحفظ صفاً واحداً في <code>FinalRecommendation</code> (recommendation + conditions_if_any + residual_risks_for_human_review). بعدها تتغيّر حالة الطلب إلى <code>review_complete</code> ويُبثّ <code>review_ended</code>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">07</div>
+      <div>
+        <h3>المتصفح يستقبل ١٠–١٥ event عبر WebSocket</h3>
+        <p>يمر كل event عبر <code>MunjizBus</code>، وهو EventTarget داخلي، بعد ثلاث طبقات dedupe: IIFE init guard، و<code>seenMessageIds</code> على مستوى الـ bus، وفحص <code>data-msg-id</code> على مستوى DOM. كل event يحمل <code>agent_type</code> و<code>structured</code> JSON يغذّي حقول liveNumbers في الواجهة (sara.simah, fahad.id_status…).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">08</div>
+      <div>
+        <h3>الانتقال إلى Stage 03 — تقرير التوصية</h3>
+        <p>عند استلام <code>review_ended</code> تنتقل الواجهة إلى Stage 03 وتنادي <code>GET /api/applications/&lt;id&gt;/report/</code> لاسترجاع التقرير الكامل (FinalRecommendation + AgentReview list). بعدها يظهر الـ recommendation pill (موافقة أولية / مشروطة / مراجعة بشرية / غير موصى) مع قوائم الشروط والمخاطر المتبقية.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 3rem;">الكُمون الإجمالي · Total Latency Profile</h3>
+    <table class="tbl">
+      <thead><tr><th>المرحلة</th><th>الكُمون النموذجي</th><th>الملاحظات</th></tr></thead>
+      <tbody>
+        <tr><td>POST /trigger → Celery</td><td>&lt; 50 ms</td><td>local Redis</td></tr>
+        <tr><td>Sara — Credit (DeepSeek V3.2)</td><td>~5–8 s</td><td>سريع نسبياً</td></tr>
+        <tr><td>Fahad — Identity (GPT-4o mini)</td><td>~3–5 s</td><td>الأسرع</td></tr>
+        <tr><td>Khalid — Capacity (Qwen3 80B)</td><td>~8–12 s</td><td>عربي طويل</td></tr>
+        <tr><td>Nora — Collateral (Claude Sonnet 4.5)</td><td>~12–18 s</td><td>تقييم متعدد العوامل</td></tr>
+        <tr><td>Orchestrator (Claude Opus 4.7)</td><td>~25–35 s</td><td>الأطول لأنه يوازن كل المدخلات</td></tr>
+        <tr><td><strong>Total wall-clock</strong></td><td><strong>~60–90 s</strong></td><td>المجموع يتأثر بأبطأ خطوة في السلسلة</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 07 DATA MODEL ═══════════════════════ -->
+<section class="page" id="data">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">07</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> DATA MODEL</span>
+        <h2>نموذج البيانات</h2>
+        <p class="lede">يعتمد النظام على خمسة جداول رئيسية في تطبيق <code>mortgage</code>، تغطي ملف المتقدّم، والطلب، والمستندات، ومراجعات الوكلاء، والتوصية النهائية. صُممت هذه الجداول كسجل تدقيق append-only.</p>
+      </div>
+    </div>
+
+    <h3>الجداول الخمسة · Five Tables</h3>
+    <table class="tbl">
+      <thead><tr><th>Model</th><th>الحقول الرئيسية</th><th>الغرض</th></tr></thead>
+      <tbody>
+        <tr><td>Applicant</td><td>applicant_id · name_ar · national_id · nationality · age · monthly_salary_sar · existing_monthly_obligations_sar · employer_name · employer_sector · employment_duration_months</td><td>ملف المتقدّم (مرتبط بـ ID مرجعي للأنظمة الأم)</td></tr>
+        <tr><td>MortgageApplication</td><td>application_id · applicant FK · requested_loan_sar · requested_term_years · property_source · property_id · property_declared_price_sar · screening_answers (7 boolean) · status</td><td>الطلب الفعلي + خيارات الفحص الأخلاقي الطوعي</td></tr>
+        <tr><td>Document</td><td>application FK · kind (national_id / salary_slip / employment_letter / bank_statement / property_deed / property_listing) · file · file_size_bytes · uploaded_at</td><td>المستندات المرفوعة لكل طلب</td></tr>
+        <tr><td>AgentReview</td><td>application FK · agent_type · order · content · structured (JSON) · compliance_snapshot (JSON) · is_demo · created_at</td><td>مراجعة الوكيل + JSON منظم + لقطة الفحوصات</td></tr>
+        <tr><td>FinalRecommendation</td><td>application 1:1 · recommendation · summary_per_agent · conditions_if_any · residual_risks_for_human_review · binding · demo_mode</td><td>التوصية النهائية المنظمة (denormalised لسرعة الاستعلام)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top: 2rem;">الجدول الأهم: AgentReview</h3>
+    <p class="lede-body">كل مراجعة وكيل تُحفظ في صف واحد مع البيانات المرتبطة بها، حتى يمكن الرجوع إلى السياق لاحقاً:</p>
+    <pre><span class="k">class</span> <span class="n">AgentReview</span>(models.Model):
+    <span class="n">id</span>                  = UUIDField(primary_key=<span class="k">True</span>, default=uuid.uuid4)
+    <span class="n">application</span>         = ForeignKey(MortgageApplication, related_name=<span class="s">'reviews'</span>)
+    <span class="n">agent_type</span>          = CharField(choices=AGENT_TYPES)  <span class="c"># analytics / operations / ...</span>
+    <span class="n">order</span>               = IntegerField(default=0)        <span class="c"># الترتيب في السلسلة</span>
+
+    <span class="n">content</span>             = TextField()                   <span class="c"># السرد العربي الكامل</span>
+    <span class="n">structured</span>          = JSONField(default=dict)       <span class="c"># JSON parsed من المخرج</span>
+    <span class="n">compliance_snapshot</span> = JSONField(default=dict)       <span class="c"># لقطة SIMAH/Absher وقت المراجعة</span>
+
+    <span class="n">is_demo</span>             = BooleanField(default=<span class="k">True</span>)
+    <span class="n">created_at</span>          = DateTimeField(auto_now_add=<span class="k">True</span>)</pre>
+
+    <h3 style="margin-top: 2rem;">FinalRecommendation — الإخراج المنظم</h3>
+    <pre><span class="k">class</span> <span class="n">FinalRecommendation</span>(models.Model):
+    <span class="n">RECOMMENDATIONS</span> = [
+        (<span class="s">'recommend_initial_approval'</span>,         <span class="s">'توصية بالموافقة الأوّلية'</span>),
+        (<span class="s">'recommend_approval_with_conditions'</span>, <span class="s">'توصية بموافقة مشروطة'</span>),
+        (<span class="s">'needs_human_review'</span>,                 <span class="s">'يحتاج مراجعة بشرية'</span>),
+        (<span class="s">'not_recommended'</span>,                    <span class="s">'غير موصى بها'</span>),
+    ]
+    <span class="n">application</span>                      = OneToOneField(MortgageApplication)
+    <span class="n">recommendation</span>                   = CharField(choices=RECOMMENDATIONS)
+    <span class="n">summary_per_agent</span>                = JSONField(default=dict)
+    <span class="n">conditions_if_any</span>                = JSONField(default=list)
+    <span class="n">residual_risks_for_human_review</span>  = JSONField(default=list)
+    <span class="n">binding</span>                          = BooleanField(default=<span class="k">False</span>)  <span class="c"># pre-approval فقط</span>
+    <span class="n">demo_mode</span>                        = BooleanField(default=<span class="k">True</span>)</pre>
+
+    <div class="callout">
+      <span class="label">// AUDIT TRAIL DESIGN</span>
+      <p>يحفظ <code>compliance_snapshot</code> نسخة من فحوصات SIMAH وأبشر/يقين وSakani التي اعتمد عليها الوكيل. إذا احتاج المدقق بعد سنة إلى فهم توصية معيّنة، يمكن إعادة بناء <strong>السياق الكامل</strong> الذي كان أمام الوكيل في تلك اللحظة: المتقدّم، الطلب، العقار، الفحوصات، ومراجعات الزملاء. بهذا لا يبقى التدقيق معتمداً على النتيجة النهائية وحدها.</p>
+    </div>
+
+    <div class="callout" style="margin-top: 1.5rem;">
+      <span class="label">// PRODUCTION INTEGRATION</span>
+      <p>هذا الـ schema خاص بالمرحلة التجريبية. عند الإنتاج، تُستبدَل الـ Applicant و MortgageApplication بجداول الـ LOS الرسمي للبنك (Loan Origination System)، ويبقى Munjiz مسؤولاً عن AgentReview + FinalRecommendation فقط، مع foreign key إلى application_id الخارجي. بهذه الطريقة يبقى التدقيق محفوظاً دون تكرار بيانات العميل.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 08 API SURFACE ═══════════════════════ -->
+<section class="page" id="api">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">08</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> API SURFACE</span>
+        <h2>واجهة API</h2>
+        <p class="lede">تجمع الواجهة بين REST و WebSocket: endpoints للقراءة والتشغيل، وقناة واحدة للتحديثات الحية.</p>
+      </div>
+    </div>
+
+    <h3>REST Endpoints</h3>
+    <table class="tbl">
+      <thead><tr><th>Method</th><th>Path</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>GET</td><td>/api/applicants/</td><td>قائمة المتقدّمين التجريبيين (لتعبئة سريعة في الواجهة)</td></tr>
+        <tr><td>POST</td><td>/api/applications/</td><td>إنشاء طلب جديد <code>MortgageApplication</code> بحالة <code>draft</code></td></tr>
+        <tr><td>POST</td><td>/api/applications/&lt;id&gt;/documents/</td><td>رفع مستند (multipart/form-data) لطلب موجود</td></tr>
+        <tr><td>GET</td><td>/api/applications/&lt;id&gt;/compliance-preview/</td><td>preview للفحوصات (SIMAH, Absher, Sakani) قبل التشغيل</td></tr>
+        <tr><td>POST</td><td>/api/applications/&lt;id&gt;/trigger/</td><td>تشغيل مراجعة الوكلاء الخمسة → Celery .delay()</td></tr>
+        <tr><td>GET</td><td>/api/applications/&lt;id&gt;/report/</td><td>التقرير النهائي = FinalRecommendation + AgentReview list</td></tr>
+        <tr><td>WS</td><td>/ws/applications/&lt;id&gt;/</td><td>الـ WebSocket الحي لمتابعة المراجعة لحظياً</td></tr>
+      </tbody>
+    </table>
+
+    <div class="keep-together">
+      <h3 style="margin-top: 2rem;">WebSocket Frame Types</h3>
+      <p class="lede-body"><strong>Client → Server:</strong></p>
+      <pre>{ <span class="s">"action"</span>: <span class="s">"subscribe"</span>, <span class="s">"application_id"</span>: <span class="s">"DEMO-APP-001"</span> }
+{ <span class="s">"action"</span>: <span class="s">"ping"</span> }</pre>
+      <p class="lede-body"><strong>Server → Client (broadcasted on group <code>application:&lt;id&gt;</code>):</strong></p>
+      <pre>{ <span class="s">"type"</span>: <span class="s">"hello"</span> }                                              <span class="c">// connection ack</span>
+{ <span class="s">"type"</span>: <span class="s">"status_update"</span>, <span class="s">"agent_type"</span>: <span class="s">"analytics"</span>, <span class="s">"status"</span>: <span class="s">"thinking"</span> }
+{ <span class="s">"type"</span>: <span class="s">"review_started"</span>, <span class="s">"application_id"</span>: <span class="s">"DEMO-APP-001"</span>, <span class="s">"mode"</span>: <span class="s">"ai"</span> }
+{ <span class="s">"id"</span>: <span class="s">"uuid"</span>, <span class="s">"from_agent"</span>: <span class="s">"analytics"</span>,
+  <span class="s">"content"</span>: <span class="s">"📊 SIMAH 752 · DBR 41٪..."</span>,
+  <span class="s">"structured"</span>: { <span class="s">"simah_score_demo"</span>: 752, <span class="s">"dbr_after_loan_percent"</span>: 41, <span class="s">"verdict"</span>: <span class="s">"safe"</span> },
+  <span class="s">"is_ai_generated"</span>: <span class="k">true</span> }                                       <span class="c">// agent review event</span>
+{ <span class="s">"type"</span>: <span class="s">"review_ended"</span>, <span class="s">"application_id"</span>: <span class="s">"DEMO-APP-001"</span>,
+  <span class="s">"recommendation"</span>: <span class="s">"recommend_approval_with_conditions"</span> }</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 09 RESILIENCE ═══════════════════════ -->
+<section class="page" id="resilience">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">09</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> RESILIENCE &amp; MULTI-PROVIDER FAILOVER</span>
+        <h2>الصمود والتعافي</h2>
+        <p class="lede">يتعامل النظام مع الفشل كاحتمال وارد: يعيد المحاولة، ويتحقق من المخرجات، ويمكنه التحول بين مزودين عند الحاجة.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="ix">// LAYER 01</div>
+        <h3>SDK Auto-retry</h3>
+        <p>OpenAI SDK يعيد المحاولة تلقائياً عند rate limits (default: 2 retries) مع exponential backoff. هذا يعالج أغلب الفشل العابر دون تدخل من المستخدم.</p>
+      </div>
+      <div class="card">
+        <div class="ix">// LAYER 02</div>
+        <h3>Multi-Provider Failover</h3>
+        <p>نفس الواجهة المتوافقة مع OpenAI متاحة عبر OpenRouter, Anthropic Direct, Groq, Azure OpenAI, Ollama-local. إذا فشل المزود الأساسي، ينتقل الطلب إلى المزود التالي حسب priority list.</p>
+      </div>
+      <div class="card">
+        <div class="ix">// LAYER 03</div>
+        <h3>Validated Output</h3>
+        <p>كل رد يُفحص قبل قبوله: <code>if not result.strip(): raise LLMUnavailable(...)</code>. أي محتوى فارغ أو غير صالح يفعّل retry policy تلقائياً.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 2rem;">قرارات هندسية موثَّقة · Documented Engineering Decisions</h3>
+    <ul class="tlist">
+      <li><strong>OpenRouter slug evolution:</strong> النموذج الأول (<code>qwen-2.5-72b-instruct:free</code>) أُلغي من OpenRouter. ظهر الخطأ في celery logs، فتم الانتقال إلى <code>qwen3-next-80b-a3b-instruct</code> المدفوع. لأن اسم النموذج محفوظ في DB، بقي التغيير محصوراً في صف واحد ودون downtime.</li>
+      <li><strong>Sara model selection:</strong> اختبرنا DeepSeek R1، وظهر أنه يستهلك max_tokens في "thinking chain" داخلي ثم يعيد محتوى فارغاً. لذلك انتقلنا إلى DeepSeek V3.2 instruct، وهو أكثر ثباتاً لهذا الدور.</li>
+      <li><strong>Cross-tab synchronization:</strong> تشغيل مراجعة طلب من تبويب واحد يبث الرسائل لكل التبويبات المشتركة في group <code>application:&lt;id&gt;</code>. كانت التبويبات الأخرى تحتاج حدثاً يمسح الحالة القديمة، لذلك أضفنا <code>review_started</code> قبل بدء الرسائل.</li>
+      <li><strong>Alpine x-init guard:</strong> كان Alpine 3 يستدعي init() تلقائياً، ومع <code>x-init="init()"</code> كان التسجيل يحدث مرتين. حذفنا <code>x-init</code> وأضفنا <code>_initDone</code> idempotency guard لمنع تكرار الرسائل.</li>
+    </ul>
+
+    <div class="callout">
+      <span class="label">// FAILOVER PRIORITY</span>
+      <p>ترتيب الإنتاج المقترح هو: <code>OpenRouter → Anthropic Direct → Groq → Ollama-local</code>. بما أن الـ engine يعتمد على <code>base_url</code> قابل للتغيير، يتم التحويل بين المزودين عبر env var، لا عبر تعديل الكود.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 10 DEPLOYMENT ═══════════════════════ -->
+<section class="page" id="deployment">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">10</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> DEPLOYMENT ARCHITECTURE</span>
+        <h2>معمارية النشر</h2>
+        <p class="lede">يبدأ النشر بـ Docker Compose للـ pilot، ثم ينتقل إلى Kubernetes عند التوسع. يمكن تشغيله سحابياً، أو هجيناً، أو داخل بيئة البنك بالكامل.</p>
+      </div>
+    </div>
+
+    <h3>Docker Compose Stack (Pilot)</h3>
+    <p class="lede-body">في نسخة الـ pilot، يعمل النظام عبر ٦ خدمات داخل compose واحد:</p>
+    <table class="tbl">
+      <thead><tr><th>Service</th><th>Image</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>web</td><td>Custom (Python 3.12 + Daphne)</td><td>HTTP + WebSocket via ASGI</td></tr>
+        <tr><td>celery_worker</td><td>Same as web</td><td>تشغيل المهام الطويلة (concurrency=4)</td></tr>
+        <tr><td>celery_beat</td><td>Same as web</td><td>المهام الدورية (تنظيف الطلبات المنتهية، تجميع التكاليف اليومية)</td></tr>
+        <tr><td>db</td><td>postgres:16-alpine</td><td>البيانات الدائمة</td></tr>
+        <tr><td>redis</td><td>redis:7-alpine</td><td>channel layer + celery broker + cache</td></tr>
+        <tr><td>nginx</td><td>nginx:alpine</td><td>reverse proxy + static files</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top: 2rem;">خيارات النشر للبنوك · Bank Deployment Options</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="ix">// A · CLOUD</div>
+        <h3>السحابة الإقليمية</h3>
+        <p>AWS Riyadh / Azure Riyadh / STC Cloud، مع تمرير LLM calls عبر OpenRouter داخل المنطقة، وفصل واضح بين منجِز و الـ LOS الرسمي للبنك (يتصلان بـ webhook + signed REST). هذا مناسب لمعظم البنوك التجارية في بداية التشغيل.</p>
+        <div class="tag-row">DATA RESIDENCY: <b>KSA</b></div>
+      </div>
+      <div class="card">
+        <div class="ix">// B · HYBRID</div>
+        <h3>هجين</h3>
+        <p>تعمل منصة منجِز في السحابة، بينما تعمل LLMs محلياً عبر Ollama على GPU داخل datacenter البنك. بهذا لا تُرسل بيانات SIMAH أو Absher أو وثائق المتقدّم إلى مزود LLM خارجي.</p>
+        <div class="tag-row">SECURITY LEVEL: <b>HIGH</b></div>
+      </div>
+      <div class="card">
+        <div class="ix">// C · ON-PREM</div>
+        <h3>تشغيل محلي بالكامل</h3>
+        <p>كل المكونات تعمل داخل datacenter البنك، مع LLM محلي على NVIDIA H100/H200، واتصال داخلي مباشر بأنظمة LOS و SIMAH gateway. هذا المسار مناسب للبنوك الحكومية أو الجهات ذات متطلبات سيادية عالية.</p>
+        <div class="tag-row">SECURITY LEVEL: <b>MAXIMUM</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 11 SECURITY & COMPLIANCE ═══════════════════════ -->
+<section class="page" id="security">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">11</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> SECURITY &amp; COMPLIANCE</span>
+        <h2>الأمان والامتثال</h2>
+        <p class="lede">يراعي التصميم متطلبات الأمن السيبراني البنكي، ونظام حماية البيانات الشخصية، وحساسية بقاء البيانات داخل المملكة.</p>
+      </div>
+    </div>
+
+    <h3>طبقات الأمان السبع · Seven Security Layers</h3>
+    <ol class="tlist">
+      <li><strong>Encryption in Transit:</strong> TLS 1.3 لكل HTTP و WebSocket. الشهادات من Let's Encrypt أو من CA محلي معتمد.</li>
+      <li><strong>Encryption at Rest:</strong> تشفير PostgreSQL عبر AWS KMS أو Azure Key Vault، مع إدارة المفاتيح من خلال HSM.</li>
+      <li><strong>Authentication &amp; RBAC:</strong> Keycloak أو Azure AD مع MFA إلزامي للواجهة. الأدوار الأساسية: Loan Officer, Credit Reviewer, Compliance Auditor, Admin.</li>
+      <li><strong>Network Segmentation:</strong> الـ stack داخل VPC مخصّص. قاعدة البيانات بلا اتصال مباشر بالإنترنت، وLLM calls تمر عبر egress proxy مراقب، واتصالات SIMAH / Absher / Sakani عبر private link / VPN معتمد.</li>
+      <li><strong>Audit Logging:</strong> كل قرار AI، وكل تغيير في DB، وكل authentication event يكتب في append-only log داخل S3 Object Lock مع retention لمدة ٧ سنوات.</li>
+      <li><strong>Secrets Management:</strong> HashiCorp Vault أو AWS Secrets Manager. لا secrets داخل environment variables، ولا داخل الكود، ولا داخل DB.</li>
+      <li><strong>Incident Response:</strong> تنبيهات PagerDuty عند LLMUnavailable burst &gt; ٥/دقيقة، أو authentication failure &gt; ١٠/دقيقة، أو cost spike &gt; ٢٠٠٪ من baseline.</li>
+    </ol>
+
+    <h3 style="margin-top: 2rem;">PDPL — حماية بيانات العملاء</h3>
+    <p class="lede-body">السؤال الحساس هنا واضح: ما الذي يصل فعلاً إلى النماذج الخارجية؟ التصميم يخفف المخاطر عبر ثلاث طبقات:</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="ix">// 01</div>
+        <h3>Data Minimization</h3>
+        <p>لا يُمرر رقم الهوية الكامل أو رقم الجوال أو IBAN إلى النموذج. ما يمرر فقط هو القيم المُصنَّفة المطلوبة للقرار: SIMAH score (رقم)، DBR (نسبة)، نتيجة Absher (passed/flagged)، مسار التقييم (sakani/independent)، LTV (نسبة).</p>
+      </div>
+      <div class="card">
+        <div class="ix">// 02</div>
+        <h3>Pseudonymization</h3>
+        <p>يُستبدل اسم المتقدّم باسم مستعار مثل "أبو محمد" قبل بناء البرومبت. الاسم الحقيقي ورقم الهوية يبقيان داخل DB البنك / LOS، ويرتبطان بالطلب عبر <code>application_id</code> فقط.</p>
+      </div>
+      <div class="card">
+        <div class="ix">// 03</div>
+        <h3>On-Prem Option</h3>
+        <p>للبنوك الأكثر تحفظاً، يمكن تشغيل Ollama + Qwen3 على GPU محلي، بحيث لا تغادر بيانات SIMAH ولا وثائق العميل بيئة البنك. القرار النهائي يعتمد على مستوى المخاطر المقبول.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">// CURRENT STATUS</span>
+      <p>المرحلة الحالية هي pilot وليست نسخة إنتاج مرخصة من ساما، والتوصية النهائية <code>binding=False</code> أي أنها مساعدة قرار وليست قراراً ملزماً. طبقات الأمان أعلاه تمثل هدف النسخة الإنتاجية. أما الـ MVP الحالي داخل docker-compose فلا يتضمن بعد MFA أو audit immutability أو secrets vault أو ربط حقيقي بـ SIMAH/Absher (يستخدم mock compliance snapshot)، وهذه الفجوات موثقة ومجدولة في خارطة الطريق.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 12 ECONOMICS & SCALE ═══════════════════════ -->
+<section class="page" id="economics">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">12</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> ECONOMICS &amp; SCALE</span>
+        <h2>الاقتصاديات والقياس</h2>
+        <p class="lede">هنا نقدّر تكلفة مراجعة الطلب الواحد، وتكلفة التشغيل الشهري بحسب حجم الطلبات، والعائد المتوقع من تسريع وتوحيد التقييم الأولي.</p>
+      </div>
+    </div>
+
+    <h3>التكلفة لكل طلب · Per-Application Cost</h3>
+    <table class="tbl">
+      <thead><tr><th>البند</th><th>USD لكل طلب</th><th>SAR (تقريباً)</th><th>الملاحظات</th></tr></thead>
+      <tbody>
+        <tr><td>LLM API (الوكلاء الخمسة)</td><td>$0.08</td><td>~0.30</td><td>OpenRouter heterogeneous routing</td></tr>
+        <tr><td>SIMAH / Absher / Yakeen / Sakani calls</td><td>$0.10–0.30</td><td>~0.40–1.10</td><td>تعتمد على عقد البنك مع كل مزوّد</td></tr>
+        <tr><td>تخزين + audit log</td><td>$0.01</td><td>~0.04</td><td>Postgres + S3 Object Lock</td></tr>
+        <tr><td><strong>الإجمالي / طلب</strong></td><td><strong>$0.20–0.40</strong></td><td><strong>~0.75–1.50</strong></td><td>منخفض مقارنة بكلفة المراجع البشري</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top: 2rem;">التكلفة الشهرية على حجم الطلبات · Monthly Cost at Volume</h3>
+    <table class="tbl">
+      <thead><tr><th>الحجم الشهري</th><th>تكلفة المراجعات (SAR)</th><th>البنية التحتية (SAR)</th><th>الإجمالي الشهري (SAR)</th></tr></thead>
+      <tbody>
+        <tr><td>1,000 طلب/شهر</td><td>~1,500</td><td>~3,000</td><td>~4,500</td></tr>
+        <tr><td>10,000 طلب/شهر</td><td>~15,000</td><td>~6,000</td><td>~21,000</td></tr>
+        <tr><td>50,000 طلب/شهر</td><td>~75,000</td><td>~15,000</td><td>~90,000</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top: 2rem;">العائد المتوقَّع · Projected Return</h3>
+    <table class="tbl">
+      <thead><tr><th>المصدر</th><th>القيمة</th><th>الملاحظات</th></tr></thead>
+      <tbody>
+        <tr><td>اختصار وقت المراجع البشري</td><td>~30 دقيقة → دقيقتين / طلب</td><td>أكثر من ٩٠٪ من الطلبات تنتهي بـ initial_approval أو not_recommended دون تدخل بشري</td></tr>
+        <tr><td>توحيد القرار</td><td>تشتّت قراري &lt; ٥٪</td><td>القرارات تتبع نفس الحدود (SIMAH bands · DBR bands · LTV bands) لكل طلب</td></tr>
+        <tr><td>تسريع زمن الاستجابة للعميل</td><td>من ساعات إلى ~دقيقة</td><td>أثر تجاري مباشر على معدل التحويل في طلبات Sakani</td></tr>
+        <tr><td>سجل تدقيق كامل</td><td>100٪ من القرارات</td><td>كل توصية لها AgentReview + compliance_snapshot قابلة للاسترجاع</td></tr>
+      </tbody>
+    </table>
+
+    <div class="stats" style="margin-top: 2rem;">
+      <div class="stat"><div class="v">~$0.30</div><div class="l">avg cost / application</div></div>
+      <div class="stat"><div class="v">~60s</div><div class="l">avg pre-approval latency</div></div>
+      <div class="stat"><div class="v">90%+</div><div class="l">applications resolved without human</div></div>
+      <div class="stat"><div class="v">100%</div><div class="l">decisions audit-trailed</div></div>
+    </div>
+
+    <h3 style="margin-top: 2rem;">القياس الأفقي · Horizontal Scale Plan</h3>
+    <ul class="tlist">
+      <li><strong>Celery Workers:</strong> التوسع من ٤ إلى ١٦ workers لمعالجة ما يقارب ٨٠٠ طلب/ساعة/cluster.</li>
+      <li><strong>PostgreSQL:</strong> read replicas + PgBouncer connection pooling لأن الـ AgentReview write-heavy.</li>
+      <li><strong>Redis:</strong> cluster mode للـ pub/sub broadcast على آلاف ApplicationConsumer متزامنة.</li>
+      <li><strong>LLM API:</strong> نقطة الضغط الأهم، لكن تعدد المزودين عبر OpenRouter يقلل خطر التوقف عند مزود واحد.</li>
+      <li><strong>Kubernetes orchestration:</strong> EKS Riyadh / AKS Riyadh مع HPA على CPU + queue depth.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 13 OBSERVABILITY ═══════════════════════ -->
+<section class="page" id="observability">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">13</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> OBSERVABILITY &amp; AUDIT</span>
+        <h2>المراقبة والتدقيق</h2>
+        <p class="lede">تخدم بيانات المراقبة ثلاث جهات: المهندسين، والمدققين، وموظفي القروض. كل جهة ترى ما تحتاجه من نفس السجل التشغيلي.</p>
+      </div>
+    </div>
+
+    <h3>الإصدار الحالي (Pilot)</h3>
+    <ul class="tlist">
+      <li><strong>Application Logs:</strong> Django logging إلى Docker stdout، مع سجلات مستقلة لـ Celery workers، وتسجيل حالة كل LLM call ولكل Compliance API call (mock).</li>
+      <li><strong>Database:</strong> كل <code>AgentReview</code> مؤرخ ويحمل <code>structured</code> + <code>compliance_snapshot</code>. يمكن فحص التوصيات من Django admin.</li>
+      <li><strong>Diagnostic Console:</strong> الواجهة تطبع <code>[Munjiz] msg received...</code> في DevTools console، وهذا مفيد أثناء التشخيص الحي.</li>
+    </ul>
+
+    <h3 style="margin-top: 1.5rem;">إصدار الإنتاج (Production)</h3>
+    <ul class="tlist">
+      <li><strong>Metrics:</strong> Prometheus + Grafana لقياس agent latency p50/p95/p99، ونسبة نجاح LLM calls، وتكلفة المراجعة لكل طلب، وتوزيع التوصيات (initial / conditional / human / not_recommended).</li>
+      <li><strong>Logs:</strong> Loki للسجلات المنظمة والقابلة للبحث عبر LogQL. Retention لمدة ٣٠ يوماً hot و٧ سنوات cold للتدقيق.</li>
+      <li><strong>Traces:</strong> OpenTelemetry يتتبع كل طلب من POST /trigger إلى Celery ثم Engine ثم LLM ثم DB، لتشخيص المشاكل العميقة على مستوى application_id.</li>
+      <li><strong>Audit Trail:</strong> كل توصية AI وكل تغيير DB يدخل Kafka stream ثم S3 Object Lock مع 7-year retention وسجل immutable.</li>
+      <li><strong>Cost Monitoring:</strong> تجميع يومي لكل tenant من <code>response.usage</code>، مع تنبيه عند تجاوز الميزانية لكل ١,٠٠٠ طلب.</li>
+      <li><strong>Compliance Dashboard:</strong> لوحة للمدققين تعرض عدد التوصيات حسب النوع، نسب الحالات المصعدة للمراجع البشري، حالات override اليدوي، وتوزيع SIMAH/DBR/LTV bands.</li>
+    </ul>
+
+    <div class="callout">
+      <span class="label">// EXPLAIN-MY-DECISION</span>
+      <p>من منظور الحوكمة، يستطيع المدقق فتح "Decision Explainer" لأي قرار AI ورؤية: (١) السياق الكامل الذي رآه الوكيل، (٢) البرومبت النظامي وقتها، (٣) raw API response من LLM، (٤) ردود الوكلاء الآخرين التي بُني عليها القرار، (٥) النموذج المستخدم وإصداره. بهذا يصبح القرار قابلاً للفهم والمراجعة، لا مجرد نتيجة نهائية.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 14 ROADMAP ═══════════════════════ -->
+<section class="page" id="roadmap">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">14</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> ROADMAP</span>
+        <h2>خارطة الطريق</h2>
+        <p class="lede">تبدأ خارطة الطريق بإثبات القيمة على بنك واحد، ثم التوسع إلى عدة بنوك، وبعدها إلى منصة إقليمية متعددة المنتجات (تمويل عقاري، تمويل شخصي، SME).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Y1</div>
+      <div>
+        <h3>السنة الأولى — Pilot &amp; Proof</h3>
+        <ul style="margin-top: 0.5rem;">
+          <li>Shadow Mode على ١,٠٠٠ طلب لمدة شهرين: الوكلاء يراجعون ويصدرون توصيات، لكن قرار البنك يبقى يدوياً، ويُقاس مدى تطابق التوصية مع القرار البشري.</li>
+          <li>Limited Authority: تطبيق التوصية تلقائياً للحالات الواضحة (initial_approval / not_recommended) ودفع الباقي للمراجع البشري.</li>
+          <li>إثبات ROI بأرقام فعلية على بنك واحد، ثم توقيع عقد إنتاج.</li>
+          <li>تجهيز ملف SAMA dossier وتقديمه (التوصية ليست قراراً ملزماً).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">Y2</div>
+      <div>
+        <h3>السنة الثانية — Multi-Tenant Rollout</h3>
+        <ul style="margin-top: 0.5rem;">
+          <li>ربط حقيقي بـ SIMAH gateway و Absher/Yakeen و Sakani.</li>
+          <li>Multi-tenancy لاستقبال البنك الثاني والثالث على نفس الـ stack.</li>
+          <li>قنوات جديدة: تطبيق الموبايل، الإنترنت البنكي، broker portals.</li>
+          <li>إضافة وكلاء جدد: Compliance Agent للـ auto-AML check، Restructuring Agent لإعادة هيكلة التمويل القائم.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">Y3</div>
+      <div>
+        <h3>السنة الثالثة — Regional Lending SaaS</h3>
+        <ul style="margin-top: 0.5rem;">
+          <li>منصّة SaaS متعدّدة البنوك في المملكة لمنتجات الإقراض المختلفة.</li>
+          <li>توسعة إقليمية إلى الإمارات ومصر والكويت، مع تكييف الفحوصات (Etihad Credit Bureau، I-Score…) ونبرة مناسبة لكل سوق.</li>
+          <li>توسعة المنتج: تمويل شخصي، تمويل MSME، تمويل سيارات.</li>
+          <li>Marketplace للوكلاء، بحيث تستطيع البنوك تركيب وكلاء طرف ثالث مثل anti-fraud أو climate-risk advisor.</li>
+          <li>API عام للـ enterprise customers.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="page-foot">
+  <div class="shell">
+    <div class="strip" style="margin: 0 0 2rem 0;"></div>
+    <div class="row">
+      <span><span class="sig">// MUNJIZ</span> · TECHNICAL DOCUMENTATION · EDITION 01 · 2026</span>
+      <span>MADE IN RIYADH · KSA</span>
+      <span>v1.0 · PILOT-READY</span>
+    </div>
+    <div class="row" style="margin-top: 1rem; color: var(--muted); text-transform: none;">
+      <span>هذه الوثيقة سرية ومخصصة للاستخدام الداخلي وشركاء التقييم فقط.</span>
+      <span>This document is confidential. For internal use and evaluation partners only.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

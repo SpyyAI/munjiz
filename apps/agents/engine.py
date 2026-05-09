@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 class LLMUnavailable(Exception):
-    """Raised when the LLM provider returns an error. The caller should fall back
-    to scripted scenario playback for a coherent demo experience."""
+    """Raised when the LLM provider returns an error or empty content. The caller
+    should retry the call (SDK retry) or fail over to a secondary provider."""
 
 
 class AgentEngine:

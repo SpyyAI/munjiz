@@ -1,10 +1,9 @@
-"""Celery tasks that run agents asynchronously."""
+"""Celery tasks that run agents asynchronously. AI path only."""
 import logging
 from celery import shared_task
 
 from .models import Scenario
 from .engine import AgentEngine
-from .fallback import run_prescripted_scenario
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +66,7 @@ def _has_valid_llm_key() -> bool:
     return bool(key) and not key.startswith('sk-no-key') and 'your-key-here' not in key
 
 
-def _broadcast_lifecycle(scenario, phase: str, mode: str = ''):
+def _broadcast_lifecycle(scenario, phase: str):
     """Broadcast scenario_started / scenario_ended events to all dashboard tabs."""
     from channels.layers import get_channel_layer
     from asgiref.sync import async_to_sync
@@ -82,7 +81,7 @@ def _broadcast_lifecycle(scenario, phase: str, mode: str = ''):
             'scenario': {
                 'scenario_id': scenario.scenario_id,
                 'name_ar': scenario.name_ar,
-                'mode': mode,  # 'ai' | 'scripted' | ''
+                'mode': 'ai',
             },
         },
     )
@@ -90,26 +89,20 @@ def _broadcast_lifecycle(scenario, phase: str, mode: str = ''):
 
 @shared_task
 def run_scenario_task(scenario_id: str):
-    """Run a scenario (AI or scripted) and broadcast over WebSocket."""
+    """Run a scenario via the multi-agent AI engine."""
     try:
         scenario = Scenario.objects.get(scenario_id=scenario_id)
     except Scenario.DoesNotExist:
         logger.error("Scenario %s not found", scenario_id)
         return
 
-    if scenario.use_ai and _has_valid_llm_key():
-        _broadcast_lifecycle(scenario, 'scenario_started', mode='ai')
-        try:
-            AgentEngine().run_scenario_with_ai(scenario, _build_context())
-            _broadcast_lifecycle(scenario, 'scenario_ended', mode='ai')
-            return
-        except Exception as e:
-            logger.exception("AI run failed, falling back to script: %s", e)
-
-    # Fallback (or default when no LLM key configured): scripted playback
-    _broadcast_lifecycle(scenario, 'scenario_started', mode='scripted')
-    run_prescripted_scenario(scenario)
-    _broadcast_lifecycle(scenario, 'scenario_ended', mode='scripted')
+    _broadcast_lifecycle(scenario, 'scenario_started')
+    try:
+        AgentEngine().run_scenario_with_ai(scenario, _build_context())
+    except Exception:
+        logger.exception("Scenario %s aborted", scenario_id)
+    finally:
+        _broadcast_lifecycle(scenario, 'scenario_ended')
 
 
 @shared_task
@@ -121,14 +114,11 @@ def run_scenario_with_custom_data_task(scenario_id: str, custom_data: dict):
         return
     context = _build_context()
     context.update(custom_data or {})
-    if _has_valid_llm_key():
-        _broadcast_lifecycle(scenario, 'scenario_started', mode='ai')
-        try:
-            AgentEngine().run_scenario_with_ai(scenario, context)
-            _broadcast_lifecycle(scenario, 'scenario_ended', mode='ai')
-            return
-        except Exception as e:
-            logger.exception("AI custom-data run failed, falling back: %s", e)
-    _broadcast_lifecycle(scenario, 'scenario_started', mode='scripted')
-    run_prescripted_scenario(scenario)
-    _broadcast_lifecycle(scenario, 'scenario_ended', mode='scripted')
+
+    _broadcast_lifecycle(scenario, 'scenario_started')
+    try:
+        AgentEngine().run_scenario_with_ai(scenario, context)
+    except Exception:
+        logger.exception("Custom-data scenario %s aborted", scenario_id)
+    finally:
+        _broadcast_lifecycle(scenario, 'scenario_ended')

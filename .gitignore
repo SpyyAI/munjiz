@@ -15,3 +15,4 @@ media/
 .vscode/
 *.log
 celerybeat-schedule*
+.claude/

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import index
+from .views import landing
 
 urlpatterns = [
-    path('', index, name='dashboard-index'),
+    path('', landing, name='landing'),
 ]

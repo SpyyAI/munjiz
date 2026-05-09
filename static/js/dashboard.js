@@ -176,11 +176,8 @@ function munjizDashboard() {
             if (msg.id) bubble.setAttribute('data-msg-id', msg.id);
             const time = this.formatTime(msg.timestamp);
             const typeLabel = this.msgTypeLabel(msg.message_type);
-            // Source badge: AI-generated vs scripted fallback
-            const isAI = msg.is_ai_generated === true;
-            const sourceBadge = isAI
-                ? '<span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-agent-orchestrator/20 text-agent-orchestrator">⚡ AI</span>'
-                : '<span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-munjiz-muted/20 text-munjiz-muted">📜 سيناريو</span>';
+            // Source badge: every decision is real, live AI
+            const sourceBadge = '<span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-agent-orchestrator/20 text-agent-orchestrator">⚡ AI</span>';
             bubble.innerHTML = `
                 <div class="flex items-center gap-2 mb-2">
                     <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white text-xs"

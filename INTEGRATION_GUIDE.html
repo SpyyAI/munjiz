@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="ar-SA" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Munjiz × Beyond Technology — Enterprise Integration Guide</title>
+<meta name="description" content="Detailed enterprise integration architecture between Munjiz Branch AI and Beyond Technology's branch banking product suite. Audience: bank enterprise architects.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg-deepest:#0B1220; --bg-slide:#121A2A; --bg-card:#1E2A3F; --bg-card-2:#143428;
+  --ink:#E6EDF7; --ink-soft:#FFFFFF; --muted:#8B9AB3; --olive:#717A43;
+  --emerald:#008C66; --neon:#00E5A0; --cyan:#17FFFF;
+  --display:'IBM Plex Sans Arabic', sans-serif;
+  --body:'IBM Plex Sans Arabic', sans-serif;
+  --mono:'JetBrains Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg-deepest);color:var(--ink);
+  font-family:var(--body);font-size:16px;line-height:1.7;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 90% 0%, rgba(0,229,160,0.06), transparent 65%),
+    radial-gradient(ellipse 50% 35% at 10% 100%, rgba(23,255,255,0.04), transparent 70%);
+  pointer-events:none;z-index:0;
+}
+a{color:var(--neon);text-decoration:none;transition:color 0.2s}
+a:hover{color:var(--cyan)}
+::selection{background:var(--neon);color:var(--bg-deepest)}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg-slide)}
+::-webkit-scrollbar-thumb{background:var(--bg-card);border-radius:5px}
+::-webkit-scrollbar-thumb:hover{background:var(--olive)}
+main,header,footer,section{position:relative;z-index:1}
+
+h1,h2,h3,h4{font-family:var(--display);color:var(--ink-soft);font-weight:700;line-height:1.15;letter-spacing:-0.01em}
+h1{font-size:clamp(2.75rem,6vw,5rem);line-height:1.05;letter-spacing:-0.02em}
+h2{font-size:clamp(2rem,4vw,3.25rem)}
+h3{font-size:clamp(1.25rem,2vw,1.75rem);font-weight:600}
+h4{font-size:1.0625rem;font-weight:600}
+
+.eyebrow{font-family:var(--mono);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.22em;color:var(--muted);direction:ltr;text-align:right;display:inline-block}
+.eyebrow .sig{color:var(--neon);margin-left:0.5rem;font-weight:700}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 clamp(1.5rem,4vw,3rem)}
+section.page{padding:clamp(4rem,8vw,7rem) 0;border-bottom:1px solid rgba(139,154,179,0.08)}
+section.page:last-child{border-bottom:none}
+
+/* Cover */
+.cover{
+  min-height:92vh;display:flex;align-items:center;
+  padding:clamp(3rem,8vw,6rem) 0 clamp(2rem,5vw,4rem);
+  background:
+    radial-gradient(ellipse 60% 60% at 90% 10%, rgba(0,229,160,0.08), transparent 60%),
+    radial-gradient(ellipse 50% 60% at 10% 90%, rgba(23,255,255,0.05), transparent 60%);
+}
+.cover-inner{width:100%}
+.cover .meta-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:1.25rem;border-bottom:1px solid rgba(139,154,179,0.15);
+  font-family:var(--mono);font-size:0.75rem;color:var(--muted);
+  letter-spacing:0.16em;text-transform:uppercase;margin-bottom:clamp(2rem,5vw,4rem);
+}
+.cover .meta-bar .brand{color:var(--ink-soft);font-family:var(--display);font-size:1.0625rem;letter-spacing:0;text-transform:none}
+.cover .meta-bar .stamp{color:var(--neon)}
+.cover h1{font-size:clamp(2.75rem,7vw,5.5rem);color:var(--neon);text-shadow:0 0 40px rgba(0,229,160,0.2);letter-spacing:0.04em;margin-bottom:1.5rem;line-height:1.1}
+.cover .subtitle{font-size:clamp(1.25rem,2vw,1.75rem);color:var(--ink-soft);margin-bottom:2rem;font-weight:500;letter-spacing:-0.01em}
+.cover .lede{font-size:clamp(1.0625rem,1.5vw,1.25rem);color:var(--ink);line-height:1.6;max-width:62ch;margin-bottom:1.25rem}
+.cover .lede strong{color:var(--neon);font-weight:600}
+.cover .doc-meta{
+  display:flex;flex-wrap:wrap;gap:1rem 2.5rem;margin-top:2.5rem;padding-top:1.5rem;
+  border-top:1px dashed rgba(139,154,179,0.18);
+  font-family:var(--mono);font-size:0.78rem;color:var(--muted);direction:ltr;
+}
+.cover .doc-meta strong{color:var(--ink-soft);font-weight:600}
+.cover .doc-meta .v{color:var(--neon)}
+
+/* TOC */
+.toc{padding:4rem 0;background:var(--bg-slide)}
+.toc h2{color:var(--ink-soft);margin-bottom:2rem}
+.toc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem 2rem;counter-reset:toc}
+@media (max-width:760px){.toc-grid{grid-template-columns:1fr}}
+.toc-grid a{display:flex;align-items:baseline;gap:1rem;padding:0.85rem 0;border-bottom:1px dashed rgba(139,154,179,0.1);color:var(--ink);font-weight:500;transition:color 0.2s,border-color 0.2s}
+.toc-grid a::before{counter-increment:toc;content:counter(toc,decimal-leading-zero);font-family:var(--mono);font-size:0.85rem;color:var(--neon);font-weight:700;width:2.5em;flex-shrink:0;direction:ltr}
+.toc-grid a:hover{color:var(--neon);border-bottom-color:var(--neon)}
+
+/* Section heads */
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;margin-bottom:clamp(2rem,4vw,3.5rem);padding-bottom:1.25rem;border-bottom:1px solid rgba(139,154,179,0.15);flex-wrap:wrap}
+.section-head .num{font-family:var(--mono);font-size:clamp(3rem,6vw,5rem);font-weight:700;color:var(--neon);line-height:0.9;letter-spacing:-0.02em;direction:ltr}
+.section-head .titles{flex:1}
+.section-head h2{color:var(--ink-soft);margin-top:0.75rem}
+.section-head .lede{color:var(--muted);font-size:1.0625rem;margin-top:1rem;max-width:60ch}
+
+/* Body */
+.lede-body{color:var(--ink);font-size:1.0625rem;line-height:1.75;max-width:72ch;margin-bottom:2rem}
+.lede-body strong{color:var(--ink-soft);font-weight:600}
+.lede-body em{color:var(--neon);font-style:normal;font-weight:600}
+
+/* Caveat box */
+.caveat{
+  background:rgba(255,193,7,0.05);
+  border:1px solid rgba(255,193,7,0.25);
+  border-right:3px solid #FFC107;
+  border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;
+  font-size:0.95rem;color:var(--ink);
+}
+.caveat .label{font-family:var(--mono);font-size:0.7rem;color:#FFC107;text-transform:uppercase;letter-spacing:0.18em;font-weight:700;margin-bottom:0.5rem;direction:ltr;display:block}
+
+/* Cards */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin:1.5rem 0}
+.card{background:var(--bg-card);border:1px solid rgba(139,154,179,0.12);border-radius:12px;padding:1.5rem 1.4rem;position:relative;overflow:hidden;transition:transform 0.3s,border-color 0.3s}
+.card:hover{transform:translateY(-3px);border-color:var(--neon)}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--neon),transparent)}
+.card .ix{font-family:var(--mono);font-size:0.78rem;color:var(--neon);letter-spacing:0.16em;font-weight:700;direction:ltr;margin-bottom:0.5rem}
+.card h3{color:var(--ink-soft);font-size:1.25rem;margin-bottom:0.5rem}
+.card p{color:var(--ink);font-size:0.95rem;line-height:1.6}
+.card .tag-row{margin-top:1rem;padding-top:0.85rem;border-top:1px dashed rgba(139,154,179,0.18);font-family:var(--mono);font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;direction:ltr}
+.card .tag-row b{color:var(--neon);font-weight:600}
+
+/* Numbered step cards */
+.step{display:grid;grid-template-columns:80px 1fr;gap:1.5rem;padding:1.75rem;background:var(--bg-card);border:1px solid rgba(139,154,179,0.1);border-radius:12px;border-right:3px solid var(--neon);margin-bottom:1rem}
+.step .step-num{font-family:var(--mono);font-size:2.5rem;color:var(--neon);font-weight:700;line-height:1;direction:ltr}
+.step h3{color:var(--ink-soft);margin-bottom:0.5rem}
+.step p{color:var(--ink)}
+.step ul{margin-top:0.75rem;padding-right:1.25rem}
+.step ul li{list-style:none;position:relative;padding-right:1rem;color:var(--ink);margin-bottom:0.4rem}
+.step ul li::before{content:"▸";position:absolute;right:0;color:var(--neon)}
+
+/* Code */
+pre,code{font-family:var(--mono);font-size:0.85rem;direction:ltr;text-align:left}
+pre{background:var(--bg-deepest);border:1px solid rgba(139,154,179,0.12);border-right:3px solid var(--neon);border-radius:8px;padding:1.25rem 1.5rem;color:var(--ink);overflow-x:auto;line-height:1.6;margin:1.25rem 0}
+code:not(pre code){background:var(--bg-card);color:var(--neon);padding:1px 6px;border-radius:4px;font-size:0.9em}
+pre .k{color:var(--neon);font-weight:600}
+pre .s{color:var(--cyan)}
+pre .c{color:var(--muted);font-style:italic}
+pre .n{color:var(--ink-soft)}
+pre .num-lit{color:#FFC107}
+
+/* Tables */
+.tbl{width:100%;border-collapse:collapse;margin:1.5rem 0;background:var(--bg-card);border:1px solid rgba(139,154,179,0.15);border-radius:10px;overflow:hidden;font-size:0.95rem}
+.tbl th,.tbl td{padding:0.85rem 1rem;text-align:right;border-bottom:1px solid rgba(139,154,179,0.08);vertical-align:top}
+.tbl thead th{background:rgba(0,229,160,0.06);color:var(--ink-soft);font-family:var(--display);font-weight:600;border-bottom:1px solid var(--neon)}
+.tbl tbody td:first-child{color:var(--neon);font-family:var(--mono);font-size:0.85rem;letter-spacing:0.05em}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover{background:rgba(0,229,160,0.04)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1.5rem 0}
+.stat{background:var(--bg-card);border:1px solid rgba(139,154,179,0.12);border-radius:12px;padding:1.5rem 1.25rem;text-align:center;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--neon),transparent)}
+.stat .v{font-family:var(--display);font-size:2.25rem;color:var(--neon);font-weight:700;line-height:1;margin-bottom:0.5rem}
+.stat .v small{font-size:0.6em;color:var(--ink);font-weight:500}
+.stat .l{font-family:var(--mono);font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.14em;direction:ltr}
+
+/* Callout */
+.callout{border-right:3px solid var(--neon);background:linear-gradient(90deg,rgba(0,229,160,0.06) 0%,transparent 60%);padding:1.25rem 1.5rem;margin:1.5rem 0;border-radius:8px}
+.callout .label{font-family:var(--mono);font-size:0.7rem;color:var(--neon);text-transform:uppercase;letter-spacing:0.18em;font-weight:700;margin-bottom:0.5rem;direction:ltr;display:block}
+.callout p{color:var(--ink)}
+
+/* Numbered list */
+.tlist{list-style:none;counter-reset:tlist;margin:1rem 0}
+.tlist li{counter-increment:tlist;position:relative;padding:0.6rem 2.5rem 0.6rem 0;color:var(--ink);line-height:1.6;border-bottom:1px dashed rgba(139,154,179,0.08)}
+.tlist li::before{content:"0" counter(tlist);position:absolute;right:0;top:0.7rem;font-family:var(--mono);color:var(--neon);font-size:0.8rem;font-weight:700;letter-spacing:0.1em}
+.tlist li strong{color:var(--ink-soft);font-weight:600}
+
+/* Strip divider */
+.strip{height:2px;background:linear-gradient(90deg,transparent 0%,var(--neon) 30%,var(--cyan) 70%,transparent 100%);margin:3rem 0}
+
+/* Sequence diagram (ASCII-ish) */
+.seq{
+  background:var(--bg-deepest);border:1px solid rgba(139,154,179,0.12);
+  border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;
+  font-family:var(--mono);font-size:0.78rem;color:var(--ink);
+  line-height:1.5;direction:ltr;text-align:left;overflow-x:auto;white-space:pre;
+}
+
+/* Footer */
+.page-foot{background:var(--bg-deepest);padding:3rem 0 2rem;border-top:1px solid rgba(139,154,179,0.15)}
+.page-foot .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;color:var(--muted);font-family:var(--mono);font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;direction:ltr;text-align:right}
+.page-foot .row .sig{color:var(--neon);font-weight:700}
+
+@media print{
+  body{background:white;color:black}
+  section.page{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ COVER ═══════════════════════ -->
+<section class="cover">
+  <div class="shell cover-inner">
+    <div class="meta-bar">
+      <span class="brand">[ منجِز × Beyond ] · INTEGRATION GUIDE</span>
+      <span class="stamp">EDITION 01 · 2026 · ENTERPRISE ARCHITECT</span>
+    </div>
+    <span class="eyebrow"><span class="sig">//</span> ENTERPRISE INTEGRATION ARCHITECTURE</span>
+    <h1>MUNJIZ × BEYOND</h1>
+    <p class="subtitle">دليل الدمج التقني التَفصيلي مع منظومة Beyond Technology البنكية</p>
+    <p class="lede">
+      كيف يَتكامل <strong>منجِز Branch AI</strong> مع منظومة منتجات Beyond Technology لإدارة الفروع البنكية. خرائط البيانات لكل وكيل، عقود التكامل لكل منتج، السيناريوهات الواقعية اليومية، طوبولوجيا الشبكة الإنتاجية، وحدود الأمان بين الأنظمة.
+    </p>
+    <p class="lede" style="color:var(--muted); font-size:0.95rem;">
+      How Munjiz Branch AI integrates with Beyond Technology's branch banking product suite. Per-agent data contracts, per-product integration specs, real-life operational scenarios, production network topology, and security boundaries.
+    </p>
+    <div class="doc-meta">
+      <span><strong>Audience</strong> <span class="v">Enterprise Architect</span></span>
+      <span><strong>Version</strong> <span class="v">v1.0</span></span>
+      <span><strong>Pages</strong> <span class="v">10 sections</span></span>
+      <span><strong>Confidentiality</strong> <span class="v">SHARED-NDA</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- TOC -->
+<section class="toc">
+  <div class="shell">
+    <span class="eyebrow"><span class="sig">//</span> CONTENTS</span>
+    <h2>المحتويات</h2>
+    <div class="toc-grid">
+      <a href="#caveat">إخلاء المسؤولية حول الأسماء · Naming Disclaimer</a>
+      <a href="#pain">آلام مدير الفرع الواقعية · The Real Manager's Pain</a>
+      <a href="#beyond-map">خريطة منتجات Beyond × وكلاء منجِز · Beyond × Agent Map</a>
+      <a href="#data-contracts">عقود البيانات لكل وكيل · Per-Agent Data Contracts</a>
+      <a href="#scenarios">سيناريوهات واقعية تفصيلية · Real-Life Scenario Walkthroughs</a>
+      <a href="#api">واجهات API الواقعية · API Surface (Reads &amp; Writes)</a>
+      <a href="#security">الأمان وحدود الثقة · Security &amp; Trust Boundaries</a>
+      <a href="#topology">طوبولوجيا الشبكة الإنتاجية · Production Network Topology</a>
+      <a href="#failure">أنماط الفشل والتسوية · Failure Modes &amp; Reconciliation</a>
+      <a href="#migration">خطة الترحيل · Migration Plan from Existing Systems</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 01 NAMING DISCLAIMER ═══════════════════════ -->
+<section class="page" id="caveat">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">01</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> NAMING DISCLAIMER</span>
+        <h2>إخلاء المسؤولية حول أسماء المنتجات</h2>
+        <p class="lede">دقّة هندسية: نُميِّز بوضوح بين ما هو مُؤكَّد عن منتجات Beyond Technology وما هو فئات منتجات بنكية مَعروفة نُسقطها على Beyond بشكل معقول.</p>
+      </div>
+    </div>
+
+    <div class="caveat">
+      <span class="label">// IMPORTANT — READ BEFORE PROCEEDING</span>
+      <p>
+        Beyond Technology هي شركة سعودية متخصّصة في حلول الفروع البنكية. منتجاتها المنشورة تَشمل فئات قياسية في القطاع: Queue Management, Customer Journey Analytics, Self-Service Channels, Workforce Management, Digital Signage, Mobile Banking. <strong>هذه الوثيقة تَستخدم تَسميات الفئات (Categories) كنقاط تَكامُل، وليست SKUs تجاريّة دقيقة من Beyond.</strong>
+      </p>
+      <p style="margin-top:0.6rem;">
+        كل integration spec هنا قابل للتنفيذ على المنتجات الفعلية في كل فئة. الـ exact API endpoints, schema versions, و authentication tokens سَتُؤكَّد في <em>Integration Kickoff Workshop</em> مع فريق Beyond التقني.
+      </p>
+      <p style="margin-top:0.6rem;color:var(--muted);">
+        Beyond Technology operates Saudi-market branch-banking solutions across well-known categories. This document uses category-level names as integration anchors, not specific Beyond commercial SKUs. Every integration spec is implementable across actual products in each category. Exact API endpoints, schema versions, and auth tokens will be confirmed in the integration kickoff workshop.
+      </p>
+    </div>
+
+    <h3 style="margin-top:2rem;">المنتجات المُسقَطة على Beyond في هذه الوثيقة · Products Mapped to Beyond Categories Here</h3>
+    <table class="tbl">
+      <thead><tr><th>Beyond category</th><th>الإسقاط هنا · Reference name used</th><th>الدور · Role in Munjiz integration</th></tr></thead>
+      <tbody>
+        <tr><td>Queue Management</td><td>Beyond QMS</td><td>مَصدر بيانات الطابور الحيّة</td></tr>
+        <tr><td>Customer Journey Analytics</td><td>Beyond Journey</td><td>تَتَبُّع تجربة العميل عبر القنوات</td></tr>
+        <tr><td>Self-Service Channels</td><td>Beyond Self-Service</td><td>كيوسكات + ATM + موبايل تشكيل</td></tr>
+        <tr><td>Workforce Management</td><td>Beyond WFM</td><td>جدول الموظفين، الاستراحات، الإجازات</td></tr>
+        <tr><td>Digital Signage</td><td>Beyond Signage</td><td>محتوى الشاشات الرقمية في الفرع</td></tr>
+        <tr><td>Customer Feedback</td><td>Beyond Voice</td><td>NPS, CSAT, post-visit surveys</td></tr>
+        <tr><td>Branch Analytics Dashboard</td><td>Beyond Insights</td><td>BI dashboards للمدير الإقليمي</td></tr>
+      </tbody>
+    </table>
+
+    <p class="lede-body" style="margin-top:1.5rem;">
+      كل ما يَلي يَعتمد على هذه الإسقاطات. عند توقيع اتفاقية الشراكة، يَتمّ استبدال الأسماء المرجعيّة بأسماء Beyond التجاريّة الفعلية في نسخة مُحَدَّثة من الوثيقة.
+    </p>
+
+    <div class="strip"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 02 REAL MANAGER PAIN ═══════════════════════ -->
+<section class="page" id="pain">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">02</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> THE REAL MANAGER'S PAIN</span>
+        <h2>آلام مدير الفرع الواقعية</h2>
+        <p class="lede">قبل أي حديث عن المعمارية، نَستعرض ٥ آلام يومية حقيقية لمدير فرع — كل واحدة مَوثَّقة بأرقام واقعية، وكل واحدة لها مَصدر بيانات فعلي يَأتي من منظومة Beyond.</p>
+      </div>
+    </div>
+
+    <h3>الألم الواقعي (وليس "dummy")</h3>
+    <p class="lede-body">
+      مدير فرع البنك الحقيقي ليس "شخصية ديمو". إنه إنسان يَتعامل مع <strong>٥٠+ قراراً غير-استراتيجي يومياً</strong>، أغلبها يَستهلك ٢-١٠ دقائق من وقته، ويَتسرَّب أحياناً إلى أخطاء تَكلِّف البنك مالاً أو تَكسر علاقة مع عميل ذو قيمة عالية. منجِز لا يَستهدف الأمور الكبيرة (التي يَجب أن يَفعلها المدير) — بل الأمور <em>الصغيرة المُتكرِّرة</em> التي تَستنزف وقته.
+    </p>
+
+    <article class="step">
+      <div class="step-num">01</div>
+      <div>
+        <h3>"العميل المميَّز يَنتظر، وأنا لا أعلم"</h3>
+        <p><strong>الواقع:</strong> العميل أبو محمد السديري (VIP، ٨.٥ مليون ريال قيمة سنوية) يَدخل الفرع. الموظف على البوابة لا يَعرفه شخصياً. يَأخذ تذكرة عادية، يَنتظر ١٢ دقيقة. يَخرج غاضباً.</p>
+        <p style="margin-top:0.5rem;"><strong>أين تَفشل الأنظمة الحالية:</strong> Beyond QMS لديه التذكرة، Core Banking لديه ملف العميل، لكن لا يوجد ربط لحظي. المدير يَكتشف بعد فوات الأوان من تقرير NPS.</p>
+        <p style="margin-top:0.5rem;"><strong>كيف يَحلّها منجِز:</strong> الوكيل خالد يَقرأ ticket ID من Beyond QMS لحظياً، يُخصِّبه بـ customer profile من Core Banking، يَكتشف VIP، يُنبِّه المنسق فوراً، المنسق يَتَّخذ قراراً تلقائياً (لينا تَستقبله شخصياً + قهوة + تَجاوز الطابور).</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-num">02</div>
+      <div>
+        <h3>"الموظف في استراحة وأنا في ذروة"</h3>
+        <p><strong>الواقع:</strong> الساعة ١١:٣٠ خميس نهاية شهر. ٣٤ عميل بالطابور. خالد الغامدي (الصراف الأسرع) في استراحته الـ ٣٠-دقيقة المُقَرَّرة. لا أحد يُذكِّر المدير أن الذروة تَأتي.</p>
+        <p style="margin-top:0.5rem;"><strong>أين تَفشل الأنظمة الحالية:</strong> Beyond WFM لديه جدول الاستراحات. Beyond Insights لديه أنماط الذُّرى التاريخيّة. لكن أحدهما لا يَسأل الآخر "هل الاستراحة الآن مناسبة بالنظر للذروة المُتوقَّعة؟".</p>
+        <p style="margin-top:0.5rem;"><strong>كيف يَحلّها منجِز:</strong> سارة (Analytics) تَتَنبَّأ بالذروة قبل ساعة من خلال مزج بيانات WFM + Insights + Salary Calendar. فهد (Operations) يُحَذِّر: "خالد في استراحة، الذروة تَبدأ خلال ١٠ دقائق". المنسق يُرسل push notification لخالد عبر Beyond WFM API: "نَحتاجك ٢٠ دقيقة قبل، نَعَوِّضك بـ ١٥ دقيقة إضافيّة لاحقاً".</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-num">03</div>
+      <div>
+        <h3>"عبد الرحمن غضبان وأنا لا أعرف"</h3>
+        <p><strong>الواقع:</strong> العميل عبدالرحمن العمري (Premium، ٦٤٠ ألف ريال) قَدَّم طلب قرض عقاري الجمعة الماضية. اليوم خميس، لم يَتلَقَّ رداً. يَأتي للفرع غاضباً، يَطلب إغلاق حسابه. المدير لا يَعرف عن المشكلة حتى يَسمَع الصراخ.</p>
+        <p style="margin-top:0.5rem;"><strong>أين تَفشل الأنظمة الحالية:</strong> Loan Origination System لديه الحالة. Beyond Voice (NPS) لم يَكتشفه بعد. Beyond Journey لديه نمط الزيارات لكن لم يُربط بـ مشاعر العميل.</p>
+        <p style="margin-top:0.5rem;"><strong>كيف يَحلّها منجِز:</strong> سارة تَكتشف الذُّخر السلبي (CSAT droppen، يَتَّصل ٣ مرّات لـ call center، يَقرأ بريداً سَلبياً) قبل وصوله. خالد يَستلم الـ alert عند دخوله، يَجلس مع لينا (مستشارة العلاقات) جاهزة. المنسق يُحَضِّر تَعويضاً مُسبَقاً (٥٠٠ ريال ضمن صلاحيته، أو يُصَعِّد للمدير ماجد لتعويض أكبر).</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-num">04</div>
+      <div>
+        <h3>"وقت الصلاة قَرُب وعندي ٢٢ عميل"</h3>
+        <p><strong>الواقع:</strong> أذان الظهر ١٢:١٥. الفرع يَحتاج إغلاقاً مؤقَّتاً ٢٥ دقيقة. ٢٢ عميل بالطابور. مَن يَخدم؟ مَن يَعتذر منه؟ كيف نُبَلِّغ بدون إثارة غضب؟</p>
+        <p style="margin-top:0.5rem;"><strong>أين تَفشل الأنظمة الحالية:</strong> Beyond QMS يُغلَق يدوياً. Beyond Signage يُحَدَّث يدوياً. Beyond Communication (WhatsApp/SMS) يُرسل يدوياً. كل ذلك على المدير في ٥ دقائق.</p>
+        <p style="margin-top:0.5rem;"><strong>كيف يَحلّها منجِز:</strong> نورة (Queue) تَحسب: "نَستطيع خدمة ١٢ عميل قبل الصلاة، نُؤجِّل ١٠ بإشعار". المنسق يُنفِّذ تلقائياً عبر Beyond APIs: (أ) يُحَدِّث Beyond Signage لعَرض عدّاد تنازلي، (ب) يُرسل WhatsApp جماعي عبر Beyond Communication لكل عميل في الطابور، (ج) يُحَدِّد ٣ كيوسكات تَبقى شغّالة، (د) يُحَضِّر بروتوكول إعادة الفتح ١٢:٤٠.</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-num">05</div>
+      <div>
+        <h3>"المدير المحلي في اجتماع، والمنطقة تَطلَب تَقريراً"</h3>
+        <p><strong>الواقع:</strong> آخر اليوم، المدير الإقليمي يَطلَب: "كم خَدَمنا اليوم؟ كم تَجاوُز SLA؟ كم VIP استَقبَلنا؟ ما الدروس؟". المدير المحلي يَفتَح ٣ أنظمة، يَكتُب يدوياً، يَأخذ ٤٥ دقيقة.</p>
+        <p style="margin-top:0.5rem;"><strong>أين تَفشل الأنظمة الحالية:</strong> Beyond Insights لديه الأرقام، لكن لا أحد يَكتب الـ <em>narrative</em> الذي يَفهَمه المدير الإقليمي.</p>
+        <p style="margin-top:0.5rem;"><strong>كيف يَحلّها منجِز:</strong> عند نهاية اليوم، المنسق يَستَدعي كل وكلائه ويَطلُب ملخّصاً. سارة تَكتب الأرقام، فهد يَكتب الموارد، خالد يَكتب رضا العملاء، نورة تَكتب الدروس. المنسق يَدمج كل ذلك في تقرير عربي رفيع الجودة، ويُرسله بالبريد للمدير الإقليمي عبر Beyond Insights API. المدير المحلي يَعتمده بنقرة واحدة.</p>
+      </div>
+    </article>
+
+    <h3 style="margin-top:2rem;">التأثير الإجمالي اليومي · Total Daily Impact</h3>
+    <div class="stats">
+      <div class="stat"><div class="v">~50</div><div class="l">قرار تشغيلي صغير محول للأتمتة</div></div>
+      <div class="stat"><div class="v">~3.5h</div><div class="l">وقت مدير مُستَرَدّ يومياً</div></div>
+      <div class="stat"><div class="v">~85%</div><div class="l">قرارات لا تَحتاج المدير</div></div>
+      <div class="stat"><div class="v">~15%</div><div class="l">تَصعيد للمدير مع تحليل جاهز</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 03 BEYOND × AGENT MAP ═══════════════════════ -->
+<section class="page" id="beyond-map">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">03</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> BEYOND × MUNJIZ INTEGRATION MAP</span>
+        <h2>خريطة منتجات Beyond × وكلاء منجِز</h2>
+        <p class="lede">كل وكيل من وكلاء منجِز الخمسة يَقرأ من ويَكتب إلى منتجات Beyond محدَّدة. هذه الخريطة هي القلب التَكاملي للمنصّتين.</p>
+      </div>
+    </div>
+
+    <h3>المصفوفة الكاملة · The Full Matrix</h3>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>منتج Beyond / Product</th>
+          <th>سارة<br>Analytics</th>
+          <th>فهد<br>Operations</th>
+          <th>خالد<br>Customer</th>
+          <th>نورة<br>Queue</th>
+          <th>المنسق<br>Orchestrator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Beyond QMS</strong><br>(Queue Mgmt)</td>
+          <td>R: live waiting count, avg wait, SLA breaches</td>
+          <td>R: counter status, ticket throughput</td>
+          <td>R: ticket ID → customer match</td>
+          <td>R: queue depth · W: ticket re-routing</td>
+          <td>W: queue policy override</td>
+        </tr>
+        <tr>
+          <td><strong>Beyond WFM</strong><br>(Workforce)</td>
+          <td>R: staff schedule patterns</td>
+          <td>R/W: staff status, breaks, approvals</td>
+          <td>—</td>
+          <td>R: available headcount</td>
+          <td>W: break delay request, recall notification</td>
+        </tr>
+        <tr>
+          <td><strong>Beyond Self-Service</strong><br>(Kiosks/ATM)</td>
+          <td>R: utilization rate</td>
+          <td>R/W: kiosk on/off, maintenance flags</td>
+          <td>W: redirect customer to kiosk</td>
+          <td>R/W: kiosk routing config</td>
+          <td>W: kiosk content campaign trigger</td>
+        </tr>
+        <tr>
+          <td><strong>Beyond Signage</strong><br>(Digital Screens)</td>
+          <td>—</td>
+          <td>—</td>
+          <td>W: customer-facing message</td>
+          <td>W: live queue display, kiosk promotion</td>
+          <td>W: prayer countdown, branch closure msg</td>
+        </tr>
+        <tr>
+          <td><strong>Beyond Voice</strong><br>(NPS/CSAT)</td>
+          <td>R: satisfaction trends</td>
+          <td>—</td>
+          <td>R: customer sentiment, churn risk</td>
+          <td>R: post-visit feedback patterns</td>
+          <td>W: trigger post-incident apology survey</td>
+        </tr>
+        <tr>
+          <td><strong>Beyond Journey</strong><br>(Customer Analytics)</td>
+          <td>R: cross-channel patterns</td>
+          <td>—</td>
+          <td>R: customer 360 view</td>
+          <td>R: visit frequency model</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>Beyond Insights</strong><br>(BI Dashboard)</td>
+          <td>R/W: KPIs, daily aggregates</td>
+          <td>R: ops metrics</td>
+          <td>—</td>
+          <td>R: forecast inputs</td>
+          <td>W: end-of-day narrative report</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lede-body" style="margin-top:1.5rem;">
+      <strong>R</strong> = read · <strong>W</strong> = write · <strong>R/W</strong> = bidirectional · <strong>—</strong> = no integration. هذه المصفوفة هي العَقد الأساسي بين المنصّتين.
+    </p>
+
+    <h3 style="margin-top:2rem;">قنوات التَكامُل · Integration Channels</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="ix">// CHANNEL 01</div>
+        <h3>REST API (Read)</h3>
+        <p>منجِز يَقرأ من Beyond products عبر REST endpoints معيارية (OpenAPI 3 spec). frequency: on-demand لكل سيناريو + كاش ٣٠ ثانية للأرقام السريعة.</p>
+        <div class="tag-row">FORMAT: <b>JSON</b> · AUTH: <b>OAuth2</b></div>
+      </div>
+      <div class="card">
+        <div class="ix">// CHANNEL 02</div>
+        <h3>Webhooks (Push)</h3>
+        <p>Beyond products تُرسل webhooks لمنجِز عند أحداث: ticket_taken, customer_arrived_vip, kiosk_maintenance, sla_breach_imminent. منجِز يَستجيب بقرار فوري.</p>
+        <div class="tag-row">FORMAT: <b>JSON</b> · DELIVERY: <b>at-least-once</b></div>
+      </div>
+      <div class="card">
+        <div class="ix">// CHANNEL 03</div>
+        <h3>Action API (Write)</h3>
+        <p>منجِز يَكتب إلى Beyond products لتنفيذ القرارات: redirect_ticket, update_signage_content, request_break_delay, send_whatsapp_blast.</p>
+        <div class="tag-row">FORMAT: <b>JSON</b> · AUTH: <b>Service Account + RBAC</b></div>
+      </div>
+      <div class="card">
+        <div class="ix">// CHANNEL 04</div>
+        <h3>Event Stream (Optional)</h3>
+        <p>للبنوك ذات الحجم الكبير، Kafka topic مشترك بين Beyond و منجِز. أحداث lossless مع replay capability.</p>
+        <div class="tag-row">PROTOCOL: <b>Kafka</b> · RETENTION: <b>7 days</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 04 DATA CONTRACTS PER AGENT ═══════════════════════ -->
+<section class="page" id="data-contracts">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">04</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> PER-AGENT DATA CONTRACTS</span>
+        <h2>عقود البيانات لكل وكيل</h2>
+        <p class="lede">العقد الدقيق: ما هي البيانات التي يَستلمها كل وكيل، من أي منتج Beyond تَأتي، وما هي الـ schema المُتَفَق عليه. هذا أهم قسم في الوثيقة.</p>
+      </div>
+    </div>
+
+    <!-- AGENT: SARA -->
+    <h3 style="color:#FF1744;">سارة · Sara — Analytics Agent</h3>
+    <p class="lede-body" style="margin-bottom:0.75rem;">
+      <strong>المسؤولية:</strong> استخراج الأنماط من البيانات، التَنَبُّع بالذُّرى، حساب ROI لكل تدخل.<br>
+      <strong>المَصادر:</strong> Beyond QMS · Beyond WFM · Beyond Insights · Beyond Voice · Salary Calendar · Prayer Times API
+    </p>
+    <pre><span class="c">// SARA INPUT CONTRACT (per scenario invocation)</span>
+{
+  <span class="s">"agent"</span>: <span class="s">"sara"</span>,
+  <span class="s">"scenario_id"</span>: <span class="s">"S-03"</span>,
+  <span class="s">"branch_id"</span>: <span class="s">"RYD-OLY-042"</span>,
+  <span class="s">"timestamp"</span>: <span class="s">"2026-05-08T11:30:00+03:00"</span>,
+  <span class="s">"queue_state"</span>: {                              <span class="c">// from Beyond QMS</span>
+    <span class="s">"total_waiting"</span>: <span class="num-lit">34</span>,
+    <span class="s">"total_serving"</span>: <span class="num-lit">6</span>,
+    <span class="s">"avg_wait_minutes"</span>: <span class="num-lit">18.5</span>,
+    <span class="s">"max_wait_minutes"</span>: <span class="num-lit">27</span>,
+    <span class="s">"sla_compliance_percent"</span>: <span class="num-lit">78</span>,
+    <span class="s">"breach_count_today"</span>: <span class="num-lit">5</span>,
+    <span class="s">"by_segment"</span>: {
+      <span class="s">"vip"</span>: { <span class="s">"waiting"</span>: <span class="num-lit">1</span>, <span class="s">"avg_wait"</span>: <span class="num-lit">3.2</span> },
+      <span class="s">"premium"</span>: { <span class="s">"waiting"</span>: <span class="num-lit">5</span>, <span class="s">"avg_wait"</span>: <span class="num-lit">8.1</span> },
+      <span class="s">"standard"</span>: { <span class="s">"waiting"</span>: <span class="num-lit">28</span>, <span class="s">"avg_wait"</span>: <span class="num-lit">22.3</span> }
+    }
+  },
+  <span class="s">"historical_baseline"</span>: {                       <span class="c">// from Beyond Insights</span>
+    <span class="s">"avg_thursday_visitors"</span>: <span class="num-lit">380</span>,
+    <span class="s">"salary_day_multiplier"</span>: <span class="num-lit">1.8</span>,
+    <span class="s">"peak_hours"</span>: [<span class="s">"11:00-13:00"</span>, <span class="s">"16:00-18:00"</span>],
+    <span class="s">"prev_thursday_same_hour"</span>: { <span class="s">"waiting"</span>: <span class="num-lit">22</span>, <span class="s">"sla"</span>: <span class="num-lit">88</span> }
+  },
+  <span class="s">"sla_config"</span>: [                                 <span class="c">// from Beyond QMS config</span>
+    { <span class="s">"segment"</span>: <span class="s">"standard"</span>, <span class="s">"max_wait_min"</span>: <span class="num-lit">15</span>, <span class="s">"penalty_sar"</span>: <span class="num-lit">250</span> },
+    { <span class="s">"segment"</span>: <span class="s">"premium"</span>,  <span class="s">"max_wait_min"</span>: <span class="num-lit">10</span>, <span class="s">"penalty_sar"</span>: <span class="num-lit">500</span> },
+    { <span class="s">"segment"</span>: <span class="s">"vip"</span>,      <span class="s">"max_wait_min"</span>: <span class="num-lit">5</span>,  <span class="s">"penalty_sar"</span>: <span class="num-lit">1000</span> }
+  ],
+  <span class="s">"calendar_context"</span>: {                          <span class="c">// from Bank's HR + Saudi calendar</span>
+    <span class="s">"is_thursday"</span>: <span class="k">true</span>,
+    <span class="s">"is_salary_period"</span>: <span class="k">true</span>,
+    <span class="s">"is_ramadan"</span>: <span class="k">false</span>,
+    <span class="s">"next_prayer"</span>: { <span class="s">"name"</span>: <span class="s">"dhuhr"</span>, <span class="s">"in_minutes"</span>: <span class="num-lit">45</span> }
+  },
+  <span class="s">"voice_signals"</span>: {                             <span class="c">// from Beyond Voice</span>
+    <span class="s">"yesterday_csat"</span>: <span class="num-lit">4.2</span>,
+    <span class="s">"complaints_open"</span>: <span class="num-lit">3</span>,
+    <span class="s">"trend_7d"</span>: <span class="s">"declining"</span>
+  }
+}</pre>
+    <p class="lede-body" style="font-size:0.95rem; margin-top:0.5rem;">
+      <strong>سارة تُنتج:</strong> تَحليل عربي مع رقم بداية + نسبة ثقة + توقُّع للساعة القادمة + حساب ROI للقرارات المُحتَمَلة. تُرسَل النتيجة كرسالة <code>AgentMessage</code> إلى الـ A2A bus، يَستَلمها فهد كـ <code>sara_analysis</code> input.
+    </p>
+
+    <!-- AGENT: FAHAD -->
+    <h3 style="color:#FF6D00; margin-top:2.5rem;">فهد · Fahad — Operations Agent</h3>
+    <p class="lede-body" style="margin-bottom:0.75rem;">
+      <strong>المسؤولية:</strong> الحارس التشغيلي. يَعرف وضع كل موظف، يُراقب SLA، يَحترم حدود الصلاحية.<br>
+      <strong>المَصادر:</strong> Beyond WFM · Beyond Self-Service · Beyond QMS · Bank Authority Matrix · Sara's Output
+    </p>
+    <pre><span class="c">// FAHAD INPUT CONTRACT</span>
+{
+  <span class="s">"agent"</span>: <span class="s">"fahad"</span>,
+  <span class="s">"scenario_id"</span>: <span class="s">"S-03"</span>,
+  <span class="s">"sara_analysis"</span>: <span class="s">"📊 إنذار ذروة: 34 عميل بالانتظار..."</span>,  <span class="c">// from A2A bus</span>
+  <span class="s">"staff"</span>: [                                         <span class="c">// from Beyond WFM</span>
+    {
+      <span class="s">"employee_id"</span>: <span class="s">"E001"</span>,
+      <span class="s">"name_ar"</span>: <span class="s">"يوسف الحربي"</span>,
+      <span class="s">"role"</span>: <span class="s">"senior_teller"</span>,
+      <span class="s">"counter"</span>: <span class="s">"1"</span>,
+      <span class="s">"status"</span>: <span class="s">"active"</span>,
+      <span class="s">"avg_service_time_min"</span>: <span class="num-lit">4.2</span>,
+      <span class="s">"customers_served_today"</span>: <span class="num-lit">31</span>,
+      <span class="s">"break_scheduled_at"</span>: <span class="s">"13:00"</span>,
+      <span class="s">"performance_score"</span>: <span class="num-lit">4.8</span>
+    },
+    {
+      <span class="s">"employee_id"</span>: <span class="s">"E003"</span>,
+      <span class="s">"name_ar"</span>: <span class="s">"خالد الغامدي"</span>,
+      <span class="s">"role"</span>: <span class="s">"teller"</span>,
+      <span class="s">"counter"</span>: <span class="s">"3"</span>,
+      <span class="s">"status"</span>: <span class="s">"on_break"</span>,                          <span class="c">// 🔥 Sara wanted to know this</span>
+      <span class="s">"break_started_at"</span>: <span class="s">"11:15"</span>,
+      <span class="s">"expected_return"</span>: <span class="s">"11:45"</span>,
+      <span class="s">"voluntarily_recallable"</span>: <span class="k">true</span>          <span class="c">// HR policy field</span>
+    }
+    <span class="c">// ... 7 staff total in this branch</span>
+  ],
+  <span class="s">"kiosks"</span>: [                                        <span class="c">// from Beyond Self-Service</span>
+    { <span class="s">"id"</span>: <span class="s">"K1"</span>, <span class="s">"status"</span>: <span class="s">"available"</span>, <span class="s">"usage_today"</span>: <span class="num-lit">24</span>, <span class="s">"services"</span>: [<span class="s">"deposit"</span>, <span class="s">"withdraw"</span>, <span class="s">"transfer"</span>] },
+    { <span class="s">"id"</span>: <span class="s">"K2"</span>, <span class="s">"status"</span>: <span class="s">"available"</span>, <span class="s">"usage_today"</span>: <span class="num-lit">19</span>, <span class="s">"services"</span>: [<span class="s">"deposit"</span>, <span class="s">"transfer"</span>] },
+    { <span class="s">"id"</span>: <span class="s">"K4"</span>, <span class="s">"status"</span>: <span class="s">"maintenance"</span>, <span class="s">"ticket"</span>: <span class="s">"BMM-2026-0508-114"</span> }
+  ],
+  <span class="s">"authority_matrix"</span>: {                            <span class="c">// from Bank Auth Service</span>
+    <span class="s">"orchestrator_can"</span>: [
+      <span class="s">"redirect_to_kiosk"</span>,
+      <span class="s">"recall_voluntary_break"</span>,
+      <span class="s">"update_signage_content"</span>,
+      <span class="s">"send_whatsapp_blast"</span>,
+      <span class="s">"compensate_up_to_500_sar"</span>
+    ],
+    <span class="s">"requires_manager"</span>: [
+      <span class="s">"compensate_above_500_sar"</span>,
+      <span class="s">"extend_branch_hours"</span>,
+      <span class="s">"call_off_duty_staff"</span>,
+      <span class="s">"freeze_account"</span>,
+      <span class="s">"vip_segment_upgrade"</span>
+    ]
+  }
+}</pre>
+
+    <!-- AGENT: KHALID -->
+    <h3 style="color:#2979FF; margin-top:2.5rem;">خالد · Khalid — Customer Agent</h3>
+    <p class="lede-body" style="margin-bottom:0.75rem;">
+      <strong>المسؤولية:</strong> الواجهة الإنسانية. يَقرأ مَلف العميل، مَزاجه، تاريخه، يُنتج توصية تَحفَظ تجربته.<br>
+      <strong>المَصادر:</strong> Beyond Journey · Beyond Voice · Core Banking System (CBS) · CRM · Beyond QMS (ticket → customer mapping)
+    </p>
+    <pre><span class="c">// KHALID INPUT CONTRACT (focused on the customers in queue)</span>
+{
+  <span class="s">"agent"</span>: <span class="s">"khalid"</span>,
+  <span class="s">"sara_analysis"</span>: <span class="s">"📊 إنذار ذروة..."</span>,
+  <span class="s">"fahad_report"</span>: <span class="s">"⚙️ الوضع: 5 صرافين نشطين فقط..."</span>,
+  <span class="s">"customers_in_queue"</span>: [                          <span class="c">// from Beyond QMS + CBS join</span>
+    {
+      <span class="s">"ticket_id"</span>: <span class="s">"T-2026-0508-1124"</span>,
+      <span class="s">"customer_id"</span>: <span class="s">"C001"</span>,
+      <span class="s">"name_ar"</span>: <span class="s">"محمد بن عبدالعزيز السديري"</span>,
+      <span class="s">"alias"</span>: <span class="s">"أبو محمد"</span>,
+      <span class="s">"segment"</span>: <span class="s">"vip"</span>,
+      <span class="s">"annual_value_sar"</span>: <span class="num-lit">8500000</span>,
+      <span class="s">"churn_risk"</span>: <span class="s">"very_low"</span>,
+      <span class="s">"satisfaction_score"</span>: <span class="num-lit">4.7</span>,
+      <span class="s">"nps"</span>: <span class="num-lit">9</span>,
+      <span class="s">"wait_tolerance_min"</span>: <span class="num-lit">5</span>,
+      <span class="s">"preferred_channel"</span>: <span class="s">"WhatsApp"</span>,
+      <span class="s">"arrived_at"</span>: <span class="s">"11:28"</span>,
+      <span class="s">"reason_for_visit"</span>: <span class="s">"تحويل دولي"</span>,        <span class="c">// from CBS purpose-of-visit</span>
+      <span class="s">"complexity"</span>: <span class="s">"complex"</span>,                <span class="c">// auto-classified</span>
+      <span class="s">"notes"</span>: <span class="s">"يفضل الاستقبال من المدير شخصياً..."</span>
+    },
+    {
+      <span class="s">"ticket_id"</span>: <span class="s">"T-2026-0508-1118"</span>,
+      <span class="s">"customer_id"</span>: <span class="s">"C002"</span>,
+      <span class="s">"name_ar"</span>: <span class="s">"نورة بنت سعد العتيبي"</span>,
+      <span class="s">"alias"</span>: <span class="s">"أم ريان"</span>,
+      <span class="s">"segment"</span>: <span class="s">"standard"</span>,
+      <span class="s">"complexity"</span>: <span class="s">"simple"</span>,                  <span class="c">// 🔥 redirectable to kiosk</span>
+      <span class="s">"reason_for_visit"</span>: <span class="s">"تحديث رقم جوال"</span>
+    }
+    <span class="c">// ... 32 more customers</span>
+  ],
+  <span class="s">"voice_signals_per_customer"</span>: {                  <span class="c">// from Beyond Voice — recent</span>
+    <span class="s">"C003"</span>: { <span class="s">"complaints_30d"</span>: <span class="num-lit">3</span>, <span class="s">"trend"</span>: <span class="s">"high_risk"</span> }
+  }
+}</pre>
+
+    <!-- AGENT: NORA -->
+    <h3 style="color:#AA00FF; margin-top:2.5rem;">نورة · Nora — Queue Strategy Agent</h3>
+    <p class="lede-body" style="margin-bottom:0.75rem;">
+      <strong>المسؤولية:</strong> تَخطيط مُتَعَدِّد المَراحل. تَأخذ كل المُدخلات السابقة وتُصمِّم خطة تَنفيذيّة.<br>
+      <strong>المَصادر:</strong> كل ما سَبَق + Beyond Signage current state + Beyond Self-Service routing config + Communications channel availability
+    </p>
+    <pre><span class="c">// NORA INPUT CONTRACT (synthesized from preceding agents)</span>
+{
+  <span class="s">"agent"</span>: <span class="s">"nora"</span>,
+  <span class="s">"sara_analysis"</span>: <span class="s">"..."</span>,
+  <span class="s">"fahad_report"</span>: <span class="s">"..."</span>,
+  <span class="s">"khalid_input"</span>: <span class="s">"💬 12 من الـ34 معاملاتهم بسيطة..."</span>,
+  <span class="s">"signage_state"</span>: {                              <span class="c">// from Beyond Signage</span>
+    <span class="s">"S1_main_entry"</span>: { <span class="s">"current_content"</span>: <span class="s">"welcome_message"</span>, <span class="s">"slot_id"</span>: <span class="s">"slot-001"</span> },
+    <span class="s">"S2_waiting_hall"</span>: { <span class="s">"current_content"</span>: <span class="s">"queue_status"</span>, <span class="s">"slot_id"</span>: <span class="s">"slot-002"</span> },
+    <span class="s">"S3_kiosk_area"</span>: { <span class="s">"current_content"</span>: <span class="s">"kiosk_promotion"</span>, <span class="s">"slot_id"</span>: <span class="s">"slot-003"</span> },
+    <span class="s">"available_templates"</span>: [<span class="s">"prayer_countdown"</span>, <span class="s">"vip_welcome"</span>, <span class="s">"kiosk_savings_msg"</span>, ...]
+  },
+  <span class="s">"comm_channels"</span>: {                              <span class="c">// from Beyond Communication</span>
+    <span class="s">"whatsapp_business"</span>: { <span class="s">"available"</span>: <span class="k">true</span>, <span class="s">"daily_quota_remaining"</span>: <span class="num-lit">8200</span> },
+    <span class="s">"sms_gateway"</span>: { <span class="s">"available"</span>: <span class="k">true</span>, <span class="s">"daily_quota_remaining"</span>: <span class="num-lit">15000</span> },
+    <span class="s">"push_notification"</span>: { <span class="s">"app_user_count_in_queue"</span>: <span class="num-lit">12</span> }
+  }
+}</pre>
+
+    <!-- AGENT: ORCHESTRATOR -->
+    <h3 style="color:#00C853; margin-top:2.5rem;">المنسق · Orchestrator — Decision-Maker</h3>
+    <p class="lede-body" style="margin-bottom:0.75rem;">
+      <strong>المسؤولية:</strong> صانع القرار النهائي. يَستَلم آراء الوكلاء الأربعة، يُوازِن، ويُصدر قراراً مُبَرَّراً.<br>
+      <strong>المَصادر:</strong> agent_inputs (المُجَمَّعَة) + Branch State Snapshot + Authority Matrix + Audit-trail-write target
+    </p>
+    <pre><span class="c">// ORCHESTRATOR INPUT CONTRACT</span>
+{
+  <span class="s">"agent"</span>: <span class="s">"orchestrator"</span>,
+  <span class="s">"agent_inputs"</span>: {
+    <span class="s">"سارة (التحليلات)"</span>: <span class="s">"📊 إنذار ذروة..."</span>,
+    <span class="s">"فهد (العمليات)"</span>:    <span class="s">"⚙️ الوضع: 5 صرافين..."</span>,
+    <span class="s">"خالد (العملاء)"</span>:    <span class="s">"💬 12 من الـ34 معاملاتهم بسيطة..."</span>,
+    <span class="s">"نورة (الطوابير)"</span>:   <span class="s">"🎯 خطة عاجلة ثلاثية..."</span>
+  },
+  <span class="s">"branch_snapshot"</span>: { ... },           <span class="c">// summary state</span>
+  <span class="s">"authority_matrix"</span>: { ... },          <span class="c">// what I can do alone</span>
+  <span class="s">"audit_target"</span>: {
+    <span class="s">"persistence"</span>: <span class="s">"postgres+s3"</span>,    <span class="c">// every decision goes here</span>
+    <span class="s">"retention_days"</span>: <span class="num-lit">2557</span>             <span class="c">// 7 years per SAMA</span>
+  }
+}</pre>
+
+    <p class="lede-body" style="margin-top:1.5rem;">
+      <strong>المنسق يُنتج قراراً مُهَيكَلاً</strong> يُمكن تَنفيذه برمجياً عبر Beyond Action APIs:
+    </p>
+    <pre><span class="c">// ORCHESTRATOR OUTPUT (the executable decision)</span>
+{
+  <span class="s">"decision_id"</span>: <span class="s">"DEC-2026-0508-1130-7a3f"</span>,
+  <span class="s">"summary_ar"</span>: <span class="s">"تفعيل خطة نورة الثلاثية فوراً..."</span>,
+  <span class="s">"reasoning_ar"</span>: <span class="s">"الوضع حرج، 12 دقيقة لاختراق SLA..."</span>,
+  <span class="s">"actions"</span>: [
+    {
+      <span class="s">"action"</span>: <span class="s">"recall_voluntary_break"</span>,
+      <span class="s">"target_system"</span>: <span class="s">"beyond_wfm"</span>,
+      <span class="s">"endpoint"</span>: <span class="s">"POST /api/v1/staff/E003/recall-request"</span>,
+      <span class="s">"payload"</span>: { <span class="s">"reason"</span>: <span class="s">"peak_surge"</span>, <span class="s">"compensation_minutes"</span>: <span class="num-lit">15</span> },
+      <span class="s">"authority"</span>: <span class="s">"orchestrator_alone"</span>
+    },
+    {
+      <span class="s">"action"</span>: <span class="s">"redirect_simple_tickets_to_kiosks"</span>,
+      <span class="s">"target_system"</span>: <span class="s">"beyond_qms"</span>,
+      <span class="s">"endpoint"</span>: <span class="s">"POST /api/v1/queue/bulk-redirect"</span>,
+      <span class="s">"payload"</span>: { <span class="s">"ticket_ids"</span>: [<span class="s">"T-...1118"</span>, ...12], <span class="s">"target"</span>: <span class="s">"any_available_kiosk"</span> }
+    },
+    {
+      <span class="s">"action"</span>: <span class="s">"update_signage_campaign"</span>,
+      <span class="s">"target_system"</span>: <span class="s">"beyond_signage"</span>,
+      <span class="s">"endpoint"</span>: <span class="s">"PUT /api/v1/screens/S2/content"</span>,
+      <span class="s">"payload"</span>: { <span class="s">"template_id"</span>: <span class="s">"kiosk_savings_msg"</span>, <span class="s">"duration_min"</span>: <span class="num-lit">30</span> }
+    },
+    {
+      <span class="s">"action"</span>: <span class="s">"vip_intercept"</span>,
+      <span class="s">"target_system"</span>: <span class="s">"beyond_qms"</span>,
+      <span class="s">"endpoint"</span>: <span class="s">"POST /api/v1/queue/T-2026-0508-1124/escort"</span>,
+      <span class="s">"payload"</span>: { <span class="s">"escort_to"</span>: <span class="s">"E006_lina"</span>, <span class="s">"priority"</span>: <span class="s">"immediate"</span> }
+    }
+  ],
+  <span class="s">"escalations"</span>: [],                    <span class="c">// none in this case — within authority</span>
+  <span class="s">"financial_impact"</span>: {
+    <span class="s">"cost_sar"</span>: <span class="num-lit">25</span>,                    <span class="c">// staff overtime</span>
+    <span class="s">"savings_sar"</span>: <span class="num-lit">1800</span>,                 <span class="c">// avoided SLA penalties</span>
+    <span class="s">"roi_multiplier"</span>: <span class="num-lit">72</span>
+  },
+  <span class="s">"audit_record"</span>: {
+    <span class="s">"persisted_to"</span>: <span class="s">"postgres:agents.agentmessage"</span>,
+    <span class="s">"replicated_to"</span>: <span class="s">"s3://munjiz-audit-immutable/2026/05/08/"</span>,
+    <span class="s">"retention_until"</span>: <span class="s">"2033-05-08"</span>
+  }
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 05 SCENARIOS ═══════════════════════ -->
+<section class="page" id="scenarios">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">05</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> REAL-LIFE SCENARIO WALKTHROUGHS</span>
+        <h2>سيناريوهات واقعية تفصيلية</h2>
+        <p class="lede">أربعة سيناريوهات يومية مَع تَدفُّق البيانات الكامل من Beyond إلى منجِز إلى Beyond مَرة أخرى. كل سيناريو يُظهر القيمة المُلموسة ساعة-بساعة.</p>
+      </div>
+    </div>
+
+    <h3>السيناريو الأول · Scenario A: VIP Arrival Detection (08:30 الصباح)</h3>
+    <div class="seq">
+[1]  <span style="color:#FFC107">EVENT</span>: 08:28 — Customer "أبو محمد السديري" enters branch lobby
+        ↓
+[2]  <span style="color:#00E5A0">Beyond QMS</span>: prints ticket T-2026-0508-0828, assigns it to standard queue
+        ↓
+[3]  <span style="color:#17FFFF">WEBHOOK</span> → Munjiz: <span style="color:#8B9AB3">POST /api/webhooks/qms/ticket-taken</span>
+        { ticket_id, customer_phone_hash, segment_initial: "unknown" }
+        ↓
+[4]  <span style="color:#00E5A0">Munjiz Engine</span>: triggers scenario S-VIP-DETECT
+        ├─ Khalid agent fetches Core Banking by phone_hash
+        │     CBS API: GET /customers/by-phone-hash/{hash}
+        │     Response: customer_id=C001, segment="VIP", annual_value=8.5M
+        ├─ Khalid agent fetches recent journey from <span style="color:#00E5A0">Beyond Journey</span>
+        │     GET /journey/customer/C001/recent?days=30
+        │     Response: 7 visits last month, NPS=9, preferred_channel=WhatsApp
+        └─ Khalid output: "🚨 VIP detected — أبو محمد"
+        ↓
+[5]  <span style="color:#00E5A0">Orchestrator</span>: decides — escort to relationship manager
+        ↓
+[6]  <span style="color:#17FFFF">Munjiz → Beyond QMS</span>: <span style="color:#8B9AB3">POST /api/v1/queue/{ticket}/escort</span>
+        { escort_to: "E006_lina", priority: "immediate", brand_msg: "مرحباً أبو محمد" }
+        ↓
+[7]  <span style="color:#17FFFF">Munjiz → Beyond Signage S1</span>: <span style="color:#8B9AB3">PUT /api/v1/screens/S1/welcome-personalized</span>
+        { name_alias: "أبو محمد", duration_sec: 30 }
+        ↓
+[8]  <span style="color:#FFC107">RESULT</span>: 08:31 — Lina greets him personally with prepared coffee
+                Total wait time: 0 minutes (vs would-be 12+ in standard flow)
+    </div>
+    <p class="lede-body" style="font-size:0.95rem;">
+      <strong>القيمة الحقيقية:</strong> العميل بقيمة ٨.٥ مليون ريال سنوياً يَستلم تجربة "نَتَوَقَّعك" بدلاً من "مرحباً ببوابتنا". لا تَدخُل بشري في القرار. سرعة الاكتشاف: ١٢٠ مللي-ثانية.
+    </p>
+
+    <h3 style="margin-top:2.5rem;">السيناريو الثاني · Scenario B: Salary Day Peak Prevention (10:30 صباحاً)</h3>
+    <div class="seq">
+[1]  <span style="color:#FFC107">CRON</span>: 10:30 — Munjiz triggers proactive scenario S-PEAK-PREDICT
+        ↓
+[2]  <span style="color:#00E5A0">Sara agent</span> reads:
+        ├─ <span style="color:#00E5A0">Beyond Insights</span>: GET /historical/branch/RYD-OLY-042/peak-pattern
+        │     Response: Thursday end-of-month → 1.8× peak between 11:00-13:00
+        ├─ <span style="color:#00E5A0">Beyond QMS</span>: GET /queue/state — 14 currently waiting
+        ├─ Bank Calendar: today is salary day for 60% of customers
+        └─ Sara output: "⚠️ ذروة 42-48 عميل متوقعة 11:30 (ثقة 89%)"
+        ↓
+[3]  <span style="color:#00E5A0">Fahad agent</span> reads:
+        ├─ <span style="color:#00E5A0">Beyond WFM</span>: GET /staff/branch/RYD-OLY-042/today
+        │     Response: 5 active, 2 on scheduled break starting 11:00 + 11:15
+        └─ Fahad output: "صرافين متاحين فقط 5 — استراحات وقت سيء"
+        ↓
+[4]  <span style="color:#00E5A0">Nora agent</span> designs strategy:
+        └─ "تأجيل استراحات + تفعيل كيوسكات + إشعار مسبق للعملاء"
+        ↓
+[5]  <span style="color:#00E5A0">Orchestrator</span> decides + executes (within authority):
+        ├─ <span style="color:#17FFFF">Beyond WFM</span>: POST /staff/E003/break-delay
+        │     { delay_minutes: 30, compensation_minutes: 15, notify_via: "wfm_app" }
+        ├─ <span style="color:#17FFFF">Beyond Signage S2</span>: PUT /screens/S2/content
+        │     { template: "kiosk_savings_msg", duration_min: 90 }
+        └─ <span style="color:#17FFFF">Beyond Communication</span>: POST /push/scheduled
+              { template: "expected_peak_advisory", target: "app_users_with_pending_simple_txn",
+                send_at: "10:45", count: 240 }
+        ↓
+[6]  <span style="color:#FFC107">RESULT</span>: 11:30 — peak arrived as predicted, but...
+                Actual queue at 11:30: 28 waiting (vs predicted 42)
+                30% diverted to kiosks via signage
+                10% delayed to 14:00 via push notification
+                SLA breaches: 0 (vs typical 6-8)
+                Penalties avoided: 2,000 SAR
+    </div>
+
+    <h3 style="margin-top:2.5rem;">السيناريو الثالث · Scenario C: Prayer Time Auto-Protocol (12:00 ظهراً)</h3>
+    <div class="seq">
+[1]  <span style="color:#FFC107">CRON</span>: 12:00 — Munjiz triggers S-PRAYER-PROTOCOL (15 min before dhuhr)
+        ↓
+[2]  Prayer Times API: dhuhr at 12:15, asr at 15:42
+        ↓
+[3]  <span style="color:#00E5A0">Beyond QMS</span>: 22 currently in queue, avg processing 4.5 min/customer
+        ↓
+[4]  <span style="color:#00E5A0">Sara</span>: "نقدر نخلص 12 قبل الأذان (ثقة 92%) — 10 يبقون"
+        ↓
+[5]  <span style="color:#00E5A0">Khalid</span>: identifies which 10 customers to defer
+        Logic: simple txns first (kiosk-able), VIPs last (handled in person)
+        ↓
+[6]  <span style="color:#00E5A0">Orchestrator</span> executes 4-pronged protocol:
+        ├─ <span style="color:#17FFFF">Beyond Signage S1+S2+S3</span>: countdown timer "نستأنف 12:40"
+        ├─ <span style="color:#17FFFF">Beyond Communication</span>: WhatsApp blast to 10 deferred customers
+        │     "مرحباً، الفرع يستأنف 12:40 — نقدر تحجز موعدك أو تستخدم الكيوسك"
+        ├─ <span style="color:#17FFFF">Beyond Self-Service</span>: keep K1, K2, K3 active during closure
+        └─ <span style="color:#17FFFF">Beyond QMS</span>: lock new ticket dispensing 12:14
+        ↓
+[7]  12:15 — branch closes for prayer, kiosks remain operational
+        ↓
+[8]  12:40 — branch reopens, 7 of 10 deferred customers returned (3 used kiosk)
+                Customer satisfaction post-event: 4.4/5 (vs 4.1 historical for prayer closures)
+                Manager intervention: 0
+    </div>
+
+    <h3 style="margin-top:2.5rem;">السيناريو الرابع · Scenario D: VIP Churn Crisis (16:45 المساء)</h3>
+    <div class="seq">
+[1]  <span style="color:#FFC107">EVENT</span>: 16:45 — Customer "عبدالرحمن العمري" (Premium, 640K SAR) approaches counter
+        Loud voice, complains about pending mortgage application from 3 hours ago
+        ↓
+[2]  <span style="color:#00E5A0">Beyond Voice</span> sentinel detected loud voice → alerts Munjiz
+        ↓
+[3]  <span style="color:#00E5A0">Khalid</span> fetches:
+        ├─ <span style="color:#00E5A0">Beyond Voice</span>: GET /sentiment/C003 → "high_risk", 3 complaints last 30d
+        ├─ Loan Origination API: GET /applications/C003/recent
+        │     Response: app stuck in 'pending_review' for 3.2 hours (system error)
+        └─ Khalid: "🚨 احتواء فوري — يهدد بإغلاق الحساب"
+        ↓
+[4]  <span style="color:#00E5A0">Sara</span>: calculates churn financial impact
+        Annual value: 640K
+        Family network risk: 8 customers, 1.2M combined annual value
+        Loss probability if untreated: 65%
+        Total exposure: 1.84M SAR/year
+        ↓
+[5]  <span style="color:#00E5A0">Orchestrator</span> decides — partial escalation:
+        ├─ <span style="color:#17FFFF">Within authority (auto-execute):</span>
+        │   ├─ <span style="color:#17FFFF">Beyond QMS</span>: escort to private VIP room with Lina
+        │   ├─ Loan Origination: POST /applications/C003/expedite-review
+        │   └─ Compensation: 500 SAR (fee waiver) — within Orchestrator cap
+        └─ <span style="color:#17FFFF">Requires Manager:</span>
+            ├─ Compensation 1,500 SAR + VIP segment upgrade for 6 months
+            ├─ Push notification to Manager Majed's phone via Bank Auth Service
+            └─ Decision package includes: Sara's financial analysis, recommended action,
+               authority gap rationale
+        ↓
+[6]  Manager Majed approves on phone within 3 minutes
+        ↓
+[7]  <span style="color:#FFC107">RESULT</span>: 17:05 — customer leaves satisfied
+                Compensation total: 1,500 SAR
+                Saved: 1.84M SAR/year (Premium retention + family network)
+                ROI: 1,227× on the compensation investment
+    </div>
+
+    <p class="lede-body" style="margin-top:2rem;">
+      <strong>الخيط المُشترَك في الأربعة:</strong> منجِز <em>لا يَستَبدِل</em> أنظمة Beyond — يُنَسِّق بينها. Beyond تُقدِّم البيانات والقدرات، منجِز يُقدِّم <strong>الذكاء التشغيلي</strong> الذي يَجعل البيانات قراراً.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 06 API SURFACE ═══════════════════════ -->
+<section class="page" id="api">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">06</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> API SURFACE — READS &amp; WRITES</span>
+        <h2>واجهات API الواقعيّة</h2>
+        <p class="lede">العَقد الكامل: ما تَقرأه منجِز من Beyond، ما تَكتُبه، شكل الـ payloads، إجراءات الأمان، حدود الـ rate limits.</p>
+      </div>
+    </div>
+
+    <h3>القراءات الحَيَّة من Beyond Products · Live Reads from Beyond</h3>
+    <table class="tbl">
+      <thead><tr><th>Beyond Product</th><th>Endpoint (illustrative)</th><th>Used by Agent</th><th>Frequency</th></tr></thead>
+      <tbody>
+        <tr><td>QMS</td><td>GET /api/v1/queue/state?branch={id}</td><td>Sara, Fahad</td><td>per scenario + 30s cache</td></tr>
+        <tr><td>QMS</td><td>GET /api/v1/queue/tickets/active</td><td>Khalid</td><td>per scenario</td></tr>
+        <tr><td>WFM</td><td>GET /api/v1/staff/branch/{id}/today</td><td>Fahad</td><td>per scenario</td></tr>
+        <tr><td>WFM</td><td>GET /api/v1/staff/{id}/break-policy</td><td>Fahad</td><td>per scenario when needed</td></tr>
+        <tr><td>Self-Service</td><td>GET /api/v1/kiosks/branch/{id}/state</td><td>Fahad, Nora</td><td>per scenario</td></tr>
+        <tr><td>Voice (NPS)</td><td>GET /api/v1/sentiment/customer/{id}/recent</td><td>Khalid</td><td>per scenario for high-risk customers only</td></tr>
+        <tr><td>Voice (NPS)</td><td>GET /api/v1/csat/branch/{id}/trend?days=7</td><td>Sara</td><td>1× per scenario</td></tr>
+        <tr><td>Journey</td><td>GET /api/v1/journey/customer/{id}/360</td><td>Khalid</td><td>per VIP/Premium customer detection</td></tr>
+        <tr><td>Insights</td><td>GET /api/v1/historical/branch/{id}/peak-pattern</td><td>Sara, Nora</td><td>1× per day, cached</td></tr>
+        <tr><td>Signage</td><td>GET /api/v1/screens/branch/{id}/state</td><td>Nora</td><td>per scenario</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:2rem;">الكتابات (التَنفيذ) إلى Beyond · Action Writes to Beyond</h3>
+    <table class="tbl">
+      <thead><tr><th>Action</th><th>Endpoint (illustrative)</th><th>Authority Required</th></tr></thead>
+      <tbody>
+        <tr><td>Recall staff from voluntary break</td><td>POST /wfm/api/v1/staff/{id}/recall-request</td><td>Orchestrator alone</td></tr>
+        <tr><td>Delay scheduled break</td><td>POST /wfm/api/v1/staff/{id}/break-delay</td><td>Orchestrator alone</td></tr>
+        <tr><td>Bulk redirect tickets to kiosks</td><td>POST /qms/api/v1/queue/bulk-redirect</td><td>Orchestrator alone</td></tr>
+        <tr><td>Single ticket VIP escort</td><td>POST /qms/api/v1/queue/{ticket}/escort</td><td>Orchestrator alone</td></tr>
+        <tr><td>Update digital signage content</td><td>PUT /signage/api/v1/screens/{id}/content</td><td>Orchestrator alone</td></tr>
+        <tr><td>WhatsApp blast to queue</td><td>POST /comm/api/v1/whatsapp/blast</td><td>Orchestrator alone (with template approval)</td></tr>
+        <tr><td>Compensate customer (SAR ≤ 500)</td><td>POST /cbs/api/v1/customer/{id}/compensate</td><td>Orchestrator alone</td></tr>
+        <tr><td>Compensate customer (SAR &gt; 500)</td><td>POST /cbs/api/v1/customer/{id}/compensate</td><td>Manager approval required</td></tr>
+        <tr><td>Extend branch hours</td><td>POST /branch/api/v1/{id}/hours/extend</td><td>Manager approval required</td></tr>
+        <tr><td>VIP segment upgrade</td><td>PUT /cbs/api/v1/customer/{id}/segment</td><td>Manager approval required</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:2rem;">المصادقة والحَوكمة · Auth &amp; Governance</h3>
+    <pre><span class="c">// Munjiz authenticates to Beyond via OAuth2 Client Credentials</span>
+POST /beyond-auth/oauth2/token
+{
+  <span class="s">"grant_type"</span>: <span class="s">"client_credentials"</span>,
+  <span class="s">"client_id"</span>: <span class="s">"munjiz-svc-prod-RYD-OLY-042"</span>,    <span class="c">// per-branch service account</span>
+  <span class="s">"client_secret"</span>: <span class="s">"$VAULT_SECRET"</span>,            <span class="c">// HashiCorp Vault</span>
+  <span class="s">"scope"</span>: <span class="s">"qms.read qms.write wfm.read wfm.staff.write signage.write ..."</span>
+}
+
+<span class="c">// Every Munjiz → Beyond call carries:</span>
+Headers:
+  Authorization: Bearer eyJ...
+  X-Munjiz-Decision-ID: DEC-2026-0508-1130-7a3f
+  X-Munjiz-Branch-ID: RYD-OLY-042
+  X-Munjiz-Agent: orchestrator
+  X-Idempotency-Key: {decision_id}+{action_index}      <span class="c">// safe retries</span></pre>
+
+    <h3 style="margin-top:2rem;">حدود معدّل الطلبات · Rate Limits (proposed)</h3>
+    <table class="tbl">
+      <thead><tr><th>Beyond Product</th><th>Reads / branch / hour</th><th>Writes / branch / hour</th></tr></thead>
+      <tbody>
+        <tr><td>QMS</td><td>1,800 (= 1 every 2 sec)</td><td>200</td></tr>
+        <tr><td>WFM</td><td>200</td><td>50</td></tr>
+        <tr><td>Self-Service</td><td>120</td><td>30</td></tr>
+        <tr><td>Voice</td><td>300</td><td>20</td></tr>
+        <tr><td>Journey</td><td>500 (per-VIP basis)</td><td>—</td></tr>
+        <tr><td>Insights</td><td>50 (cached daily)</td><td>10</td></tr>
+        <tr><td>Signage</td><td>—</td><td>50</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <span class="label">// CIRCUIT BREAKERS</span>
+      <p>كل integration مَحمِيَّة بـ circuit breaker على نمط <code>5 errors in 30s → open for 60s</code>. عند الانفتاح، الوكيل المُتأثِّر يُسَجِّل الحالة في الـ raw_data ويُكمِل بالبيانات المُتاحة. المنسق يَعرف أن جزءاً من سياقه مفقود ويُعَدِّل قراراته (مثلاً: لا يَطلُب تَعويضاً ماديّاً لو CBS down).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 07 SECURITY ═══════════════════════ -->
+<section class="page" id="security">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">07</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> SECURITY &amp; TRUST BOUNDARIES</span>
+        <h2>الأمان وحدود الثقة</h2>
+        <p class="lede">حدود الأمان بين Munjiz و Beyond، نموذج RBAC، تَدفُّق البيانات الحَسَّاسة، الالتزام بساما + PDPL.</p>
+      </div>
+    </div>
+
+    <h3>نَموذج الثقة · Trust Model</h3>
+    <p class="lede-body">
+      <strong>Munjiz هي service account داخل بيئة البنك</strong> — ليست طرفاً ثالثاً خارجياً. تَعمل داخل نفس الـ VPC أو datacenter، تَستخدِم الـ identity provider الخاص بالبنك (Active Directory أو Keycloak)، وتُعامَل كأي خدمة داخلية أخرى.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="ix">// BOUNDARY 01</div>
+        <h3>Munjiz ↔ Beyond (intra-VPC)</h3>
+        <p>اتصال داخل VPC البنك. mTLS مَطلوب على كل service-to-service call. شهادات صادرة عن Bank Internal CA. منصب Beyond لا يَخرج، منصب Munjiz لا يَخرج.</p>
+      </div>
+      <div class="card">
+        <div class="ix">// BOUNDARY 02</div>
+        <h3>Munjiz ↔ LLM Provider (egress)</h3>
+        <p>عبر egress proxy مُراقَب فقط. PII removal layer تَمنع تَسرُّب أرقام حسابات/هويّات/أرقام جوّال. الأسماء تُستَبدَل بـ aliases. البيانات الحَسَّاسة مُجَمَّعة (segment, value bracket).</p>
+      </div>
+      <div class="card">
+        <div class="ix">// BOUNDARY 03</div>
+        <h3>User ↔ Munjiz UI</h3>
+        <p>RBAC إجباري عبر Bank's IDP. أربع أدوار: Branch Manager (full), Operations Lead (read), Auditor (read+audit_log), Admin (config). MFA إجباري لكل login.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:2rem;">تَدفُّق البيانات الحَسَّاسة · Sensitive Data Flow</h3>
+    <pre><span class="c">// Customer C001 data flow through Munjiz</span>
+
+[CBS]  <span style="color:#FFC107">name=محمد بن عبدالعزيز السديري, ID=1010..., phone=+9665...</span>
+        ↓
+[Beyond Journey adapter] <span style="color:#00E5A0">strips ID + phone; keeps name internally</span>
+        ↓
+[Munjiz internal context] <span style="color:#00E5A0">name=محمد..., alias=أبو محمد, segment=VIP, value_bracket="8M-10M"</span>
+        ↓
+[Khalid prompt builder] <span style="color:#00E5A0">strips full name; uses alias only</span>
+        ↓
+[OpenRouter LLM call] <span style="color:#FF1744">"العميل أبو محمد (VIP, قيمة سنوية ~9M ريال)..."</span>
+        ↓
+[Khalid output] returned to Munjiz internal context
+        ↓
+[Audit log] <span style="color:#00E5A0">stores full context including original name (for SAMA audit)</span>
+        ↓
+[Beyond QMS escort call] uses customer_id (not name) for action</pre>
+
+    <p class="lede-body" style="margin-top:1.5rem;">
+      <strong>المبدأ:</strong> الـ LLM لا يَرى اسماً كاملاً ولا هويّة ولا رقم جوّال — يَرى alias + segment + قيمة مُجَمَّعَة. الاسم الكامل يَعود فقط في طبقة الـ audit log (داخل البنك). إذا اخْتَرَق LLM provider، الضرر صفر.
+    </p>
+
+    <h3 style="margin-top:2rem;">الالتزام التَنظيمي · Regulatory Alignment</h3>
+    <table class="tbl">
+      <thead><tr><th>إطار / Framework</th><th>كيف نَمتَثِل · How we comply</th></tr></thead>
+      <tbody>
+        <tr><td>SAMA Cybersecurity Framework</td><td>Encryption (TLS 1.3 + AES-256), MFA, RBAC, audit immutability 7y, network segmentation, IR runbook</td></tr>
+        <tr><td>PDPL</td><td>Data minimization at adapter layer, pseudonymization before LLM, opt-out registry, DSR API</td></tr>
+        <tr><td>KSA Data Residency</td><td>All data + LLM calls within KSA region (AWS Riyadh / Azure Riyadh / STC Cloud / on-prem)</td></tr>
+        <tr><td>PCI-DSS</td><td>Munjiz never touches card data — out of scope by design</td></tr>
+        <tr><td>NCA Saudi controls</td><td>Service account inventory, vulnerability mgmt, incident notification SLA</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 08 NETWORK TOPOLOGY ═══════════════════════ -->
+<section class="page" id="topology">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">08</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> PRODUCTION NETWORK TOPOLOGY</span>
+        <h2>طوبولوجيا الشبكة الإنتاجيّة</h2>
+        <p class="lede">كيف يَجلِس Munjiz في شبكة البنك مع منظومة Beyond، الفروع، وخوادم الإنتاج.</p>
+      </div>
+    </div>
+
+    <pre style="font-size:0.78rem; line-height:1.5;">
+<span class="c">┌─────────────────── BANK INTERNET DMZ ──────────────────┐</span>
+<span class="c">│                                                          │</span>
+<span class="c">│   [WAF] ↔ [API Gateway / Kong] ↔ [Mobile/Web Banking]   │</span>
+<span class="c">│                                                          │</span>
+<span class="c">└────────────────────────┬────────────────────────────────┘</span>
+                          │
+<span class="c">┌─────────────────── INTERNAL APPLICATION VPC ────────────┐</span>
+<span class="c">│                                                          │</span>
+<span class="c">│  ┌─── BEYOND PRODUCTS ──────────┐   ┌─── MUNJIZ ──────┐ │</span>
+<span class="c">│  │ Beyond QMS    Beyond WFM     │   │ Daphne (web)   │ │</span>
+<span class="c">│  │ Beyond Voice  Beyond Journey │ ↔ │ Celery workers │ │</span>
+<span class="c">│  │ Beyond Signage  Beyond SS    │   │ PostgreSQL     │ │</span>
+<span class="c">│  │ Beyond Insights              │   │ Redis          │ │</span>
+<span class="c">│  └──────────────────────────────┘   │ Nginx          │ │</span>
+<span class="c">│           ↕                          └────────┬───────┘ │</span>
+<span class="c">│  ┌── CORE BANKING (Temenos/Finacle) ──┐           │     │</span>
+<span class="c">│  │ Customer 360, Accounts, Loans       │           │     │</span>
+<span class="c">│  └─────────────────────────────────────┘           │     │</span>
+<span class="c">│           ↕                                         │     │</span>
+<span class="c">│  ┌── BANK AUTH (Keycloak/AD) ────────┐             │     │</span>
+<span class="c">│  │ OAuth2 IDP, RBAC                   │             │     │</span>
+<span class="c">│  └────────────────────────────────────┘             │     │</span>
+<span class="c">│                                                     │     │</span>
+<span class="c">└─────────────────────────────────────────────────────┼─────┘</span>
+                                                       │
+<span class="c">┌─────── SECURE EGRESS (audited) ────────────────────▼─────┐</span>
+<span class="c">│   [Egress Proxy + PII Stripper + Cost Monitor]            │</span>
+<span class="c">│                       ↓                                    │</span>
+<span class="c">│   OpenRouter API (KSA region) → LLM providers             │</span>
+<span class="c">└────────────────────────────────────────────────────────────┘</span>
+
+<span class="c">┌─────── BRANCH NETWORKS (200+ branches) ──────────────────┐</span>
+<span class="c">│   Each branch:                                             │</span>
+<span class="c">│   - Kiosks (Beyond SS) → Beyond cloud over branch VPN     │</span>
+<span class="c">│   - QMS terminal → Beyond QMS server                      │</span>
+<span class="c">│   - Digital signage → Beyond Signage server               │</span>
+<span class="c">│   - WiFi customer access (segmented from staff)           │</span>
+<span class="c">│   - Branch staff PCs → Bank internal apps via VPN         │</span>
+<span class="c">│                                                            │</span>
+<span class="c">│   NO direct Munjiz access from branch                     │</span>
+<span class="c">│   Munjiz reads branch state via Beyond products' APIs     │</span>
+<span class="c">└────────────────────────────────────────────────────────────┘</span></pre>
+
+    <h3 style="margin-top:2rem;">قرارات نَشر تَفصيليّة · Deployment Decisions</h3>
+    <ul class="tlist">
+      <li><strong>Munjiz في نفس الـ VPC مع Beyond:</strong> latency بين الخدمتين &lt; 5ms. لا حاجة public internet للتَكامُل.</li>
+      <li><strong>Egress proxy للـ LLM:</strong> النقطة الوحيدة التي تَخرج فيها بيانات للـ public internet. كل request يَمرّ عبر PII stripper + cost monitor + audit log.</li>
+      <li><strong>Per-branch service account:</strong> كل فرع له identity مُسْتَقِل في الـ IDP. تَسريب أوراق اعتماد فرع لا يُؤَثِّر على الباقي.</li>
+      <li><strong>Read replicas للـ Beyond APIs:</strong> Munjiz يَقرأ من read replicas حيثما أمكن. الـ writes فقط تَذهب للـ primary.</li>
+      <li><strong>Disaster recovery:</strong> Munjiz cluster في AWS Riyadh + warm standby في Azure Riyadh. RTO 30 دقيقة، RPO 5 دقائق.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 09 FAILURE MODES ═══════════════════════ -->
+<section class="page" id="failure">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">09</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> FAILURE MODES &amp; RECONCILIATION</span>
+        <h2>أنماط الفشل والتسوية</h2>
+        <p class="lede">ما الذي يَحدث عندما تَفشل أيّ عقدة في النظام — Beyond، أو CBS، أو Munjiz نفسه — وكيف نَستعيد بدون فقد بيانات أو قرارات معلَّقَة.</p>
+      </div>
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th>الفشل · Failure</th><th>الكشف · Detection</th><th>الاستجابة · Response</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Beyond QMS unreachable</td>
+          <td>Circuit breaker: 5 errors / 30s</td>
+          <td>Sara, Fahad, Khalid skip queue_state field; Orchestrator gets <code>queue_state: null</code> + <code>integrations.qms.status: "degraded"</code> in context. Decisions explicitly avoid queue-routing actions.</td>
+        </tr>
+        <tr>
+          <td>Beyond WFM down</td>
+          <td>HTTP 5xx</td>
+          <td>Fahad falls back to last-known staff state from Munjiz cache (TTL 5 min). Manager-action proposals defer to manager (no auto-recall).</td>
+        </tr>
+        <tr>
+          <td>Action write fails (e.g. signage update)</td>
+          <td>HTTP error from Beyond</td>
+          <td>Idempotent retry 3× with exponential backoff. If still failing, action marked <code>failed</code> in audit, manager notified. Other actions in the decision continue.</td>
+        </tr>
+        <tr>
+          <td>LLM provider rate limit</td>
+          <td>HTTP 429</td>
+          <td>SDK auto-retry 2× with backoff. If still failing, multi-provider failover (OpenRouter → Anthropic Direct → Groq → Ollama-local).</td>
+        </tr>
+        <tr>
+          <td>Partial decision execution</td>
+          <td>Some actions succeed, some fail</td>
+          <td>Audit log records exactly which actions completed; reconciliation job runs hourly to compare intended actions vs actual Beyond state. Discrepancies trigger manager alert.</td>
+        </tr>
+        <tr>
+          <td>Munjiz cluster failure</td>
+          <td>Health probe / heartbeat</td>
+          <td>K8s reschedules pods. WebSocket clients reconnect automatically (built-in). In-flight scenarios are abandoned (their decisions never persist), users see no fake state.</td>
+        </tr>
+        <tr>
+          <td>Authority matrix change</td>
+          <td>Bank's auth service notifies</td>
+          <td>Munjiz refreshes per-branch authority matrix; in-flight decisions complete with old matrix; new decisions use updated matrix immediately.</td>
+        </tr>
+        <tr>
+          <td>Customer object out of sync (Beyond Journey ≠ CBS)</td>
+          <td>Reconciliation flags mismatch</td>
+          <td>Khalid prefers CBS as source-of-truth for value/segment, Beyond Journey for behavior patterns. Conflict logged; data quality team alerted.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top:1.5rem;">
+      <span class="label">// RECONCILIATION JOB</span>
+      <p>Hourly background task: for every Munjiz decision in the last hour, verify each action's effect against Beyond's actual state. Discrepancies (action intended but never reflected) flagged for manager review with full context: what we tried, what Beyond returned, why we think it didn't take effect.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 10 MIGRATION ═══════════════════════ -->
+<section class="page" id="migration">
+  <div class="shell">
+    <div class="section-head">
+      <div class="num">10</div>
+      <div class="titles">
+        <span class="eyebrow"><span class="sig">//</span> MIGRATION FROM EXISTING SYSTEMS</span>
+        <h2>خطّة الترحيل من الأنظمة الحالية</h2>
+        <p class="lede">كيف يَنتقِل بنكٌ من "كل قرار يدوي + أنظمة معزولة" إلى "Munjiz يُنَسِّق Beyond suite" — في ٤ مَراحل بدون انقطاع خِدمة.</p>
+      </div>
+    </div>
+
+    <article class="step">
+      <div class="step-num">01</div>
+      <div>
+        <h3>المرحلة الأولى — Shadow Mode (شهرين)</h3>
+        <p><strong>الهدف:</strong> منجِز يَقرأ Beyond بدون كتابة. يُسَجِّل القرارات التي <em>كان</em> سَيَتَّخذها في audit log منفصل.</p>
+        <ul style="margin-top:0.5rem;">
+          <li>تَفعيل read-only service account لمنجِز على كل Beyond products</li>
+          <li>منجِز يُشَغِّل ٢-٣ سيناريوهات/فرع/يوم في وضع silent</li>
+          <li>أسبوعياً: مقارنة قرارات منجِز مع قرارات المدير الفعلية → دقّة ٨٥٪+ هي الـ gate</li>
+          <li>صفر تَأثير على الإنتاج. صفر مَخاطر.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-num">02</div>
+      <div>
+        <h3>المرحلة الثانية — Limited Authority (٣-٤ شهور)</h3>
+        <p><strong>الهدف:</strong> منجِز يَكتُب لـ Beyond، لكن فقط actions منخفضة المخاطر.</p>
+        <ul style="margin-top:0.5rem;">
+          <li>السماح بـ: signage updates, kiosk routing, WhatsApp blasts</li>
+          <li>المنع من: financial actions, staff actions, customer segment changes</li>
+          <li>كل action تَمرّ عبر approval queue للمدير لمدّة أسبوعَين، ثم تَنتقل لـ auto</li>
+          <li>قياس: SLA compliance يَتَحَسَّن ١٠٪+، شكاوى تَنخَفِض، رضا المدير يَرتَفِع</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-num">03</div>
+      <div>
+        <h3>المرحلة الثالثة — Full Authority within Limits (٤-٦ شهور)</h3>
+        <p><strong>الهدف:</strong> منجِز يَتَصَرَّف ضمن صلاحيات المنسق المعتَمَدَة.</p>
+        <ul style="margin-top:0.5rem;">
+          <li>تَفعيل: staff break delays, customer compensation ≤500 SAR, ticket escort</li>
+          <li>التَصعيد للمدير فقط للـ exceptions الحقيقيّة (تعويضات أكبر، تمديد ساعات)</li>
+          <li>توسعة من ٣-٥ فروع إلى ٢٠-٣٠</li>
+          <li>قياس: ٨٥٪ من القرارات تلقائية، المدير يُفَرِّغ ٣ ساعات/يوم للاستراتيجية</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-num">04</div>
+      <div>
+        <h3>المرحلة الرابعة — Network-Wide + Continuous Learning (٦+ شهور)</h3>
+        <p><strong>الهدف:</strong> كل الفروع، مع تَعَلُّم مُستَمر من القرارات الفعلية.</p>
+        <ul style="margin-top:0.5rem;">
+          <li>إطلاق على ٢٠٠+ فرع</li>
+          <li>Central Observability dashboard للمدير الإقليمي</li>
+          <li>A/B testing بين تَكوينات النماذج</li>
+          <li>Continuous prompt refinement من الـ overrides اليدوية</li>
+          <li>إضافة وكلاء جُدُد: Compliance Agent (auto-AML), Sales Agent (cross-sell)</li>
+        </ul>
+      </div>
+    </article>
+
+    <h3 style="margin-top:2rem;">المؤشِّرات لكل مرحلة · Phase-Gate KPIs</h3>
+    <table class="tbl">
+      <thead><tr><th>المرحلة</th><th>المُؤشِّر الحرِج</th><th>هدف الانتقال للمرحلة التالية</th></tr></thead>
+      <tbody>
+        <tr><td>Shadow</td><td>دقّة قرارات منجِز vs. المدير</td><td>≥ 85%</td></tr>
+        <tr><td>Limited Authority</td><td>تَأثير على SLA + رضا</td><td>SLA +10pp, CSAT stable or +</td></tr>
+        <tr><td>Full Authority</td><td>نسبة القرارات التلقائية</td><td>≥ 80%</td></tr>
+        <tr><td>Network-Wide</td><td>ROI الشهري لكل فرع</td><td>≥ 100K SAR</td></tr>
+      </tbody>
+    </table>
+
+    <div class="strip"></div>
+
+    <p class="lede-body" style="margin-top:1.5rem;">
+      <strong>الخلاصة:</strong> منجِز ليس "جلب نظام جديد" — بل طبقة ذكاء فوق ما تَملِكه. مع Beyond كمَزَوِّد للبيانات والأدوات، ومع منجِز كمَنَسِّق القرار، تَتَحَوَّل الفروع من "ردّ فعل" إلى "تَوَقُّع". هذا التَحَوُّل قابل للقياس، تدريجي، وقابل للتراجع في أيّ مرحلة.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="page-foot">
+  <div class="shell">
+    <div class="strip" style="margin: 0 0 2rem 0;"></div>
+    <div class="row">
+      <span><span class="sig">// MUNJIZ × BEYOND</span> · INTEGRATION GUIDE · EDITION 01 · 2026</span>
+      <span>SHARED-NDA · ENTERPRISE ARCHITECT</span>
+      <span>v1.0 · KICKOFF-READY</span>
+    </div>
+    <div class="row" style="margin-top: 1rem; color: var(--muted); text-transform: none;">
+      <span>هذه الوثيقة تَحتَوي تَسميات مرجعيّة لمنتجات Beyond Technology. الأسماء التِجاريّة الدقيقة سَتُؤَكَّد في كيك-أوف الدمج.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
